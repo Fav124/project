@@ -1,124 +1,375 @@
 @extends('layouts.app')
 
-@section('title', 'Inventori Obat')
-@section('page-title', 'Manajemen Stok Obat')
+@section('title', 'Stok Obat')
+@section('page-title', 'Manajemen Inventori Obat')
 
 @section('content')
-<x-ui.card>
-    <x-slot name="header">
-        <h2><i class="fas fa-pills"></i> Inventori Obat UKS</h2>
-        <a href="{{ route('medicines.index', array_merge(request()->query(), ['create' => 1])) }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Tambah Obat
-        </a>
-    </x-slot>
+<div class="row">
+    <div class="col-md-5 grid-margin stretch-card">
+        <x-ui.card title="Peringkat Stok Terbanyak">
+            <div id="stockChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+    <div class="col-md-3 grid-margin stretch-card">
+        <x-ui.card title="Status Kadaluarsa">
+            <div id="expiryChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <x-ui.card title="Top 5 Penggunaan Obat">
+            <div id="usageChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <x-ui.card title="Daftar Obat">
+            <x-slot name="header">
+                <h4 class="card-title">Daftar Inventori Obat</h4>
+                <button type="button" class="btn btn-primary btn-icon-text" data-toggle="modal" data-target="#createModal">
+                    <i class="mdi mdi-plus btn-icon-prepend"></i> Tambah Obat
+                </button>
+            </x-slot>
 
-    <x-ui.filter-bar method="GET">
-        <x-form.input name="search" placeholder="Cari nama obat..." :value="request('search')" style="flex:1;" />
-        <label class="badge badge-outline" style="display:flex; align-items:center; gap:8px; border:1px solid var(--border); padding:8px 12px; border-radius:10px; cursor:pointer;">
-            <input type="checkbox" name="low_stock" value="1" {{ request('low_stock') ? 'checked' : '' }}>
-            <span style="font-size:13px; font-weight:600; color:var(--text-muted);">Stok Menipis</span>
-        </label>
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ route('medicines.index') }}" class="btn btn-outline">Reset</a>
-    </x-ui.filter-bar>
-
-    <x-ui.table>
-        <thead>
-            <tr>
-                <th>Nama Obat</th>
-                <th>Satuan</th>
-                <th>Ketersediaan</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($medicines as $medicine)
-                <tr>
-                    <td style="font-weight: 700; color: var(--primary);">{{ $medicine->name }}</td>
-                    <td style="color: var(--text-muted);">{{ $medicine->unit }}</td>
-                    <td>
-                        <div style="font-weight: 700;">{{ $medicine->stock }} <span style="font-weight: 400; font-size: 11px; color: var(--text-muted);">/ min {{ $medicine->minimum_stock }}</span></div>
-                    </td>
-                    <td>
-                        @if($medicine->stock <= $medicine->minimum_stock)
-                            <span class="badge badge-danger"><i class="fas fa-triangle-exclamation"></i> Kritis</span>
-                        @else
-                            <span class="badge badge-success"><i class="fas fa-check-circle"></i> Aman</span>
-                        @endif
-                    </td>
-                    <td>
-                        <div class="flex gap-2">
-                            <a href="{{ route('medicines.index', array_merge(request()->query(), ['edit' => $medicine->id])) }}" class="btn btn-xs btn-info">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
-                                <form method="POST" action="{{ route('medicines.destroy', $medicine) }}" onsubmit="return confirm('Hapus data obat ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-xs btn-danger">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <form action="{{ route('medicines.index') }}" method="GET">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control text-white" placeholder="Cari nama obat..." value="{{ request('search') }}">
+                            <button class="btn btn-primary" type="submit">Cari</button>
+                            @if(request('search'))
+                                <a href="{{ route('medicines.index') }}" class="btn btn-outline-secondary">Reset</a>
                             @endif
                         </div>
-                    </td>
-                </tr>
-            @empty
-                <x-ui.empty-state :colspan="5" message="Tidak ada data obat yang terdaftar." />
-            @endforelse
-        </tbody>
-    </x-ui.table>
+                    </form>
+                </div>
+                <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                    <a href="{{ route('medicines.index', ['low_stock' => 1]) }}" class="btn btn-outline-danger btn-sm {{ request('low_stock') ? 'active' : '' }}">
+                        <i class="mdi mdi-alert"></i> Stok Menipis
+                    </a>
+                    <a href="{{ route('medicines.index', ['expired' => 1]) }}" class="btn btn-outline-danger btn-sm {{ request('expired') ? 'active' : '' }}">
+                        <i class="mdi mdi-calendar-remove"></i> Kadaluarsa
+                    </a>
+                    <a href="{{ route('medicines.index', ['expiring_soon' => 1]) }}" class="btn btn-outline-warning btn-sm {{ request('expiring_soon') ? 'active' : '' }}">
+                        <i class="mdi mdi-calendar-clock"></i> Segera Kadaluarsa
+                    </a>
+                </div>
+            </div>
 
-    <x-slot name="footer">
-        {{ $medicines->links() }}
-    </x-slot>
-</x-ui.card>
+            <x-ui.table>
+                <thead>
+                    <tr>
+                        <th>Nama Obat</th>
+                        <th>Stok</th>
+                        <th>Tgl Kadaluarsa</th>
+                        <th>Status</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($medicines as $medicine)
+                        <tr>
+                            <td class="text-white font-weight-bold">{{ $medicine->name }}</td>
+                            <td>
+                                <span class="{{ $medicine->stock <= $medicine->minimum_stock ? 'text-danger font-weight-bold' : '' }}">
+                                    {{ $medicine->stock }}
+                                </span>
+                            </td>
+                            <td>
+                                {{ $medicine->expiry_date ? $medicine->expiry_date->format('d/m/Y') : '-' }}
+                            </td>
+                            <td>
+                                @if($medicine->isExpired())
+                                    <div class="badge badge-outline-danger">Kadaluarsa</div>
+                                @elseif($medicine->isExpiringSoon())
+                                    <div class="badge badge-outline-warning">Segera Exp</div>
+                                @elseif($medicine->stock <= $medicine->minimum_stock)
+                                    <div class="badge badge-outline-danger">Stok Kritis</div>
+                                @else
+                                    <div class="badge badge-outline-success">Aman</div>
+                                @endif
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['detail' => $medicine->id])) }}" class="btn btn-outline-info btn-sm">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['edit' => $medicine->id])) }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+                                    @can('manage-medical-data')
+                                        <form action="{{ route('medicines.destroy', $medicine) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data obat ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="mdi mdi-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Data tidak ditemukan</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </x-ui.table>
 
-@if($showForm)
-    <x-ui.card class="mt-4">
-        <x-slot name="header">
-            <h2><i class="fas {{ $editMedicine ? 'fa-pen-to-square' : 'fa-plus' }}"></i> {{ $editMedicine ? 'Edit Data Obat' : 'Tambah Obat Baru' }}</h2>
-        </x-slot>
-        <form method="POST" action="{{ $editMedicine ? route('medicines.update', $editMedicine) : route('medicines.store') }}">
-            @csrf
-            @if($editMedicine)
+            <x-slot name="footer">
+                {{ $medicines->links() }}
+            </x-slot>
+        </x-ui.card>
+    </div>
+</div>
+
+{{-- Create Modal --}}
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Obat Baru</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="{{ route('medicines.store') }}" method="POST" data-ajax="true">
+                @csrf
+                <div class="modal-body">
+                    <div id="medicine-rows">
+                        <div class="medicine-row border-bottom border-secondary mb-4 pb-3">
+                            <div class="row align-items-end">
+                                <div class="col-md-4">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Nama Obat</label>
+                                        <input type="text" name="medicines[0][name]" class="form-control" placeholder="Paracetamol" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">Satuan</label>
+                                        <input type="text" name="medicines[0][unit]" class="form-control" placeholder="Tablet/Botol" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Stok Awal</label>
+                                        <input type="number" name="medicines[0][stock]" class="form-control" value="0" min="0" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">Tgl Kadaluarsa</label>
+                                        <input type="date" name="medicines[0][expiry_date]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Stok Min.</label>
+                                        <input type="number" name="medicines[0][minimum_stock]" class="form-control" value="10" min="0" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">Kegunaan</label>
+                                        <textarea name="medicines[0][description]" class="form-control" rows="3" placeholder="Sakit kepala..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-inverse-danger btn-icon remove-row mb-1" style="display:none;">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-info btn-block btn-sm mt-2" id="add-row">
+                        <i class="mdi mdi-plus"></i> Tambah Baris Obat
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Semua</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Edit Modal --}}
+@if($editMedicine)
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Obat: {{ $editMedicine->name }}</h5>
+                <a href="{{ route('medicines.index') }}" class="close text-white"></a>
+            </div>
+            <form action="{{ route('medicines.update', $editMedicine) }}" method="POST" data-ajax="true">
+                @csrf
                 @method('PUT')
-            @endif
-
-            <div style="display:grid; grid-template-columns: 2fr 1fr; gap: 24px;">
-                <x-form.field name="name" label="Nama Obat / Alkes">
-                    <x-form.input name="name" :value="$editMedicine->name ?? ''" placeholder="Masukkan nama obat" />
-                </x-form.field>
-                <x-form.field name="unit" label="Satuan">
-                    <x-form.select name="unit">
-                        @foreach(['Tablet', 'Kapsul', 'Sirup', 'Strip', 'Botol', 'Pcs', 'Box'] as $unit)
-                            <option value="{{ $unit }}" @selected(old('unit', $editMedicine->unit ?? '') === $unit)>{{ $unit }}</option>
-                        @endforeach
-                    </x-form.select>
-                </x-form.field>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                <x-form.field name="stock" label="Stok Saat Ini">
-                    <x-form.input name="stock" type="number" min="0" :value="$editMedicine->stock ?? 0" />
-                </x-form.field>
-                <x-form.field name="minimum_stock" label="Batas Stok Minimal">
-                    <x-form.input name="minimum_stock" type="number" min="0" :value="$editMedicine->minimum_stock ?? 5" />
-                </x-form.field>
-            </div>
-
-            <x-form.field name="description" label="Keterangan / Aturan Pakai">
-                <x-form.textarea name="description" :value="$editMedicine->description ?? ''" placeholder="Informasi tambahan mengenai obat ini..." />
-            </x-form.field>
-
-            <x-form.actions>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> {{ $editMedicine ? 'Simpan Perubahan' : 'Tambah Obat' }}
-                </button>
-                <a href="{{ route('medicines.index') }}" class="btn btn-secondary">Batal</a>
-            </x-form.actions>
-        </form>
-    </x-ui.card>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Obat</label>
+                        <input type="text" name="name" class="form-control" value="{{ $editMedicine->name }}" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Stok</label>
+                            <input type="number" name="stock" class="form-control" value="{{ $editMedicine->stock }}" min="0" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Satuan</label>
+                            <input type="text" name="unit" class="form-control" value="{{ $editMedicine->unit }}" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Stok Minimum</label>
+                            <input type="number" name="minimum_stock" class="form-control" value="{{ $editMedicine->minimum_stock }}" min="0" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Tgl Kadaluarsa</label>
+                            <input type="date" name="expiry_date" class="form-control" value="{{ $editMedicine->expiry_date ? $editMedicine->expiry_date->format('Y-m-d') : '' }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="description" class="form-control" rows="3">{{ $editMedicine->description }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ route('medicines.index') }}" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endif
+
+{{-- Detail Modal --}}
+@if($detailMedicine)
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Obat: {{ $detailMedicine->name }}</h5>
+                <a href="{{ route('medicines.index') }}" class="close text-white"></a>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="bg-dark p-4 rounded d-inline-block">
+                        <i class="mdi mdi-pill text-primary" style="font-size: 48px;"></i>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Nama Obat</small>
+                        <span class="text-white font-weight-bold">{{ $detailMedicine->name }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Stok Saat Ini</small>
+                        <span class="text-white">{{ $detailMedicine->stock }} {{ $detailMedicine->unit }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Batas Minimum</small>
+                        <span class="text-warning">{{ $detailMedicine->minimum_stock }} {{ $detailMedicine->unit }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Tgl Kadaluarsa</small>
+                        @if($detailMedicine->isExpired())
+                            <span class="text-danger font-weight-bold">{{ $detailMedicine->expiry_date->format('d M Y') }} (Expired)</span>
+                        @elseif($detailMedicine->isExpiringSoon())
+                            <span class="text-warning font-weight-bold">{{ $detailMedicine->expiry_date->format('d M Y') }} (Segera)</span>
+                        @else
+                            <span class="text-white">{{ $detailMedicine->expiry_date ? $detailMedicine->expiry_date->format('d M Y') : '-' }}</span>
+                        @endif
+                    </div>
+                    <div class="col-12 mb-3">
+                        <small class="text-muted d-block">Kegunaan/Deskripsi</small>
+                        <p class="text-white">{{ $detailMedicine->description ?: 'Tidak ada deskripsi' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('medicines.index') }}" class="btn btn-secondary">Tutup</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    const chartDefaults = {
+        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
+        grid: { show: false },
+        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+    };
+
+    // Stock Level Chart (Bar)
+    new ApexCharts(document.querySelector("#stockChart"), {
+        ...chartDefaults,
+        series: [{ name: 'Stok', data: @json($stockStats->pluck('stock')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        xaxis: { categories: @json($stockStats->pluck('name')), labels: { show: false } },
+        colors: ['#0090e7']
+    }).render();
+
+    // Expiry Status Chart (Donut)
+    new ApexCharts(document.querySelector("#expiryChart"), {
+        ...chartDefaults,
+        series: [@json($expiryStats['expired']), @json($expiryStats['expiring_soon']), @json($expiryStats['safe'])],
+        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
+        labels: ['Kadaluarsa', 'Segera Exp', 'Aman'],
+        colors: ['#fc424a', '#ffab00', '#00d25b'],
+        dataLabels: { enabled: false }
+    }).render();
+
+    // Usage Chart (Horizontal Bar)
+    new ApexCharts(document.querySelector("#usageChart"), {
+        ...chartDefaults,
+        series: [{ name: 'Digunakan', data: @json($usageStats->pluck('total')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        plotOptions: { bar: { horizontal: true } },
+        xaxis: { categories: @json($usageStats->pluck('name')) },
+        colors: ['#8f5fe8']
+    }).render();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if($editMedicine)
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        @endif
+        @if($detailMedicine)
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        @endif
+
+        // Dynamic Rows Logic
+        let rowCount = 1;
+        const addRowBtn = document.getElementById('add-row');
+        const medicineRows = document.getElementById('medicine-rows');
+
+        addRowBtn.addEventListener('click', function() {
+            const newRow = document.querySelector('.medicine-row').cloneNode(true);
+            
+            newRow.querySelectorAll('input, textarea').forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                    input.setAttribute('name', name.replace(/medicines\[\d+\]/, `medicines[${rowCount}]`));
+                }
+                if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+                    if (input.name.includes('[stock]')) input.value = '0';
+                    else if (input.name.includes('[minimum_stock]')) input.value = '10';
+                    else input.value = '';
+                }
+            });
+
+            newRow.querySelector('.remove-row').style.display = 'block';
+            medicineRows.appendChild(newRow);
+            rowCount++;
+        });
+
+        medicineRows.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('.medicine-row').remove();
+            }
+        });
+    });
+</script>
+@endpush
 @endsection

@@ -13,7 +13,7 @@ trait HealthManagementValidation
         }
 
         return [
-            'nis' => [$nisRule],
+            'nis' => $nisRule,
             'name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'in:L,P'],
             'birth_place' => ['nullable', 'string', 'max:255'],
@@ -35,6 +35,7 @@ trait HealthManagementValidation
             'unit' => ['required', 'string', 'max:50'],
             'stock' => ['required', 'integer', 'min:0'],
             'minimum_stock' => ['required', 'integer', 'min:0'],
+            'expiry_date' => ['nullable', 'date'],
             'description' => ['nullable', 'string'],
         ];
     }
@@ -48,7 +49,7 @@ trait HealthManagementValidation
         }
 
         return [
-            'code' => [$codeRule],
+            'code' => $codeRule,
             'room_name' => ['required', 'string', 'max:100'],
             'status' => ['required', 'in:available,occupied,maintenance'],
             'occupant_name' => ['nullable', 'string', 'max:255'],
@@ -95,11 +96,11 @@ trait HealthManagementValidation
             'santri_id' => ['required', 'exists:santris,id'],
             'hospital_name' => ['required', 'string', 'max:255'],
             'referral_date' => ['required', 'date'],
-            'complaint' => ['required', 'string'],
+            'reason' => ['required', 'string'],
             'diagnosis' => ['nullable', 'string', 'max:255'],
             'transport' => ['nullable', 'string', 'max:100'],
             'companion_name' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', 'in:referred,treated,returned'],
+            'status' => ['required', 'in:pending,ongoing,completed'],
             'notes' => ['nullable', 'string'],
         ];
     }

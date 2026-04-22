@@ -45,8 +45,9 @@ class SuperAdminController extends Controller
     {
         $query = User::where('role', '!=', 'super_admin');
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        $status = $request->status ?: $request->route()->defaults['status'] ?? null;
+        if ($status) {
+            $query->where('status', $status);
         }
 
         if ($request->filled('role')) {
@@ -87,7 +88,12 @@ class SuperAdminController extends Controller
             'rejection_reason' => null,
         ]);
 
-        return back()->with('success', "Akun {$user->name} berhasil disetujui.");
+        $message = "Akun {$user->name} berhasil disetujui.";
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 
     // ─── Reject User ─────────────────────────────────────────────────────────
@@ -112,11 +118,15 @@ class SuperAdminController extends Controller
         try {
             \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\AccountRejectedMail($user, $request->rejection_reason));
         } catch (\Exception $e) {
-            // Log error but don't stop the flow
             \Illuminate\Support\Facades\Log::error("Failed to send rejection email to {$user->email}: " . $e->getMessage());
         }
 
-        return back()->with('success', "Akun {$user->name} telah ditolak dan email pemberitahuan telah dikirim (jika konfigurasi email valid).");
+        $message = "Akun {$user->name} telah ditolak.";
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 
     // ─── Change Role ─────────────────────────────────────────────────────────
@@ -135,7 +145,12 @@ class SuperAdminController extends Controller
         $user->update(['role' => $request->role]);
         $newRole = $user->fresh()->role_label;
 
-        return back()->with('success', "Role {$user->name} diubah dari {$oldRole} menjadi {$newRole}.");
+        $message = "Role {$user->name} diubah dari {$oldRole} menjadi {$newRole}.";
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 
     // ─── Reset Password ──────────────────────────────────────────────────────
@@ -155,7 +170,12 @@ class SuperAdminController extends Controller
             'password' => Hash::make($request->new_password),
         ]);
 
-        return back()->with('success', "Password {$user->name} berhasil di-reset.");
+        $message = "Password {$user->name} berhasil di-reset.";
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 
     // ─── Generate Random Password (quick reset) ──────────────────────────────

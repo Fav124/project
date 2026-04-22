@@ -3,196 +3,142 @@
 @section('title', 'Kelola Pengguna - ' . $user->name)
 @section('page-title', 'Otoritas & Detail Pengguna')
 
-@section('page-actions')
-    <a href="{{ route('super-admin.users') }}" class="btn btn-outline">
-        <i class="fas fa-arrow-left"></i> Kembali ke Daftar
-    </a>
-@endsection
-
 @section('content')
-<div style="display:grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: start;">
-    
-    <div style="display:flex; flex-direction:column; gap:32px;">
-        {{-- Profile Hero Card --}}
-        <x-ui.card>
-            <div style="padding: 40px 32px; text-align: center; background: linear-gradient(to bottom, var(--bg-main), white); border-bottom: 1px solid var(--border);">
-                <div class="user-avatar" style="width: 100px; height: 100px; font-size: 40px; margin: 0 auto 20px; box-shadow: var(--shadow-lg); border: 4px solid white;">
-                    {{ strtoupper(substr($user->name, 0, 1)) }}
-                </div>
-                <h2 style="font-size: 24px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">{{ $user->name }}</h2>
-                <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 16px;">{{ $user->email }}</p>
-                
-                <div style="display: flex; justify-content: center; gap: 12px;">
-                    @php
-                        $roleTheme = match($user->role) {
-                            'admin' => ['class' => 'badge-primary', 'icon' => 'fa-user-tie', 'label' => 'Administrator'],
-                            'petugas_kesehatan' => ['class' => 'badge-info', 'icon' => 'fa-stethoscope', 'label' => 'Petugas Kesehatan'],
-                            default => ['class' => 'badge-outline', 'icon' => 'fa-user', 'label' => 'User'],
-                        };
-                        $statusTheme = match($user->status) {
-                            'approved' => ['class' => 'badge-success', 'icon' => 'fa-check-circle', 'label' => 'Aktif'],
-                            'rejected' => ['class' => 'badge-danger', 'icon' => 'fa-times-circle', 'label' => 'Ditolak'],
-                            default => ['class' => 'badge-warning', 'icon' => 'fa-clock', 'label' => 'Menunggu Approval'],
-                        };
-                    @endphp
-                    <span class="badge {{ $roleTheme['class'] }}" style="padding: 6px 14px; font-size: 13px;">
-                        <i class="fas {{ $roleTheme['icon'] }}"></i> {{ $roleTheme['label'] }}
-                    </span>
-                    <span class="badge {{ $statusTheme['class'] }}" style="padding: 6px 14px; font-size: 13px;">
-                        <i class="fas {{ $statusTheme['icon'] }}"></i> {{ $statusTheme['label'] }}
-                    </span>
-                </div>
-            </div>
-            
-            <div style="padding: 24px 32px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                    <div>
-                        <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Tanggal Registrasi</div>
-                        <div style="font-weight: 600; color: var(--text-main);">{{ $user->created_at->format('d F Y, H:i') }}</div>
+<div class="row">
+    <div class="col-md-5 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center pb-4">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px; font-size: 40px; font-weight: 800;">
+                        {{ strtoupper(substr($user->name, 0, 1)) }}
                     </div>
-                    @if($user->approved_at)
-                        <div>
-                            <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">{{ $user->status === 'approved' ? 'Waktu Persetujuan' : 'Waktu Penolakan' }}</div>
-                            <div style="font-weight: 600; color: var(--text-main);">{{ $user->approved_at->format('d F Y, H:i') }}</div>
+                    <h3 class="text-white mb-1">{{ $user->name }}</h3>
+                    <p class="text-muted">{{ $user->email }}</p>
+                    
+                    <div class="d-flex justify-content-center gap-2 mt-3">
+                        @php
+                            $roleTheme = match($user->role) {
+                                'admin' => ['class' => 'badge-outline-primary', 'label' => 'Administrator'],
+                                'petugas_kesehatan' => ['class' => 'badge-outline-info', 'label' => 'Nakes'],
+                                default => ['class' => 'badge-outline-secondary', 'label' => $user->role],
+                            };
+                            $statusTheme = match($user->status) {
+                                'approved' => ['class' => 'badge-outline-success', 'label' => 'Aktif'],
+                                'rejected' => ['class' => 'badge-outline-danger', 'label' => 'Ditolak'],
+                                default => ['class' => 'badge-outline-warning', 'label' => 'Pending'],
+                            };
+                        @endphp
+                        <span class="badge {{ $roleTheme['class'] }}">{{ $roleTheme['label'] }}</span>
+                        <span class="badge {{ $statusTheme['class'] }}">{{ $statusTheme['label'] }}</span>
+                    </div>
+                </div>
+
+                <div class="border-top border-secondary py-4">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <small class="text-muted d-block">Terdaftar Pada</small>
+                            <span class="text-white">{{ $user->created_at->format('d M Y, H:i') }}</span>
                         </div>
-                    @endif
-                    @if($user->approvedBy)
-                        <div>
-                            <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Diproses Oleh</div>
-                            <div style="font-weight: 600; color: var(--text-main);">{{ $user->approvedBy->name }}</div>
+                        <div class="col-6 mb-3">
+                            <small class="text-muted d-block">Status Akses</small>
+                            <span class="text-white">{{ ucfirst($user->status) }}</span>
                         </div>
-                    @endif
+                        @if($user->approved_at)
+                            <div class="col-12 mb-3">
+                                <small class="text-muted d-block">{{ $user->status === 'approved' ? 'Disetujui Pada' : 'Ditolak Pada' }}</small>
+                                <span class="text-white">{{ $user->approved_at->format('d M Y, H:i') }}</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 @if($user->rejection_reason)
-                    <div style="margin-top: 24px; padding: 16px; background: #fef2f2; border-radius: 12px; border: 1px solid #fee2e2;">
-                        <div style="font-size: 12px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 6px;">Alasan Penolakan</div>
-                        <div style="font-size: 14px; color: #991b1b; line-height: 1.5;">{{ $user->rejection_reason }}</div>
+                    <div class="alert alert-danger">
+                        <h6 class="alert-heading">Alasan Penolakan:</h6>
+                        <p class="mb-0">{{ $user->rejection_reason }}</p>
                     </div>
                 @endif
             </div>
-        </x-ui.card>
-
-        {{-- Security Card --}}
-        <x-ui.card>
-            <x-slot name="header">
-                <h2><i class="fas fa-shield-halved"></i> Keamanan & Kata Sandi</h2>
-            </x-slot>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div style="padding: 20px; background: var(--bg-main); border-radius: 16px; border: 1px solid var(--border);">
-                    <div style="font-weight: 700; margin-bottom: 4px;">Reset Otomatis</div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Generate password random dan simpan secara langsung.</p>
-                    <form method="POST" action="{{ route('super-admin.users.quick-reset', $user) }}" onsubmit="return confirm('Reset password sekarang?')">
-                        @csrf
-                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: #f59e0b;">
-                            <i class="fas fa-bolt"></i> Quick Reset
-                        </button>
-                    </form>
-                </div>
-                <div style="padding: 20px; background: var(--bg-main); border-radius: 16px; border: 1px solid var(--border);">
-                    <div style="font-weight: 700; margin-bottom: 4px;">Reset Manual</div>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Tentukan kata sandi khusus untuk pengguna ini.</p>
-                    <button type="button" class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="document.getElementById('manual-reset-form').style.display='block'; this.style.display='none';">
-                        <i class="fas fa-keyboard"></i> Set Manual
-                    </button>
-                    <div id="manual-reset-form" style="display: none;">
-                        <form method="POST" action="{{ route('super-admin.users.reset-password', $user) }}">
-                            @csrf
-                            <input type="password" name="new_password" class="form-input" placeholder="Password baru" style="margin-bottom: 8px;">
-                            <input type="password" name="new_password_confirmation" class="form-input" placeholder="Ulangi password" style="margin-bottom: 12px;">
-                            <div style="display: flex; gap: 8px;">
-                                <button type="submit" class="btn btn-xs btn-primary" style="flex: 1; justify-content: center;">Simpan</button>
-                                <button type="button" class="btn btn-xs btn-outline" onclick="location.reload()">Batal</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </x-ui.card>
+        </div>
     </div>
 
-    <div style="display:flex; flex-direction:column; gap:32px;">
-        {{-- Decision Panel --}}
-        @if($user->isPending() || $user->isRejected())
-            <x-ui.card style="border: 2px solid var(--warning);">
-                <x-slot name="header">
-                    <h2 style="color: var(--warning);"><i class="fas fa-gavel"></i> Panel Keputusan</h2>
-                </x-slot>
-                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
-                    Tentukan apakah pengguna ini layak mendapatkan akses ke sistem DeisaHealth.
-                </p>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <form method="POST" action="{{ route('super-admin.users.approve', $user) }}">
+    <div class="col-md-7 grid-margin stretch-card">
+        <div class="row">
+            @if($user->isPending())
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card border border-warning">
+                        <div class="card-body">
+                            <h4 class="card-title text-warning"><i class="mdi mdi-gavel mr-2"></i> Keputusan Approval</h4>
+                            <p class="text-muted">Tentukan akses sistem untuk pengguna ini.</p>
+                            <div class="template-demo d-flex gap-2">
+                                <form action="{{ route('super-admin.users.approve', $user) }}" method="POST" class="flex-grow-1" data-ajax="true">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success btn-lg w-100">
+                                        <i class="mdi mdi-check-circle"></i> Setujui & Beri Akses
+                                    </button>
+                                </form>
+                                <button type="button" class="btn btn-danger btn-lg" data-toggle="collapse" data-target="#rejectForm">
+                                    <i class="mdi mdi-close-circle"></i> Tolak
+                                </button>
+                            </div>
+                            <div class="collapse mt-3" id="rejectForm">
+                                <form action="{{ route('super-admin.users.reject', $user) }}" method="POST" data-ajax="true">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label>Alasan Penolakan (Akan dikirim via email)</label>
+                                        <textarea name="rejection_reason" class="form-control text-white" rows="3" placeholder="Contoh: Akun tidak valid atau identitas tidak dikenal..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger btn-sm">Konfirmasi Penolakan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            <div class="col-12 grid-margin stretch-card">
+                <x-ui.card title="Pengaturan Jabatan & Role">
+                    <form action="{{ route('super-admin.users.change-role', $user) }}" method="POST" data-ajax="true">
                         @csrf
-                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; background: var(--success); font-size: 16px; padding: 14px;">
-                            <i class="fas fa-check-circle"></i> Setujui & Beri Akses
-                        </button>
+                        <div class="form-group">
+                            <label>Pilih Role</label>
+                            <select name="role" class="form-select text-white">
+                                <option value="petugas_kesehatan" @selected($user->role === 'petugas_kesehatan')>Petugas Kesehatan (UKS)</option>
+                                <option value="admin" @selected($user->role === 'admin')>Administrator (Master Data)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan Role</button>
                     </form>
-                    
-                    @if(!$user->isRejected())
-                        <button type="button" class="btn btn-outline" style="width: 100%; justify-content: center; color: var(--danger); border-color: var(--danger);" onclick="document.getElementById('reject-form-panel').style.display='block'; this.style.display='none';">
-                            <i class="fas fa-times-circle"></i> Tolak Pendaftaran
-                        </button>
-                        <div id="reject-form-panel" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
-                            <form method="POST" action="{{ route('super-admin.users.reject', $user) }}">
+                </x-ui.card>
+            </div>
+
+            <div class="col-12 grid-margin stretch-card">
+                <x-ui.card title="Keamanan & Password">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-white">Quick Reset</h6>
+                            <p class="text-muted text-small">Reset password menjadi string acak secara instan.</p>
+                            <form action="{{ route('super-admin.users.quick-reset', $user) }}" method="POST">
                                 @csrf
-                                <label class="form-label">Alasan Penolakan</label>
-                                <textarea name="rejection_reason" class="form-input" rows="3" placeholder="Misal: Data tidak valid..." style="margin-bottom: 12px;"></textarea>
-                                <div style="display: flex; gap: 8px;">
-                                    <button type="submit" class="btn btn-danger" style="flex: 1; justify-content: center;">Konfirmasi Tolak</button>
-                                    <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="location.reload()">Batal</button>
-                                </div>
+                                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Reset password sekarang?')">
+                                    <i class="mdi mdi-flash"></i> Quick Reset
+                                </button>
                             </form>
                         </div>
-                    @endif
-                </div>
-            </x-ui.card>
-        @endif
-
-        {{-- Role Management --}}
-        <x-ui.card>
-            <x-slot name="header">
-                <h2><i class="fas fa-user-tag"></i> Pengaturan Jabatan</h2>
-            </x-slot>
-            <form method="POST" action="{{ route('super-admin.users.change-role', $user) }}">
-                @csrf
-                <x-form.field name="role" label="Pilih Role Pengguna">
-                    <x-form.select name="role">
-                        <option value="petugas_kesehatan" @selected($user->role === 'petugas_kesehatan')>Petugas Kesehatan (UKS)</option>
-                        <option value="admin" @selected($user->role === 'admin')>Administrator (Data Master)</option>
-                    </x-form.select>
-                </x-form.field>
-                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-                    <i class="fas fa-save"></i> Perbarui Role
-                </button>
-            </form>
-        </x-ui.card>
-
-        {{-- Dangerous Zone --}}
-        <x-ui.card style="background: #fff1f2; border: 1px solid #fecdd3;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                    <div style="font-weight: 800; color: #9f1239; font-size: 15px;">Hapus Akun Permanen</div>
-                    <div style="font-size: 12px; color: #be123c;">Seluruh data terkait user ini akan hilang.</div>
-                </div>
-                <form method="POST" action="{{ route('super-admin.users.destroy', $user) }}" onsubmit="return confirm('Hapus user ini selamanya?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger" style="background: #e11d48;">
-                        <i class="fas fa-trash-can"></i>
-                    </button>
-                </form>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-white">Hapus Akun</h6>
+                            <p class="text-muted text-small">Tindakan ini tidak dapat dibatalkan.</p>
+                            <form action="{{ route('super-admin.users.destroy', $user) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus user selamanya?')">
+                                    <i class="mdi mdi-trash-can"></i> Hapus Permanen
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </x-ui.card>
             </div>
-        </x-ui.card>
-
-        {{-- WhatsApp Action --}}
-        <div style="padding: 24px; background: #25d366; border-radius: 20px; color: white; text-align: center; box-shadow: 0 10px 15px -3px rgba(37, 211, 102, 0.3);">
-            <div style="font-size: 24px; margin-bottom: 8px;"><i class="fab fa-whatsapp"></i></div>
-            <div style="font-weight: 700; margin-bottom: 4px;">Hubungi Pengguna</div>
-            <p style="font-size: 12px; opacity: 0.9; margin-bottom: 16px;">Kirim pesan konfirmasi akun secara manual melalui WhatsApp.</p>
-            <a href="https://wa.me/{{ $user->phone ?? '' }}?text=Halo%20{{ urlencode($user->name) }},%20pendaftaran%20akun%20DeisaHealth%20Anda%20sedang%20kami%20proses." target="_blank" class="btn" style="background: white; color: #25d366; width: 100%; justify-content: center;">
-                Buka WhatsApp
-            </a>
         </div>
     </div>
 </div>

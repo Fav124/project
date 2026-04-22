@@ -31,20 +31,38 @@ class InfirmaryBedController extends Controller
         $editBed = $request->filled('edit')
             ? InfirmaryBed::find($request->edit)
             : null;
+        $detailBed = $request->filled('detail')
+            ? InfirmaryBed::find($request->detail)
+            : null;
         $showForm = $request->boolean('create') || $editBed || $request->isMethod('post');
 
-        return view('health.beds.index', compact('beds', 'editBed', 'showForm'));
+        return view('health.beds.index', compact('beds', 'editBed', 'detailBed', 'showForm'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate($this->bedRules());
-        $this->normalizeBedOccupant($validated);
+        $validated = $request->validate([
+            'beds' => ['required', 'array', 'min:1'],
+            'beds.*.code' => ['required', 'string', 'max:50', 'unique:infirmary_beds,code'],
+            'beds.*.room_name' => ['required', 'string', 'max:100'],
+            'beds.*.status' => ['required', 'in:available,occupied,maintenance'],
+            'beds.*.occupant_name' => ['nullable', 'string', 'max:255'],
+            'beds.*.notes' => ['nullable', 'string'],
+        ]);
 
-        InfirmaryBed::create($validated);
+        foreach ($validated['beds'] as $bedData) {
+            if ($bedData['status'] !== 'occupied') {
+                $bedData['occupant_name'] = null;
+            }
+            InfirmaryBed::create($bedData);
+        }
 
-        return redirect()->route('beds.index')
-            ->with('success', 'Data kasur UKS berhasil ditambahkan.');
+        $message = count($validated['beds']) . ' data kasur UKS berhasil ditambahkan.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('beds.index')->with('success', $message);
     }
 
     public function update(Request $request, InfirmaryBed $bed)
@@ -54,8 +72,12 @@ class InfirmaryBedController extends Controller
 
         $bed->update($validated);
 
-        return redirect()->route('beds.index')
-            ->with('success', 'Data kasur UKS berhasil diperbarui.');
+        $message = 'Data kasur UKS berhasil diperbarui.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('beds.index')->with('success', $message);
     }
 
     public function destroy(InfirmaryBed $bed)

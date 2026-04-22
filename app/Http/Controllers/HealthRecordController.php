@@ -36,20 +36,38 @@ class HealthRecordController extends Controller
         $editRecord = $request->filled('edit')
             ? HealthRecord::find($request->edit)
             : null;
+        $detailRecord = $request->filled('detail')
+            ? HealthRecord::with(['santri', 'recorder'])->find($request->detail)
+            : null;
         $showForm = $request->boolean('create') || $editRecord || $request->isMethod('post');
 
-        return view('health.records.index', compact('records', 'santris', 'editRecord', 'showForm'));
+        return view('health.records.index', compact('records', 'santris', 'editRecord', 'detailRecord', 'showForm'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate($this->healthRecordRules());
-        $validated['recorded_by'] = auth()->id();
+        $validated = $request->validate([
+            'records' => ['required', 'array', 'min:1'],
+            'records.*.santri_id' => ['required', 'exists:santris,id'],
+            'records.*.record_date' => ['required', 'date'],
+            'records.*.complaint' => ['required', 'string'],
+            'records.*.diagnosis' => ['nullable', 'string', 'max:255'],
+            'records.*.treatment' => ['nullable', 'string'],
+            'records.*.blood_pressure' => ['nullable', 'string', 'max:50'],
+            'records.*.temperature' => ['nullable', 'numeric', 'between:30,45'],
+        ]);
 
-        HealthRecord::create($validated);
+        foreach ($validated['records'] as $recordData) {
+            $recordData['recorded_by'] = auth()->id();
+            HealthRecord::create($recordData);
+        }
 
-        return redirect()->route('health-records.index')
-            ->with('success', 'Rekam kesehatan berhasil ditambahkan.');
+        $message = count($validated['records']) . ' rekam kesehatan berhasil ditambahkan.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('health-records.index')->with('success', $message);
     }
 
     public function update(Request $request, HealthRecord $healthRecord)
@@ -59,8 +77,12 @@ class HealthRecordController extends Controller
 
         $healthRecord->update($validated);
 
-        return redirect()->route('health-records.index')
-            ->with('success', 'Rekam kesehatan berhasil diperbarui.');
+        $message = 'Rekam kesehatan berhasil diperbarui.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('health-records.index')->with('success', $message);
     }
 
     public function destroy(HealthRecord $healthRecord)

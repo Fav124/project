@@ -37,9 +37,12 @@ class HospitalReferralController extends Controller
         $editReferral = $request->filled('edit')
             ? HospitalReferral::find($request->edit)
             : null;
+        $detailReferral = $request->filled('detail')
+            ? HospitalReferral::with(['santri', 'referrer'])->find($request->detail)
+            : null;
         $showForm = $request->boolean('create') || $editReferral || $request->isMethod('post');
 
-        return view('health.referrals.index', compact('referrals', 'santris', 'editReferral', 'showForm'));
+        return view('health.referrals.index', compact('referrals', 'santris', 'editReferral', 'detailReferral', 'showForm'));
     }
 
     public function show(HospitalReferral $referral)
@@ -50,25 +53,27 @@ class HospitalReferralController extends Controller
 
     public function store(Request $request, WhatsAppService $whatsApp)
     {
-        $validated = $request->validate($this->referralRules());
-        $validated['referred_by'] = auth()->id();
+        $validated = $request->validate([
+            'referrals' => ['required', 'array', 'min:1'],
+            'referrals.*.santri_id' => ['required', 'exists:santris,id'],
+            'referrals.*.hospital_name' => ['required', 'string', 'max:255'],
+            'referrals.*.referral_date' => ['required', 'date'],
+            'referrals.*.diagnosis' => ['required', 'string'],
+            'referrals.*.reason' => ['required', 'string'],
+            'referrals.*.status' => ['required', 'in:pending,ongoing,completed'],
+        ]);
 
-        $referral = HospitalReferral::create($validated);
-
-        $successMessage = 'Data rujukan rumah sakit berhasil ditambahkan.';
-        $redirect = redirect()->route('referrals.index')
-            ->with('success', $successMessage);
-
-        if ($request->boolean('notify_guardian')) {
-            $result = $this->sendReferralNotification($referral, $whatsApp);
-            if ($result['success']) {
-                $redirect->with('success', $successMessage . ' ' . $result['message']);
-            } else {
-                $redirect->with('warning', $result['message']);
-            }
+        foreach ($validated['referrals'] as $referralData) {
+            $referralData['referred_by'] = auth()->id();
+            HospitalReferral::create($referralData);
         }
 
-        return $redirect;
+        $message = count($validated['referrals']) . ' data rujukan berhasil ditambahkan.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('referrals.index')->with('success', $message);
     }
 
     public function update(Request $request, HospitalReferral $referral, WhatsAppService $whatsApp)
@@ -79,6 +84,10 @@ class HospitalReferralController extends Controller
         $referral->update($validated);
 
         $successMessage = 'Data rujukan rumah sakit berhasil diperbarui.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $successMessage]);
+        }
+
         $redirect = redirect()->route('referrals.index')
             ->with('success', $successMessage);
 

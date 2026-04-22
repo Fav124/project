@@ -3,24 +3,24 @@
     'class' => '',
 ])
 
-<div {{ $attributes->merge(['class' => trim('glass-card ' . $class)]) }}>
-    @if($title || isset($header))
-        <div class="card-header">
-            @if(isset($header))
-                {{ $header }}
-            @else
-                <h2>{{ $title }}</h2>
-            @endif
-        </div>
-    @endif
-
+<div {{ $attributes->merge(['class' => trim('card ' . $class)]) }}>
     <div class="card-body">
-        {{ $slot }}
-    </div>
+        @if($title || isset($header))
+            <div class="d-flex flex-row justify-content-between mb-4">
+                @if(isset($header))
+                    {{ $header }}
+                @else
+                    <h4 class="card-title">{{ $title }}</h4>
+                @endif
+            </div>
+        @endif
 
-    @if(isset($footer))
-        <div class="pagination-wrap" style="padding: 24px 32px; border-top: 1px solid var(--border); background: var(--bg-main);">
-            {{ $footer }}
-        </div>
-    @endif
+        {{ $slot }}
+
+        @if(isset($footer))
+            <div class="mt-4 pt-3 border-top border-secondary">
+                {{ $footer }}
+            </div>
+        @endif
+    </div>
 </div>

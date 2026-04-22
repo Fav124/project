@@ -12,6 +12,7 @@ use App\Http\Controllers\SantriController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SicknessCaseController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\DormitoryController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Guest Routes ─────────────────────────────────────────────────────────────
@@ -53,6 +54,13 @@ Route::middleware(['auth', 'approved'])->group(function () {
         ->middleware('role:super_admin,admin')
         ->name('majors.destroy');
 
+    Route::get('/asrama', [DormitoryController::class, 'index'])->name('dormitories.index');
+    Route::post('/asrama', [DormitoryController::class, 'store'])->name('dormitories.store');
+    Route::put('/asrama/{dormitory}', [DormitoryController::class, 'update'])->name('dormitories.update');
+    Route::delete('/asrama/{dormitory}', [DormitoryController::class, 'destroy'])
+        ->middleware('role:super_admin,admin')
+        ->name('dormitories.destroy');
+
     Route::get('/obat', [MedicineController::class, 'index'])->name('medicines.index');
     Route::post('/obat', [MedicineController::class, 'store'])->name('medicines.store');
     Route::get('/obat/{medicine}', [MedicineController::class, 'show'])->name('medicines.show');
@@ -80,6 +88,8 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/santri-sakit/{sicknessCase}', [SicknessCaseController::class, 'show'])->name('sickness-cases.show');
     Route::put('/santri-sakit/{sicknessCase}', [SicknessCaseController::class, 'update'])->name('sickness-cases.update');
     Route::post('/santri-sakit/{sicknessCase}/notify-guardian', [SicknessCaseController::class, 'notifyGuardian'])->name('sickness-cases.notify');
+    Route::post('/santri-sakit/{sicknessCase}/mark-recovered', [SicknessCaseController::class, 'markRecovered'])->name('sickness-cases.recovered');
+    Route::put('/santri-sakit/medicine/{pivotId}/update-status', [SicknessCaseController::class, 'updateMedicineStatus'])->name('sickness-cases.medicine-status');
     Route::delete('/santri-sakit/{sicknessCase}', [SicknessCaseController::class, 'destroy'])->name('sickness-cases.destroy');
 
     Route::get('/rujukan-rs', [HospitalReferralController::class, 'index'])->name('referrals.index');
@@ -107,7 +117,8 @@ Route::middleware(['auth', 'role:super_admin'])
         Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
 
         // User management
-        Route::get('/users',             [SuperAdminController::class, 'users'])->name('users');
+        Route::get('/users',             [SuperAdminController::class, 'users'])->name('users.index');
+        Route::get('/approvals',         [SuperAdminController::class, 'users'])->defaults('status', 'pending')->name('approvals.index');
         Route::get('/users/{user}',      [SuperAdminController::class, 'showUser'])->name('users.show');
         Route::post('/users/{user}/approve',       [SuperAdminController::class, 'approve'])->name('users.approve');
         Route::post('/users/{user}/reject',        [SuperAdminController::class, 'reject'])->name('users.reject');

@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --primary: #059669;
-            --primary-dark: #047857;
-            --bg-auth: #f0fdf4;
-            --text-main: #064e3b;
-            --text-muted: #374151;
-            --border: #d1fae5;
+            --primary: #00d25b;
+            --primary-dark: #00ad4b;
+            --bg-auth: #0b0c10;
+            --text-main: #e4e4e4;
+            --text-muted: #abb2b9;
+            --border: #2c2e33;
+            --card-bg: #111318;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,9 +32,9 @@
         /* ─── Left Panel ─── */
         .auth-banner {
             flex: 1.2;
-            background: #064e3b;
+            background: #000000;
             background-image: 
-                radial-gradient(at top left, rgba(52, 211, 153, 0.4), transparent 50%),
+                radial-gradient(at top left, rgba(0, 210, 91, 0.2), transparent 50%),
                 url('https://www.transparenttextures.com/patterns/cubes.png');
             display: flex;
             flex-direction: column;
@@ -46,62 +47,68 @@
         .logo-wrapper { display: flex; align-items: center; gap: 16px; margin-bottom: 48px; }
         .logo-icon {
             width: 56px; height: 56px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0, 210, 91, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
             font-size: 26px;
-            color: #34d399;
-            border: 1px solid rgba(255,255,255,0.1);
+            color: #00d25b;
+            border: 1px solid rgba(0, 210, 91, 0.2);
         }
 
-        .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; }
+        .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; color: #fff; }
         
         .steps { margin-top: 48px; display: flex; flex-direction: column; gap: 32px; }
         .step-item { display: flex; align-items: flex-start; gap: 16px; }
         .step-num {
-            width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1);
-            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #34d399;
-            flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2);
+            width: 32px; height: 32px; border-radius: 50%; background: rgba(0, 210, 91, 0.1);
+            display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #00d25b;
+            flex-shrink: 0; border: 1px solid rgba(0, 210, 91, 0.2);
         }
-        .step-text h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-        .step-text p { font-size: 14px; opacity: 0.7; line-height: 1.5; }
+        .step-text h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: #fff; }
+        .step-text p { font-size: 14px; opacity: 0.7; line-height: 1.5; color: rgba(255,255,255,0.7); }
 
         /* ─── Right Panel ─── */
         .auth-form-side {
             width: 580px;
-            background: white;
+            background: var(--card-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 60px;
-            box-shadow: -20px 0 60px rgba(0,0,0,0.05);
+            box-shadow: -20px 0 60px rgba(0,0,0,0.5);
             z-index: 20;
             overflow-y: auto;
+            border-left: 1px solid var(--border);
         }
 
         .form-card { width: 100%; max-width: 420px; }
-        .form-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .form-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; color: #fff; }
         .form-card p.subtitle { color: var(--text-muted); margin-bottom: 32px; font-size: 14px; line-height: 1.6; }
 
         .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+        .form-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #fff; }
         
         .input-box { position: relative; }
-        .input-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 15px; }
+        .input-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 15px; }
         
         .form-input {
             width: 100%;
             padding: 12px 16px 12px 48px;
             border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
+            border: 1px solid var(--border);
+            background: #191c24;
             font-family: inherit;
             font-size: 15px;
+            color: #fff;
             transition: all 0.2s;
             outline: none;
         }
-        .form-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1); }
+        .form-input:focus { 
+            border-color: var(--primary); 
+            background: #1d212b; 
+            box-shadow: 0 0 0 4px rgba(0, 210, 91, 0.1); 
+        }
 
         .btn-submit {
             width: 100%;
@@ -114,22 +121,22 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 210, 91, 0.2);
             margin-top: 16px;
         }
-        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0, 210, 91, 0.3); }
 
         .form-footer { margin-top: 24px; text-align: center; font-size: 14px; color: var(--text-muted); }
         .form-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
 
         .alert-box {
-            background: #fffbeb; border-radius: 12px; padding: 16px; border-left: 4px solid #f59e0b;
-            color: #92400e; font-size: 13px; margin-bottom: 24px; line-height: 1.5;
+            background: rgba(0, 210, 91, 0.05); border-radius: 12px; padding: 16px; border-left: 4px solid var(--primary);
+            color: #fff; font-size: 13px; margin-bottom: 24px; line-height: 1.5;
         }
 
         .error-badge {
-            background: #fef2f2; color: #dc2626; padding: 12px; border-radius: 8px;
-            font-size: 13px; font-weight: 600; margin-bottom: 20px; border: 1px solid #fee2e2;
+            background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px; border-radius: 8px;
+            font-size: 13px; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         @media (max-width: 1024px) {

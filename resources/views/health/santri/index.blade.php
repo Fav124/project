@@ -4,161 +4,430 @@
 @section('page-title', 'Manajemen Data Santri')
 
 @section('content')
-<x-ui.card>
-    <x-slot name="header">
-        <h2><i class="fas fa-graduation-cap"></i> Daftar Santri Terdaftar</h2>
-        <a href="{{ route('santri.index', array_merge(request()->query(), ['create' => 1])) }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Tambah Santri
-        </a>
-    </x-slot>
-
-    <x-ui.filter-bar method="GET">
-        <x-form.input name="search" placeholder="Cari nama, NIS, atau asrama..." :value="request('search')" />
-        <button type="submit" class="btn btn-outline"><i class="fas fa-search"></i> Cari</button>
-        <a href="{{ route('santri.index') }}" class="btn btn-secondary">Reset</a>
-    </x-ui.filter-bar>
-
-    <x-ui.table>
-        <thead>
-            <tr>
-                <th>Identitas Santri</th>
-                <th>Kelas & Jurusan</th>
-                <th>Lokasi Asrama</th>
-                <th>Kontak Wali</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($santris as $santri)
-                <tr>
-                    <td>
-                        <div style="font-weight: 700; color: var(--primary);">{{ $santri->name }}</div>
-                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
-                            <i class="fas fa-id-card" style="width: 14px;"></i> {{ $santri->nis ?: 'NIS Belum Ada' }} • 
-                            <i class="fas {{ $santri->gender === 'L' ? 'fa-mars' : 'fa-venus' }}" style="width: 14px;"></i> {{ $santri->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600;">{{ optional($santri->schoolClass)->name ?: '-' }}</div>
-                        <div style="font-size: 12px; color: var(--text-muted);">
-                            <span class="badge badge-info" style="font-size: 10px; padding: 2px 8px;">{{ optional($santri->major)->name ?: 'Umum' }}</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-size: 14px;"><i class="fas fa-building-user" style="color: var(--text-muted); margin-right: 6px;"></i>{{ $santri->dorm_room ?: '-' }}</div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 600; font-size: 14px;">{{ $santri->guardian_name ?: '-' }}</div>
-                        <div style="font-size: 12px; color: var(--success); font-weight: 600;">
-                            <i class="fab fa-whatsapp"></i> {{ $santri->guardian_phone ?: 'Tidak ada nomor' }}
-                        </div>
-                    </td>
-                    <td>
-                        <div class="flex gap-2">
-                            <a href="{{ route('santri.index', array_merge(request()->query(), ['edit' => $santri->id])) }}" class="btn btn-xs btn-info">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
-                                <form method="POST" action="{{ route('santri.destroy', $santri) }}" onsubmit="return confirm('Hapus data santri ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-xs btn-danger">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <x-ui.empty-state :colspan="5" message="Belum ada data santri yang terdaftar." />
-            @endforelse
-        </tbody>
-    </x-ui.table>
-
-    <x-slot name="footer">
-        {{ $santris->links() }}
-    </x-slot>
-</x-ui.card>
-
-@if($showForm)
-    <x-ui.card class="mt-4">
-        <x-slot name="header">
-            <h2><i class="fas {{ $editSantri ? 'fa-user-pen' : 'fa-user-plus' }}"></i> {{ $editSantri ? 'Edit Profil Santri' : 'Tambah Santri Baru' }}</h2>
-        </x-slot>
-        <form method="POST" action="{{ $editSantri ? route('santri.update', $editSantri) : route('santri.store') }}">
-            @csrf
-            @if($editSantri)
-                @method('PUT')
-            @endif
-
-            <div style="display:grid; grid-template-columns: 1fr 2fr; gap: 24px;">
-                <x-form.field name="nis" label="Nomor Induk Santri (NIS)">
-                    <x-form.input name="nis" :value="$editSantri->nis ?? ''" placeholder="Contoh: 12345" />
-                </x-form.field>
-                <x-form.field name="name" label="Nama Lengkap">
-                    <x-form.input name="name" :value="$editSantri->name ?? ''" placeholder="Masukkan nama lengkap santri" />
-                </x-form.field>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1.5fr 1.5fr; gap: 24px;">
-                <x-form.field name="gender" label="Jenis Kelamin">
-                    <x-form.select name="gender">
-                        <option value="">Pilih</option>
-                        <option value="L" @selected(old('gender', $editSantri->gender ?? '') === 'L')>Laki-laki</option>
-                        <option value="P" @selected(old('gender', $editSantri->gender ?? '') === 'P')>Perempuan</option>
-                    </x-form.select>
-                </x-form.field>
-                <x-form.field name="birth_place" label="Tempat Lahir">
-                    <x-form.input name="birth_place" :value="$editSantri->birth_place ?? ''" placeholder="Kota lahir" />
-                </x-form.field>
-                <x-form.field name="birth_date" label="Tanggal Lahir">
-                    <x-form.input name="birth_date" type="date" :value="optional($editSantri->birth_date ?? null)->format('Y-m-d')" />
-                </x-form.field>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
-                <x-form.field name="class_id" label="Kelas Utama">
-                    <x-form.select name="class_id">
-                        <option value="">Pilih kelas</option>
-                        @foreach($classes as $class)
-                            <option value="{{ $class->id }}" @selected((string) old('class_id', $editSantri->class_id ?? '') === (string) $class->id)>{{ $class->name }}</option>
-                        @endforeach
-                    </x-form.select>
-                </x-form.field>
-                <x-form.field name="major_id" label="Jurusan Spesifik">
-                    <x-form.select name="major_id">
-                        <option value="">Pilih jurusan</option>
-                        @foreach($majors as $major)
-                            <option value="{{ $major->id }}" @selected((string) old('major_id', $editSantri->major_id ?? '') === (string) $major->id)>{{ $major->name }}</option>
-                        @endforeach
-                    </x-form.select>
-                </x-form.field>
-                <x-form.field name="dorm_room" label="Kamar / Gedung Asrama">
-                    <x-form.input name="dorm_room" :value="$editSantri->dorm_room ?? ''" placeholder="Contoh: Gedung A, Kamar 04" />
-                </x-form.field>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                <x-form.field name="guardian_name" label="Nama Orang Tua / Wali">
-                    <x-form.input name="guardian_name" :value="$editSantri->guardian_name ?? ''" placeholder="Nama wali santri" />
-                </x-form.field>
-                <x-form.field name="guardian_phone" label="Nomor WhatsApp Wali">
-                    <x-form.input name="guardian_phone" :value="$editSantri->guardian_phone ?? ''" placeholder="Contoh: 62812345678" />
-                </x-form.field>
-            </div>
-
-            <x-form.field name="notes" label="Catatan Riwayat Kesehatan / Alergi">
-                <x-form.textarea name="notes" :value="$editSantri->notes ?? ''" placeholder="Informasi medis penting (misal: alergi kacang, asma, dll)" />
-            </x-form.field>
-
-            <x-form.actions>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> {{ $editSantri ? 'Simpan Perubahan' : 'Tambah Santri' }}
+<div class="row">
+    <div class="col-md-4 grid-margin stretch-card">
+        <x-ui.card title="Jenis Kelamin">
+            <div id="genderChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <x-ui.card title="Sebaran Kelas">
+            <div id="classChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+    <div class="col-md-4 grid-margin stretch-card">
+        <x-ui.card title="Sebaran Jurusan">
+            <div id="majorChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <x-ui.card title="Daftar Santri">
+            <x-slot name="header">
+                <h4 class="card-title">Daftar Santri</h4>
+                <button type="button" class="btn btn-primary btn-icon-text" data-toggle="modal" data-target="#createModal">
+                    <i class="mdi mdi-plus btn-icon-prepend"></i> Tambah Santri
                 </button>
-                <a href="{{ route('santri.index') }}" class="btn btn-secondary">Batal</a>
-            </x-form.actions>
-        </form>
-    </x-ui.card>
+            </x-slot>
+
+            <form action="{{ route('santri.index') }}" method="GET" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control text-white" placeholder="Cari nama, NIS, kelas..." value="{{ request('search') }}">
+                    <button class="btn btn-primary" type="submit">Cari</button>
+                    @if(request('search'))
+                        <a href="{{ route('santri.index') }}" class="btn btn-outline-secondary">Reset</a>
+                    @endif
+                </div>
+            </form>
+
+            <x-ui.table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>Asrama</th>
+                        <th>Kamar</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($santris as $santri)
+                        <tr>
+                            <td>{{ $santri->name }}</td>
+                            <td>{{ $santri->nis ?: '-' }}</td>
+                            <td>{{ optional($santri->schoolClass)->name ?: '-' }}</td>
+                            <td>{{ optional($santri->dormitory)->name ?: '-' }}</td>
+                            <td>{{ $santri->dorm_room ?: '-' }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('santri.index', array_merge(request()->query(), ['detail' => $santri->id])) }}" class="btn btn-outline-info btn-sm">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('santri.index', array_merge(request()->query(), ['edit' => $santri->id])) }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+                                    @can('manage-master-data')
+                                        <form action="{{ route('santri.destroy', $santri) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data santri ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="mdi mdi-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Data tidak ditemukan</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </x-ui.table>
+
+            <x-slot name="footer">
+                {{ $santris->links() }}
+            </x-slot>
+        </x-ui.card>
+    </div>
+</div>
+
+{{-- Create Modal --}}
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Santri Baru</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="{{ route('santri.store') }}" method="POST" data-ajax="true">
+                @csrf
+                <div class="modal-body">
+                    <div id="santri-rows">
+                        <div class="santri-row border-bottom border-secondary mb-4 pb-3">
+                            <div class="row align-items-end">
+                                <div class="col-md-3">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Nama Lengkap</label>
+                                        <input type="text" name="santris[0][name]" class="form-control" required>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">NIS</label>
+                                        <input type="text" name="santris[0][nis]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">L/P</label>
+                                        <select name="santris[0][gender]" class="form-select text-white" required>
+                                            <option value="L">Laki-laki</option>
+                                            <option value="P">Perempuan</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">Kelas</label>
+                                        <select name="santris[0][school_class_id]" class="form-select text-white">
+                                            <option value="">Pilih Kelas</option>
+                                            @foreach($classes as $class)
+                                                <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Jurusan</label>
+                                        <select name="santris[0][major_id]" class="form-select text-white">
+                                            <option value="">Pilih Jurusan</option>
+                                            @foreach($majors as $major)
+                                                <option value="{{ $major->id }}">{{ $major->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Asrama</label>
+                                        <select name="santris[0][dormitory_id]" class="form-select text-white">
+                                            <option value="">Pilih Asrama</option>
+                                            @foreach($dormitories as $dorm)
+                                                <option value="{{ $dorm->id }}">{{ $dorm->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">Kamar</label>
+                                        <input type="text" name="santris[0][dorm_room]" class="form-control" placeholder="No. 101">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group mb-2">
+                                        <label class="form-label text-small">Nama Wali</label>
+                                        <input type="text" name="santris[0][guardian_name]" class="form-control">
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label class="form-label text-small">Telp Wali</label>
+                                        <input type="text" name="santris[0][guardian_phone]" class="form-control" placeholder="628xxx">
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-inverse-danger btn-icon remove-row mb-1" style="display:none;">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-info btn-block btn-sm" id="add-row">
+                        <i class="mdi mdi-plus"></i> Tambah Baris Santri
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Semua</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Edit Modal --}}
+@if($editSantri)
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Data Santri: {{ $editSantri->name }}</h5>
+                <a href="{{ route('santri.index') }}" class="close text-white"></a>
+            </div>
+            <form action="{{ route('santri.update', $editSantri) }}" method="POST" data-ajax="true">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" name="name" class="form-control" value="{{ $editSantri->name }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">NIS</label>
+                            <input type="text" name="nis" class="form-control" value="{{ $editSantri->nis }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Jenis Kelamin</label>
+                            <select name="gender" class="form-select text-white" required>
+                                <option value="L" {{ $editSantri->gender == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="P" {{ $editSantri->gender == 'P' ? 'selected' : '' }}>Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kelas</label>
+                            <select name="school_class_id" class="form-select text-white">
+                                <option value="">Pilih Kelas</option>
+                                @foreach($classes as $class)
+                                    <option value="{{ $class->id }}" {{ $editSantri->school_class_id == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Jurusan</label>
+                            <select name="major_id" class="form-select text-white">
+                                <option value="">Pilih Jurusan</option>
+                                @foreach($majors as $major)
+                                    <option value="{{ $major->id }}" {{ $editSantri->major_id == $major->id ? 'selected' : '' }}>{{ $major->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Asrama</label>
+                            <select name="dormitory_id" class="form-select text-white">
+                                <option value="">Pilih Asrama</option>
+                                @foreach($dormitories as $dorm)
+                                    <option value="{{ $dorm->id }}" {{ $editSantri->dormitory_id == $dorm->id ? 'selected' : '' }}>{{ $dorm->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kamar Asrama (No.)</label>
+                            <input type="text" name="dorm_room" class="form-control" value="{{ $editSantri->dorm_room }}">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nama Wali</label>
+                        <input type="text" name="guardian_name" class="form-control" value="{{ $editSantri->guardian_name }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Telepon Wali (WA)</label>
+                        <input type="text" name="guardian_phone" class="form-control" value="{{ $editSantri->guardian_phone }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ route('santri.index') }}" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endif
+
+{{-- Detail Modal --}}
+@if($detailSantri)
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Profil Santri: {{ $detailSantri->name }}</h5>
+                <a href="{{ route('santri.index') }}" class="close text-white"></a>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-4">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 32px; font-weight: 800;">
+                        {{ substr($detailSantri->name, 0, 1) }}
+                    </div>
+                </div>
+                <h4 class="text-white">{{ $detailSantri->name }}</h4>
+                <p class="text-muted">NIS: {{ $detailSantri->nis ?: '-' }}</p>
+                <hr class="border-secondary">
+                <div class="row text-left">
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Kelas</small>
+                        <span class="text-white">{{ optional($detailSantri->schoolClass)->name ?: '-' }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Jurusan</small>
+                        <span class="text-white">{{ optional($detailSantri->major)->name ?: '-' }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Asrama</small>
+                        <span class="text-white">{{ optional($detailSantri->dormitory)->name ?: '-' }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Kamar</small>
+                        <span class="text-white">{{ $detailSantri->dorm_room ?: '-' }}</span>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <small class="text-muted d-block">Jenis Kelamin</small>
+                        <span class="text-white">{{ $detailSantri->gender == 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <small class="text-muted d-block">Nama Wali</small>
+                        <span class="text-white">{{ $detailSantri->guardian_name ?: '-' }}</span>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <small class="text-muted d-block">Telepon Wali</small>
+                        <span class="text-success font-weight-bold">{{ $detailSantri->guardian_phone ?: '-' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('santri.index') }}" class="btn btn-secondary">Tutup</a>
+                @if($detailSantri->guardian_phone)
+                    <a href="https://wa.me/{{ $detailSantri->guardian_phone }}" target="_blank" class="btn btn-success">Hubungi Wali</a>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    const chartDefaults = {
+        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
+        grid: { show: false },
+        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+    };
+
+    // Gender Chart
+    new ApexCharts(document.querySelector("#genderChart"), {
+        ...chartDefaults,
+        series: @json($genderStats->pluck('count')),
+        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
+        labels: @json($genderStats->map(fn($s) => $s->gender == 'L' ? 'Laki-laki' : 'Perempuan')),
+        colors: ['#0090e7', '#fc424a'],
+        dataLabels: { enabled: false }
+    }).render();
+
+    // Class Chart
+    new ApexCharts(document.querySelector("#classChart"), {
+        ...chartDefaults,
+        series: [{ name: 'Santri', data: @json($classStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        xaxis: { 
+            categories: @json($classStats->pluck('name')),
+            labels: { show: false }
+        },
+        colors: ['#ffab00']
+    }).render();
+
+    // Major Chart
+    new ApexCharts(document.querySelector("#majorChart"), {
+        ...chartDefaults,
+        series: [{ name: 'Santri', data: @json($majorStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        xaxis: { 
+            categories: @json($majorStats->pluck('name')),
+            labels: { show: false }
+        },
+        colors: ['#8f5fe8']
+    }).render();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if($editSantri)
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        @endif
+        @if($detailSantri)
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        @endif
+
+        // Dynamic Rows Logic
+        let rowCount = 1;
+        const addRowBtn = document.getElementById('add-row');
+        const santriRows = document.getElementById('santri-rows');
+
+        addRowBtn.addEventListener('click', function() {
+            const firstRow = document.querySelector('.santri-row');
+            const newRow = firstRow.cloneNode(true);
+            
+            // Clean up Tom Select from clone if it exists
+            newRow.querySelectorAll('.ts-wrapper').forEach(el => el.remove());
+            newRow.querySelectorAll('select').forEach(el => {
+                el.style.display = 'block';
+                el.classList.remove('tomselected', 'ts-hidden-visually');
+                if (el.tomselect) delete el.tomselect;
+            });
+
+            newRow.querySelectorAll('input, select').forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                    input.setAttribute('name', name.replace(/santris\[\d+\]/, `santris[${rowCount}]`));
+                }
+                if (input.tagName === 'INPUT') {
+                    input.value = '';
+                }
+            });
+
+            newRow.querySelector('.remove-row').style.display = 'block';
+            santriRows.appendChild(newRow);
+            rowCount++;
+
+            // Re-initialize Tom Select for new row
+            if (window.initTomSelect) window.initTomSelect();
+        });
+
+        santriRows.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('.santri-row').remove();
+            }
+        });
+    });
+</script>
+@endpush
 @endsection

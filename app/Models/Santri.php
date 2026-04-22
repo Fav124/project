@@ -17,6 +17,7 @@ class Santri extends Model
         'birth_date',
         'class_id',
         'major_id',
+        'dormitory_id',
         'class_room',
         'dorm_room',
         'guardian_name',
@@ -27,6 +28,11 @@ class Santri extends Model
     protected $casts = [
         'birth_date' => 'date',
     ];
+
+    public function dormitory()
+    {
+        return $this->belongsTo(Dormitory::class);
+    }
 
     public function healthRecords()
     {

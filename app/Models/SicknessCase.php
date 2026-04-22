@@ -39,9 +39,11 @@ class SicknessCase extends Model
         return $this->belongsTo(User::class, 'handled_by');
     }
 
-    public function medicine()
+    public function medicines()
     {
-        return $this->belongsTo(Medicine::class);
+        return $this->belongsToMany(Medicine::class, 'medicine_sickness_case')
+                    ->withPivot(['id', 'quantity', 'status', 'notes'])
+                    ->withTimestamps();
     }
 
     public function bed()

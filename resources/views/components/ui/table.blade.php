@@ -1,5 +1,5 @@
-<div class="table-container">
-    <table {{ $attributes->merge(['class' => 'premium-table']) }}>
+<div class="table-responsive">
+    <table {{ $attributes->merge(['class' => 'table table-hover']) }}>
         {{ $slot }}
     </table>
 </div>

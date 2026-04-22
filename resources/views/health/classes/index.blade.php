@@ -1,126 +1,353 @@
 @extends('layouts.app')
 
 @section('title', 'Data Kelas')
-@section('page-title', 'Manajemen Ruang Kelas')
+@section('page-title', 'Manajemen Data Kelas')
 
 @section('content')
-<x-ui.card>
-    <x-slot name="header">
-        <h2><i class="fas fa-school"></i> Daftar Kelas Santri</h2>
-        <button type="button" class="btn btn-primary" onclick="openModal('formModal')">
-            <i class="fas fa-plus"></i> Tambah Kelas
-        </button>
-    </x-slot>
+@push('plugin-styles')
+    <link rel="stylesheet" href="{{ asset('template-assets/vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('template-assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
+@endpush
 
-    <x-ui.filter-bar method="GET">
-        <x-form.input name="search" placeholder="Cari nama kelas atau jurusan..." :value="request('search')" style="flex:1;" />
-        <button type="submit" class="btn btn-primary">Cari</button>
-        <a href="{{ route('classes.index') }}" class="btn btn-outline">Reset</a>
-    </x-ui.filter-bar>
-
-    <x-ui.table>
-        <thead>
-            <tr>
-                <th>Nama Kelas</th>
-                <th>Jurusan Terkait</th>
-                <th>Keterangan</th>
-                <th style="width:120px;">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($classes as $class)
-                <tr>
-                    <td style="font-weight: 700; color: var(--primary);">{{ $class->name }}</td>
-                    <td>
-                        <div class="flex gap-1 flex-wrap">
-                            @forelse($class->majors as $major)
-                                <span class="badge badge-info" style="font-size: 10px; padding: 2px 6px;">{{ $major->name }}</span>
-                            @empty
-                                <span class="text-muted" style="font-size: 12px; font-style: italic;">Umum</span>
-                            @endforelse
-                        </div>
-                    </td>
-                    <td style="color: var(--text-muted); font-size: 13px;">{{ $class->description ?: '-' }}</td>
-                    <td>
-                        <div class="flex gap-2">
-                            <a href="{{ route('classes.index', array_merge(request()->query(), ['edit' => $class->id])) }}" class="btn btn-xs btn-info">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            @if(auth()->user()->isAdmin() || auth()->user()->isSuperAdmin())
-                                <form method="POST" action="{{ route('classes.destroy', $class) }}" onsubmit="return confirm('Hapus data kelas ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-xs btn-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <x-ui.empty-state :colspan="4" message="Belum ada data kelas yang terdaftar." />
-            @endforelse
-        </tbody>
-    </x-ui.table>
-
-    <x-slot name="footer">
-        {{ $classes->links() }}
-    </x-slot>
-</x-ui.card>
-
-{{-- Form Modal --}}
-<div id="formModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas {{ $editClass ? 'fa-pen-to-square' : 'fa-plus' }}"></i> {{ $editClass ? 'Edit Konfigurasi Kelas' : 'Tambah Kelas Baru' }}</h3>
-            <button type="button" class="modal-close" onclick="closeModal('formModal'); {{ $editClass ? 'window.location.href=\''.route('classes.index').'\'' : '' }}">&times;</button>
-        </div>
-        <form method="POST" action="{{ $editClass ? route('classes.update', $editClass) : route('classes.store') }}">
-            <div class="modal-body">
-                @csrf
-                @if($editClass)
-                    @method('PUT')
-                @endif
-                
-                <x-form.field name="name" label="Nama Kelas">
-                    <x-form.input name="name" :value="$editClass->name ?? ''" placeholder="Contoh: X IPA 1, XII SMK, dll" />
-                </x-form.field>
-
-                <x-form.field name="major_ids" label="Pilih Jurusan (Bisa lebih dari satu)">
-                    <select id="major_ids" name="major_ids[]" multiple class="form-control {{ $errors->has('major_ids') ? 'is-invalid' : '' }}" style="height: 150px; border-radius:12px; border:1px solid var(--border); padding:8px;">
-                        @foreach($majors as $major)
-                            <option value="{{ $major->id }}" {{ ($editClass && $editClass->majors->contains($major->id)) || collect(old('major_ids'))->contains($major->id) ? 'selected' : '' }} style="padding:8px; border-bottom:1px solid #f8fafc;">
-                                {{ $major->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
-                        <i class="fas fa-info-circle"></i> Tahan tombol <b>Ctrl</b> (Windows) atau <b>Cmd</b> (Mac) untuk memilih beberapa jurusan sekaligus.
-                    </div>
-                </x-form.field>
-
-                <x-form.field name="description" label="Deskripsi / Catatan Kelas">
-                    <x-form.textarea name="description" :value="$editClass->description ?? ''" placeholder="Informasi tambahan mengenai kelas ini..." />
-                </x-form.field>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('formModal'); {{ $editClass ? 'window.location.href=\''.route('classes.index').'\'' : '' }}">Batal</button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i> {{ $editClass ? 'Simpan Perubahan' : 'Tambah Kelas' }}
-                </button>
-            </div>
-        </form>
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <x-ui.card title="Kepadatan Santri per Kelas">
+            <div id="classChart" style="min-height: 250px;"></div>
+        </x-ui.card>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <x-ui.card title="Peminatan Jurusan">
+            <div id="majorChart" style="min-height: 250px;"></div>
+        </x-ui.card>
     </div>
 </div>
 
-@if($showForm || $errors->any())
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                openModal('formModal');
-            });
-        </script>
-    @endpush
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <x-ui.card title="Daftar Kelas">
+            <x-slot name="header">
+                <h4 class="card-title">Daftar Kelas</h4>
+                <button type="button" class="btn btn-primary btn-icon-text" data-toggle="modal" data-target="#createModal">
+                    <i class="mdi mdi-plus btn-icon-prepend"></i> Tambah Kelas
+                </button>
+            </x-slot>
+
+            <form action="{{ route('classes.index') }}" method="GET" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control text-white" placeholder="Cari nama kelas atau jurusan..." value="{{ request('search') }}">
+                    <button class="btn btn-primary" type="submit">Cari</button>
+                    @if(request('search'))
+                        <a href="{{ route('classes.index') }}" class="btn btn-outline-secondary">Reset</a>
+                    @endif
+                </div>
+            </form>
+
+            <x-ui.table>
+                <thead>
+                    <tr>
+                        <th>Nama Kelas</th>
+                        <th>Jurusan</th>
+                        <th>Jumlah Santri</th>
+                        <th>Deskripsi</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($classes as $class)
+                        <tr>
+                            <td>{{ $class->name }}</td>
+                            <td>
+                                @foreach($class->majors as $major)
+                                    <span class="badge badge-outline-info btn-xs">{{ $major->name }}</span>
+                                @endforeach
+                            </td>
+                            <td>
+                                <div class="badge badge-outline-primary">{{ $class->santris_count }} Santri</div>
+                            </td>
+                            <td>{{ Str::limit($class->description, 50) ?: '-' }}</td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('classes.index', array_merge(request()->query(), ['detail' => $class->id])) }}" class="btn btn-outline-info btn-sm">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('classes.index', array_merge(request()->query(), ['edit' => $class->id])) }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="mdi mdi-pencil"></i>
+                                    </a>
+                                    @can('manage-master-data')
+                                        <form action="{{ route('classes.destroy', $class) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data kelas ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                <i class="mdi mdi-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Data tidak ditemukan</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </x-ui.table>
+
+            <x-slot name="footer">
+                {{ $classes->links() }}
+            </x-slot>
+        </x-ui.card>
+    </div>
+</div>
+
+{{-- Create Modal --}}
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Kelas Baru</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="{{ route('classes.store') }}" method="POST" data-ajax="true">
+                @csrf
+                <div class="modal-body">
+                    <div id="class-rows">
+                        <div class="class-row border-bottom border-secondary mb-4 pb-3">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">Nama Kelas</label>
+                                        <input type="text" name="classes[0][name]" class="form-control" placeholder="Contoh: X IPA 1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Deskripsi</label>
+                                        <textarea name="classes[0][description]" class="form-control" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Pilih Jurusan</label>
+                                        <select name="classes[0][major_ids][]" class="form-control text-white select2-multiple" multiple style="width: 100%;">
+                                            @foreach($majors as $major)
+                                                <option value="{{ $major->id }}">{{ $major->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 d-flex align-items-center">
+                                    <button type="button" class="btn btn-inverse-danger btn-icon remove-row" style="display:none;">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-info btn-block" id="add-row">
+                        <i class="mdi mdi-plus"></i> Tambah Baris Kelas
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Semua</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Edit Modal --}}
+@if($editClass)
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Kelas: {{ $editClass->name }}</h5>
+                <a href="{{ route('classes.index') }}" class="close text-white"></a>
+            </div>
+            <form action="{{ route('classes.update', $editClass) }}" method="POST" data-ajax="true">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Kelas</label>
+                        <input type="text" name="name" class="form-control" value="{{ $editClass->name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Jurusan</label>
+                        <select name="major_ids[]" class="form-control text-white select2-multiple" multiple style="width: 100%;">
+                            @foreach($majors as $major)
+                                <option value="{{ $major->id }}" {{ $editClass->majors->contains($major->id) ? 'selected' : '' }}>{{ $major->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="description" class="form-control" rows="3">{{ $editClass->description }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{{ route('classes.index') }}" class="btn btn-secondary">Batal</a>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endif
+
+{{-- Detail Modal --}}
+@if($detailClass)
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detail Kelas: {{ $detailClass->name }}</h5>
+                <a href="{{ route('classes.index') }}" class="close text-white"></a>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <small class="text-muted d-block">Nama Kelas</small>
+                    <span class="text-white h5">{{ $detailClass->name }}</span>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted d-block">Jurusan Terkait</small>
+                    @foreach($detailClass->majors as $major)
+                        <span class="badge badge-info">{{ $major->name }}</span>
+                    @endforeach
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted d-block">Deskripsi</small>
+                    <p class="text-white">{{ $detailClass->description ?: 'Tidak ada deskripsi' }}</p>
+                </div>
+                <hr class="border-secondary">
+                <div class="mb-3">
+                    <h6 class="text-white">Daftar Santri ({{ $detailClass->santris->count() }})</h6>
+                    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm text-white">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>NIS</th>
+                                    <th>Kamar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($detailClass->santris as $santri)
+                                    <tr>
+                                        <td>{{ $santri->name }}</td>
+                                        <td>{{ $santri->nis ?: '-' }}</td>
+                                        <td>{{ $santri->dorm_room ?: '-' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">Belum ada santri di kelas ini</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{{ route('classes.index') }}" class="btn btn-secondary">Tutup</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@push('plugin-scripts')
+    <script src="{{ asset('template-assets/vendors/select2/select2.min.js') }}"></script>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    const chartDefaults = {
+        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
+        grid: { show: false },
+        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+    };
+
+    // Class Distribution Chart (Bar)
+    new ApexCharts(document.querySelector("#classChart"), {
+        ...chartDefaults,
+        series: [{ name: 'Santri', data: @json($classStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        xaxis: { categories: @json($classStats->pluck('name')), labels: { show: false } },
+        colors: ['#ffab00']
+    }).render();
+
+    // Major Distribution Chart (Donut)
+    new ApexCharts(document.querySelector("#majorChart"), {
+        ...chartDefaults,
+        series: @json($majorStats->pluck('santris_count')),
+        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
+        labels: @json($majorStats->pluck('name')),
+        colors: ['#0090e7', '#8f5fe8', '#00d25b', '#fc424a', '#ffab00'],
+        dataLabels: { enabled: false }
+    }).render();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Select2
+        function initSelect2() {
+            $('.select2-multiple').select2({
+                placeholder: "Pilih Jurusan",
+                allowClear: true,
+                theme: "bootstrap"
+            });
+        }
+
+        initSelect2();
+
+        @if($editClass)
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        @endif
+        @if($detailClass)
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
+        @endif
+
+        // Dynamic Rows Logic
+        let rowCount = 1;
+        const addRowBtn = document.getElementById('add-row');
+        const classRows = document.getElementById('class-rows');
+
+        addRowBtn.addEventListener('click', function() {
+            const newRow = document.querySelector('.class-row').cloneNode(true);
+            
+            // Update input names
+            newRow.querySelectorAll('input, select, textarea').forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                    input.setAttribute('name', name.replace(/classes\[\d+\]/, `classes[${rowCount}]`));
+                }
+                if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+                    input.value = '';
+                }
+            });
+
+            // Remove existing select2 container if cloned
+            const select2Container = newRow.querySelector('.select2-container');
+            if (select2Container) {
+                select2Container.remove();
+            }
+            
+            // Show remove button
+            newRow.querySelector('.remove-row').style.display = 'block';
+            
+            classRows.appendChild(newRow);
+            rowCount++;
+
+            // Re-init select2 for new row
+            initSelect2();
+        });
+
+        classRows.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-row')) {
+                e.target.closest('.class-row').remove();
+            }
+        });
+    });
+</script>
+@endpush
 @endsection

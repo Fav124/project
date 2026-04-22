@@ -14,7 +14,7 @@ class HospitalReferral extends Model
         'referred_by',
         'hospital_name',
         'referral_date',
-        'complaint',
+        'reason',
         'diagnosis',
         'transport',
         'companion_name',

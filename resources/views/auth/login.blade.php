@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --bg-auth: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --primary: #00d25b;
+            --primary-dark: #00ad4b;
+            --bg-auth: #0b0c10;
+            --text-main: #e4e4e4;
+            --text-muted: #abb2b9;
+            --border: #2c2e33;
+            --card-bg: #191c24;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,10 +36,10 @@
         /* ─── Left Panel ─── */
         .auth-banner {
             flex: 1.2;
-            background: #1e1b4b;
+            background: #000000;
             background-image: 
-                radial-gradient(at top left, rgba(79, 70, 229, 0.4), transparent 50%),
-                radial-gradient(at bottom right, rgba(129, 140, 248, 0.2), transparent 50%),
+                radial-gradient(at top left, rgba(0, 210, 91, 0.2), transparent 50%),
+                radial-gradient(at bottom right, rgba(0, 210, 91, 0.1), transparent 50%),
                 url('https://www.transparenttextures.com/patterns/cubes.png');
             display: flex;
             flex-direction: column;
@@ -59,19 +60,20 @@
         
         .logo-icon {
             width: 56px; height: 56px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0, 210, 91, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
             font-size: 26px;
-            color: #818cf8;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 0 30px rgba(79, 70, 229, 0.3);
+            color: #00d25b;
+            border: 1px solid rgba(0, 210, 91, 0.2);
+            box-shadow: 0 0 30px rgba(0, 210, 91, 0.2);
         }
 
-        .brand-name { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+        .brand-name { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+        .brand-name span { color: #00d25b; }
 
-        .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; }
+        .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; color: #fff; }
         .banner-content p { font-size: 18px; color: rgba(255,255,255,0.7); line-height: 1.6; font-weight: 400; }
 
         .feature-list { margin-top: 56px; display: flex; flex-direction: column; gap: 20px; }
@@ -79,26 +81,27 @@
             display: flex; align-items: center; gap: 12px;
             font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.9);
         }
-        .feature-tag i { color: #818cf8; font-size: 18px; }
+        .feature-tag i { color: #00d25b; font-size: 18px; }
 
         /* ─── Right Panel ─── */
         .auth-form-side {
             width: 550px;
-            background: white;
+            background: #111318;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 60px;
-            box-shadow: -20px 0 60px rgba(0,0,0,0.05);
+            box-shadow: -20px 0 60px rgba(0,0,0,0.5);
             z-index: 20;
+            border-left: 1px solid var(--border);
         }
 
         .form-card { width: 100%; max-width: 400px; }
-        .form-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+        .form-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; color: #fff; }
         .form-card p.subtitle { color: var(--text-muted); margin-bottom: 40px; font-size: 15px; }
 
         .form-group { margin-bottom: 24px; }
-        .form-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
+        .form-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #fff; }
         
         .input-box { position: relative; }
         .input-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
@@ -108,16 +111,17 @@
             padding: 14px 16px 14px 48px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            background: #f8fafc;
+            background: #191c24;
             font-family: inherit;
             font-size: 15px;
+            color: #fff;
             transition: all 0.2s;
             outline: none;
         }
         .form-input:focus {
             border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            background: #1d212b;
+            box-shadow: 0 0 0 4px rgba(0, 210, 91, 0.1);
         }
 
         .password-toggle {
@@ -129,17 +133,21 @@
             width: 100%;
             padding: 16px;
             background: var(--primary);
-            color: white;
+            color: #fff;
             border: none;
             border-radius: 12px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 210, 91, 0.2);
             margin-top: 8px;
         }
-        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 15px 30px rgba(79, 70, 229, 0.3); }
+        .btn-submit:hover { 
+            background: var(--primary-dark); 
+            transform: translateY(-2px); 
+            box-shadow: 0 15px 30px rgba(0, 210, 91, 0.3); 
+        }
 
         .form-footer { margin-top: 32px; text-align: center; font-size: 14px; color: var(--text-muted); }
         .form-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
@@ -165,8 +173,9 @@
         .wa-btn:hover { background: #1ebe5a; transform: scale(1.05); }
 
         .badge-error {
-            background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px;
+            background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px; border-radius: 8px;
             font-size: 13px; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         @media (max-width: 1024px) {

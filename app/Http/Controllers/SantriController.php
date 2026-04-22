@@ -14,7 +14,7 @@ class SantriController extends Controller
 
     public function index(Request $request)
     {
-        $query = Santri::with(['schoolClass', 'major']);
+        $query = Santri::with(['schoolClass', 'major', 'dormitory']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -42,9 +42,18 @@ class SantriController extends Controller
             
         $classes = SchoolClass::with('majors')->orderBy('name')->get();
         $majors = Major::orderBy('name')->get();
+        $dormitories = \App\Models\Dormitory::orderBy('name')->get();
         $showForm = $request->boolean('create') || $editSantri || $request->isMethod('post');
 
-        return view('health.santri.index', compact('santris', 'editSantri', 'detailSantri', 'classes', 'majors', 'showForm'));
+        // Chart Data
+        $genderStats = Santri::select('gender', \DB::raw('count(*) as count'))->groupBy('gender')->get();
+        $classStats = SchoolClass::withCount('santris')->get();
+        $majorStats = Major::withCount('santris')->get();
+
+        return view('health.santri.index', compact(
+            'santris', 'editSantri', 'detailSantri', 'classes', 'majors', 'dormitories', 'showForm',
+            'genderStats', 'classStats', 'majorStats'
+        ));
     }
 
     public function show(Santri $santri)
@@ -55,11 +64,29 @@ class SantriController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate($this->santriRules());
-        Santri::create($validated);
+        $validated = $request->validate([
+            'santris' => ['required', 'array', 'min:1'],
+            'santris.*.name' => ['required', 'string', 'max:255'],
+            'santris.*.nis' => ['nullable', 'string', 'max:50', 'unique:santris,nis'],
+            'santris.*.gender' => ['required', 'in:L,P'],
+            'santris.*.school_class_id' => ['nullable', 'exists:classes,id'],
+            'santris.*.major_id' => ['nullable', 'exists:majors,id'],
+            'santris.*.dormitory_id' => ['nullable', 'exists:dormitories,id'],
+            'santris.*.dorm_room' => ['nullable', 'string', 'max:100'],
+            'santris.*.guardian_name' => ['nullable', 'string', 'max:255'],
+            'santris.*.guardian_phone' => ['nullable', 'string', 'max:50'],
+        ]);
 
-        return redirect()->route('santri.index')
-            ->with('success', 'Data santri berhasil ditambahkan.');
+        foreach ($validated['santris'] as $santriData) {
+            Santri::create($santriData);
+        }
+
+        $message = count($validated['santris']) . ' data santri berhasil ditambahkan.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('santri.index')->with('success', $message);
     }
 
     public function update(Request $request, Santri $santri)
@@ -67,8 +94,12 @@ class SantriController extends Controller
         $validated = $request->validate($this->santriRules($santri->id));
         $santri->update($validated);
 
-        return redirect()->route('santri.index')
-            ->with('success', 'Data santri berhasil diperbarui.');
+        $message = 'Data santri berhasil diperbarui.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('santri.index')->with('success', $message);
     }
 
     public function destroy(Santri $santri)

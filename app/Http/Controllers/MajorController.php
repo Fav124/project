@@ -9,7 +9,7 @@ class MajorController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Major::query();
+        $query = Major::withCount('santris');
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -17,22 +17,30 @@ class MajorController extends Controller
 
         $majors = $query->latest()->paginate(10)->withQueryString();
         $editMajor = $request->filled('edit') ? Major::find($request->edit) : null;
+        $detailMajor = $request->filled('detail') ? Major::with('santris')->find($request->detail) : null;
         $showForm = $request->boolean('create') || $editMajor || $request->isMethod('post');
 
-        return view('health.majors.index', compact('majors', 'editMajor', 'showForm'));
+        return view('health.majors.index', compact('majors', 'editMajor', 'detailMajor', 'showForm'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:majors,name'],
-            'description' => ['nullable', 'string'],
+            'majors' => ['required', 'array', 'min:1'],
+            'majors.*.name' => ['required', 'string', 'max:255', 'unique:majors,name'],
+            'majors.*.description' => ['nullable', 'string'],
         ]);
 
-        Major::create($validated);
+        foreach ($validated['majors'] as $majorData) {
+            Major::create($majorData);
+        }
 
-        return redirect()->route('majors.index')
-            ->with('success', 'Data jurusan berhasil ditambahkan.');
+        $message = count($validated['majors']) . ' data jurusan berhasil ditambahkan.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('majors.index')->with('success', $message);
     }
 
     public function update(Request $request, Major $major)
@@ -44,8 +52,12 @@ class MajorController extends Controller
 
         $major->update($validated);
 
-        return redirect()->route('majors.index')
-            ->with('success', 'Data jurusan berhasil diperbarui.');
+        $message = 'Data jurusan berhasil diperbarui.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('majors.index')->with('success', $message);
     }
 
     public function destroy(Major $major)
