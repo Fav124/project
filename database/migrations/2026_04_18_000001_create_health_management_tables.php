@@ -43,21 +43,6 @@ class CreateHealthManagementTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('health_records', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('santri_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('recorded_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->date('record_date');
-            $table->text('complaint');
-            $table->string('diagnosis')->nullable();
-            $table->text('treatment')->nullable();
-            $table->string('blood_pressure')->nullable();
-            $table->decimal('temperature', 4, 1)->nullable();
-            $table->unsignedInteger('pulse')->nullable();
-            $table->decimal('weight', 5, 2)->nullable();
-            $table->text('notes')->nullable();
-            $table->timestamps();
-        });
 
         Schema::create('sickness_cases', function (Blueprint $table) {
             $table->id();
@@ -96,7 +81,7 @@ class CreateHealthManagementTables extends Migration
     {
         Schema::dropIfExists('hospital_referrals');
         Schema::dropIfExists('sickness_cases');
-        Schema::dropIfExists('health_records');
+
         Schema::dropIfExists('infirmary_beds');
         Schema::dropIfExists('medicines');
         Schema::dropIfExists('santris');

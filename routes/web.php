@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HealthRecordController;
+
 use App\Http\Controllers\HospitalReferralController;
 use App\Http\Controllers\InfirmaryBedController;
 use App\Http\Controllers\MajorController;
@@ -77,11 +77,6 @@ Route::middleware(['auth', 'approved'])->group(function () {
         ->middleware('role:super_admin,admin')
         ->name('beds.destroy');
 
-    Route::get('/rekam-kesehatan', [HealthRecordController::class, 'index'])->name('health-records.index');
-    Route::post('/rekam-kesehatan', [HealthRecordController::class, 'store'])->name('health-records.store');
-    Route::get('/rekam-kesehatan/{healthRecord}', [HealthRecordController::class, 'show'])->name('health-records.show');
-    Route::put('/rekam-kesehatan/{healthRecord}', [HealthRecordController::class, 'update'])->name('health-records.update');
-    Route::delete('/rekam-kesehatan/{healthRecord}', [HealthRecordController::class, 'destroy'])->name('health-records.destroy');
 
     Route::get('/santri-sakit', [SicknessCaseController::class, 'index'])->name('sickness-cases.index');
     Route::post('/santri-sakit', [SicknessCaseController::class, 'store'])->name('sickness-cases.store');

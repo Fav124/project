@@ -207,17 +207,24 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     const chartDefaults = {
-        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
-        grid: { show: false },
-        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+        chart: { 
+            theme: 'dark', 
+            background: 'transparent', 
+            toolbar: { show: true },
+            fontFamily: 'Inter, sans-serif'
+        },
+        grid: { borderColor: '#191c24' },
+        legend: { position: 'top', labels: { colors: '#6c7293' } }
     };
 
-    // Dormitory Distribution Chart (Bar)
+    // Dormitory Distribution Chart (Horizontal Bar for better labels)
     new ApexCharts(document.querySelector("#dormChart"), {
         ...chartDefaults,
-        series: [{ name: 'Santri', data: @json($dormitoryStats->pluck('santris_count')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
-        xaxis: { categories: @json($dormitoryStats->pluck('name')), labels: { show: false } },
+        series: [{ name: 'Jumlah Santri', data: @json($dormitoryStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+        xaxis: { categories: @json($dormitoryStats->pluck('name')), labels: { style: { colors: '#6c7293' } } },
+        yaxis: { labels: { style: { colors: '#6c7293' }, maxWidth: 150 } },
         colors: ['#0090e7']
     }).render();
 
@@ -225,10 +232,10 @@
     new ApexCharts(document.querySelector("#genderChart"), {
         ...chartDefaults,
         series: @json($genderStats->pluck('count')),
-        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
-        labels: @json($genderStats->map(fn($s) => $s->gender == 'L' ? 'Putra' : 'Putri')),
+        chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
+        labels: @json($genderStats->map(fn($s) => $s->gender == 'L' ? 'Asrama Putra' : 'Asrama Putri')),
         colors: ['#0090e7', '#fc424a'],
-        dataLabels: { enabled: false }
+        dataLabels: { enabled: true }
     }).render();
 
     document.addEventListener('DOMContentLoaded', function() {

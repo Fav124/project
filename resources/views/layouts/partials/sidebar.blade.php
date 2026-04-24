@@ -62,7 +62,6 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('medicines*') ? 'active' : '' }}" href="{{ route('medicines.index') }}">Stok Obat</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('beds*') ? 'active' : '' }}" href="{{ route('beds.index') }}">Kasur UKS</a></li>
-                    <li class="nav-item"> <a class="nav-link {{ request()->routeIs('health-records*') ? 'active' : '' }}" href="{{ route('health-records.index') }}">Rekam Kesehatan</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('sickness-cases*') ? 'active' : '' }}" href="{{ route('sickness-cases.index') }}">Santri Sakit</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('referrals*') ? 'active' : '' }}" href="{{ route('referrals.index') }}">Rujukan RS</a></li>
                 </ul>

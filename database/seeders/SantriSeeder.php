@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Dormitory;
 use App\Models\Major;
 use App\Models\Santri;
 use App\Models\SchoolClass;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class SantriSeeder extends Seeder
 {
@@ -13,26 +15,36 @@ class SantriSeeder extends Seeder
     {
         $classes = SchoolClass::all();
         $majors = Major::all();
+        $dorms = Dormitory::all();
 
         $names = [
-            'Budi Santoso', 'Siti Aminah', 'Ahmad Hidayat', 'Dewi Lestari', 
-            'Rizky Pratama', 'Putri Utami', 'Fajar Ramadhan', 'Lutfi Hakim',
-            'Anisa Rahma', 'Zaki Mubarak', 'Hafizah', 'Irfan Maulana'
+            'L' => ['Ahmad', 'Budi', 'Candra', 'Dedi', 'Eko', 'Fajar', 'Guntur', 'Hadi', 'Indra', 'Joko', 'Kevin', 'Lukman', 'Mulyono', 'Naufal', 'Oki', 'Prasetyo', 'Rizky', 'Sultan', 'Taufik', 'Umar', 'Vicky', 'Wahyu', 'Xavi', 'Yusuf', 'Zaki'],
+            'P' => ['Aisyah', 'Bella', 'Citra', 'Dewi', 'Endah', 'Fitri', 'Gita', 'Hana', 'Indah', 'Julia', 'Kartika', 'Lestari', 'Maya', 'Nia', 'Olivia', 'Putri', 'Qonita', 'Rina', 'Sari', 'Tiara', 'Ulfa', 'Vina', 'Wati', 'Xena', 'Yanti', 'Zahra']
         ];
 
-        foreach ($names as $index => $name) {
-            $class = $classes->random();
+        for ($i = 0; $i < 60; $i++) {
+            $gender = rand(0, 1) ? 'L' : 'P';
+            $firstName = $names[$gender][array_rand($names[$gender])];
+            $lastName = $names[$gender][array_rand($names[$gender])];
+            $name = $firstName . ' ' . $lastName;
+            
+            $major = $majors->random();
+            $class = $classes->filter(function($c) use ($major) {
+                return strpos($c->name, $major->name) !== false;
+            })->random();
+            
+            $dorm = $dorms->where('gender', $gender)->random();
+
             Santri::create([
-                'nis' => '1200' . (10 + $index),
                 'name' => $name,
-                'gender' => $index % 2 == 0 ? 'L' : 'P',
-                'birth_place' => 'Jakarta',
-                'birth_date' => '2008-05-' . (10 + $index),
+                'nis' => '2026' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
+                'gender' => $gender,
                 'class_id' => $class->id,
-                'major_id' => $class->majors->first()->id ?? $majors->random()->id,
-                'dorm_room' => 'Gedung ' . chr(65 + rand(0, 3)) . ' Kamar 0' . rand(1, 9),
-                'guardian_name' => 'Wali dari ' . $name,
-                'guardian_phone' => '62812345678' . $index,
+                'major_id' => $major->id,
+                'dormitory_id' => $dorm->id,
+                'dorm_room' => 'Kamar ' . rand(101, 110),
+                'guardian_name' => 'Bpk/Ibu ' . $lastName,
+                'guardian_phone' => '628' . rand(100000000, 999999999),
             ]);
         }
     }

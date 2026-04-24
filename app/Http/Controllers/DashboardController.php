@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dormitory;
-use App\Models\HealthRecord;
 use App\Models\HospitalReferral;
 use App\Models\InfirmaryBed;
 use App\Models\Major;
@@ -11,15 +10,18 @@ use App\Models\Medicine;
 use App\Models\Santri;
 use App\Models\SchoolClass;
 use App\Models\SicknessCase;
-use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         $user = Auth::user();
+        
+        $startDate = Carbon::parse($request->input('start_date', now()->subDays(14)->toDateString()));
+        $endDate = Carbon::parse($request->input('end_date', now()->toDateString()));
 
         $stats = [
             'santri_total' => Santri::count(),
@@ -28,12 +30,11 @@ class DashboardController extends Controller
             'kelas' => SchoolClass::count(),
             'jurusan' => Major::count(),
             'asrama' => Dormitory::count(),
-            'rekam_kesehatan' => HealthRecord::count(),
             'santri_sakit_aktif' => SicknessCase::whereIn('status', ['observed', 'handled', 'referred'])->count(),
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
             'obat_kadaluarsa' => Medicine::where('expiry_date', '<', now())->count(),
             'kasur_tersedia' => InfirmaryBed::where('status', 'available')->count(),
-            'rujukan' => HospitalReferral::count(),
+            'rujukan' => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
         ];
 
         // Recent Data
@@ -47,9 +48,9 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Chart Data: Sickness Trends (Last 14 Days)
+        // Chart Data: Sickness Trends
         $sicknessTrends = SicknessCase::select(DB::raw('DATE(visit_date) as date'), DB::raw('COUNT(*) as count'))
-            ->where('visit_date', '>=', now()->subDays(14))
+            ->whereBetween('visit_date', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date')
             ->get();
@@ -81,7 +82,9 @@ class DashboardController extends Controller
             'caseDistribution',
             'santriByMajor',
             'santriByClass',
-            'medicineExpiry'
+            'medicineExpiry',
+            'startDate',
+            'endDate'
         ));
     }
 }

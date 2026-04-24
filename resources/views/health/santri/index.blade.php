@@ -340,42 +340,51 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     const chartDefaults = {
-        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
-        grid: { show: false },
-        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+        chart: { 
+            theme: 'dark', 
+            background: 'transparent', 
+            toolbar: { show: true },
+            fontFamily: 'Inter, sans-serif'
+        },
+        grid: { borderColor: '#191c24' },
+        legend: { position: 'top', labels: { colors: '#6c7293' } }
     };
 
     // Gender Chart
     new ApexCharts(document.querySelector("#genderChart"), {
         ...chartDefaults,
         series: @json($genderStats->pluck('count')),
-        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
+        chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
         labels: @json($genderStats->map(fn($s) => $s->gender == 'L' ? 'Laki-laki' : 'Perempuan')),
         colors: ['#0090e7', '#fc424a'],
-        dataLabels: { enabled: false }
+        dataLabels: { enabled: true }
     }).render();
 
     // Class Chart
     new ApexCharts(document.querySelector("#classChart"), {
         ...chartDefaults,
-        series: [{ name: 'Santri', data: @json($classStats->pluck('santris_count')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        series: [{ name: 'Jumlah Santri', data: @json($classStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
         xaxis: { 
             categories: @json($classStats->pluck('name')),
-            labels: { show: false }
+            labels: { style: { colors: '#6c7293' }, rotate: -45, hideOverlappingLabels: true }
         },
+        yaxis: { labels: { style: { colors: '#6c7293' } } },
         colors: ['#ffab00']
     }).render();
 
-    // Major Chart
+    // Major Chart (Horizontal Bar for better labels)
     new ApexCharts(document.querySelector("#majorChart"), {
         ...chartDefaults,
-        series: [{ name: 'Santri', data: @json($majorStats->pluck('santris_count')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
+        series: [{ name: 'Jumlah Santri', data: @json($majorStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         xaxis: { 
             categories: @json($majorStats->pluck('name')),
-            labels: { show: false }
+            labels: { style: { colors: '#6c7293' } }
         },
+        yaxis: { labels: { style: { colors: '#6c7293' }, maxWidth: 120 } },
         colors: ['#8f5fe8']
     }).render();
 

@@ -34,10 +34,7 @@ class Santri extends Model
         return $this->belongsTo(Dormitory::class);
     }
 
-    public function healthRecords()
-    {
-        return $this->hasMany(HealthRecord::class);
-    }
+
 
     public function schoolClass()
     {

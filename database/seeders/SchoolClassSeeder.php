@@ -10,19 +10,18 @@ class SchoolClassSeeder extends Seeder
 {
     public function run()
     {
-        $classes = ['X', 'XI', 'XII'];
-        $suffix = ['1', '2', '3'];
         $majors = Major::all();
-
-        foreach ($classes as $c) {
-            foreach ($suffix as $s) {
-                $schoolClass = SchoolClass::create([
-                    'name' => "$c $s",
-                    'description' => "Kelas $c bagian $s",
+        
+        $levels = ['X', 'XI', 'XII'];
+        
+        foreach ($levels as $level) {
+            foreach ($majors as $major) {
+                $class = SchoolClass::create([
+                    'name' => "$level " . $major->name,
+                    'description' => "Kelas $level untuk peminatan " . $major->description,
                 ]);
-
-                // Sync random majors
-                $schoolClass->majors()->sync($majors->random(rand(1, 2))->pluck('id'));
+                
+                $class->majors()->attach($major->id);
             }
         }
     }

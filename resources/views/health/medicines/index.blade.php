@@ -297,17 +297,24 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     const chartDefaults = {
-        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
-        grid: { show: false },
-        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+        chart: { 
+            theme: 'dark', 
+            background: 'transparent', 
+            toolbar: { show: true },
+            fontFamily: 'Inter, sans-serif'
+        },
+        grid: { borderColor: '#191c24' },
+        legend: { position: 'top', labels: { colors: '#6c7293' } }
     };
 
-    // Stock Level Chart (Bar)
+    // Stock Level Chart (Horizontal Bar for better labels)
     new ApexCharts(document.querySelector("#stockChart"), {
         ...chartDefaults,
-        series: [{ name: 'Stok', data: @json($stockStats->pluck('stock')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
-        xaxis: { categories: @json($stockStats->pluck('name')), labels: { show: false } },
+        series: [{ name: 'Jumlah Stok', data: @json($stockStats->pluck('stock')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+        xaxis: { categories: @json($stockStats->pluck('name')), labels: { style: { colors: '#6c7293' } } },
+        yaxis: { labels: { style: { colors: '#6c7293' }, maxWidth: 120 } },
         colors: ['#0090e7']
     }).render();
 
@@ -315,19 +322,20 @@
     new ApexCharts(document.querySelector("#expiryChart"), {
         ...chartDefaults,
         series: [@json($expiryStats['expired']), @json($expiryStats['expiring_soon']), @json($expiryStats['safe'])],
-        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
-        labels: ['Kadaluarsa', 'Segera Exp', 'Aman'],
+        chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
+        labels: ['Kadaluarsa', 'Segera Expired', 'Aman'],
         colors: ['#fc424a', '#ffab00', '#00d25b'],
-        dataLabels: { enabled: false }
+        dataLabels: { enabled: true }
     }).render();
 
     // Usage Chart (Horizontal Bar)
     new ApexCharts(document.querySelector("#usageChart"), {
         ...chartDefaults,
-        series: [{ name: 'Digunakan', data: @json($usageStats->pluck('total')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
-        plotOptions: { bar: { horizontal: true } },
-        xaxis: { categories: @json($usageStats->pluck('name')) },
+        series: [{ name: 'Jumlah Digunakan', data: @json($usageStats->pluck('total')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+        xaxis: { categories: @json($usageStats->pluck('name')), labels: { style: { colors: '#6c7293' } } },
+        yaxis: { labels: { style: { colors: '#6c7293' }, maxWidth: 120 } },
         colors: ['#8f5fe8']
     }).render();
 

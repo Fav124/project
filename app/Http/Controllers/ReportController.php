@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HealthRecord;
 use App\Models\HospitalReferral;
 use App\Models\InfirmaryBed;
 use App\Models\Medicine;
@@ -20,7 +19,6 @@ class ReportController extends Controller
 
         $summary = [
             'total_santri' => Santri::count(),
-            'rekam_kesehatan' => HealthRecord::whereBetween('record_date', [$startDate, $endDate])->count(),
             'santri_sakit' => SicknessCase::whereBetween('visit_date', [$startDate, $endDate])->count(),
             'rujukan_rs' => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
@@ -62,7 +60,6 @@ class ReportController extends Controller
 
         $summary = [
             'total_santri' => Santri::count(),
-            'rekam_kesehatan' => HealthRecord::whereBetween('record_date', [$startDate, $endDate])->count(),
             'santri_sakit' => SicknessCase::whereBetween('visit_date', [$startDate, $endDate])->count(),
             'rujukan_rs' => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),

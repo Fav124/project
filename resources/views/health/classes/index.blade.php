@@ -264,17 +264,27 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     const chartDefaults = {
-        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
-        grid: { show: false },
-        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+        chart: { 
+            theme: 'dark', 
+            background: 'transparent', 
+            toolbar: { show: true },
+            fontFamily: 'Inter, sans-serif'
+        },
+        grid: { borderColor: '#191c24' },
+        legend: { position: 'top', labels: { colors: '#6c7293' } }
     };
 
     // Class Distribution Chart (Bar)
     new ApexCharts(document.querySelector("#classChart"), {
         ...chartDefaults,
-        series: [{ name: 'Santri', data: @json($classStats->pluck('santris_count')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
-        xaxis: { categories: @json($classStats->pluck('name')), labels: { show: false } },
+        series: [{ name: 'Jumlah Santri', data: @json($classStats->pluck('santris_count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
+        xaxis: { 
+            categories: @json($classStats->pluck('name')), 
+            labels: { style: { colors: '#6c7293' }, rotate: -45, hideOverlappingLabels: true } 
+        },
+        yaxis: { labels: { style: { colors: '#6c7293' } } },
         colors: ['#ffab00']
     }).render();
 
@@ -282,10 +292,10 @@
     new ApexCharts(document.querySelector("#majorChart"), {
         ...chartDefaults,
         series: @json($majorStats->pluck('santris_count')),
-        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
+        chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
         labels: @json($majorStats->pluck('name')),
         colors: ['#0090e7', '#8f5fe8', '#00d25b', '#fc424a', '#ffab00'],
-        dataLabels: { enabled: false }
+        dataLabels: { enabled: true }
     }).render();
 
     document.addEventListener('DOMContentLoaded', function() {

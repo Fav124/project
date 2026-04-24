@@ -11,12 +11,8 @@
     <link rel="stylesheet" href="{{ asset('template-assets/vendors/css/vendor.bundle.base.css') }}">
     <!-- endinject -->
     
-    <!-- Plugin css for this page -->
-    @stack('plugin-styles')
-    <!-- End plugin css for this page -->
-    
-    <!-- inject:css -->
-    <!-- endinject -->
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('template-assets/css/style.css') }}">
@@ -34,65 +30,90 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
     <style>
+        :root {
+            --primary: #00d25b;
+            --dark: #0b0c10;
+            --card-bg: #191c24;
+            --border: #2c2e33;
+            --text: #e4e4e4;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+        }
+
+        h1, h2, h3, h4, h5, h6, .page-title, .menu-title {
+            font-family: 'Outfit', sans-serif;
+        }
+
         /* Custom adjustment for DeisaHealth branding */
         .sidebar .sidebar-brand-wrapper .sidebar-brand.brand-logo {
             color: #fff;
             font-weight: 800;
             text-decoration: none;
             font-size: 1.5rem;
+            font-family: 'Outfit', sans-serif;
         }
         .sidebar .sidebar-brand-wrapper .sidebar-brand.brand-logo span {
-            color: #00d25b;
+            color: var(--primary);
         }
 
         /* BETTER CONTRAST & FOCUS */
-        body {
-            background-color: #0b0c10;
-        }
         .card {
-            background-color: #191c24;
-            border: 1px solid #2c2e33;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .card:hover {
-            border-color: #00d25b;
+            border-color: var(--primary);
+            transform: translateY(-5px);
         }
         .table {
             color: #e4e4e4;
         }
         .table thead th {
             background: #2c2e33;
-            color: #00d25b;
+            color: var(--primary);
             font-weight: 700;
             border-top: none;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
         }
         .modal-content {
-            background-color: #191c24;
-            border: 1px solid #00d25b;
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary);
             box-shadow: 0 0 30px rgba(0, 210, 91, 0.2);
         }
         .modal-header {
-            border-bottom: 1px solid #2c2e33;
+            border-bottom: 1px solid var(--border);
             background: #111318;
         }
         .modal-footer {
-            border-top: 1px solid #2c2e33;
+            border-top: 1px solid var(--border);
             background: #111318;
         }
         .form-control, .form-select {
             background-color: #2a3038 !important;
-            border: 1px solid #2c2e33 !important;
+            border: 1px solid var(--border) !important;
             color: #ffffff !important;
+            border-radius: 8px;
         }
         .form-control:focus {
-            border-color: #00d25b !important;
+            border-color: var(--primary) !important;
             box-shadow: 0 0 0 0.2rem rgba(0, 210, 91, 0.25);
         }
-        .btn-primary {
-            background-color: #00d25b;
-            border-color: #00d25b;
+        .btn {
+            border-radius: 8px;
             font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
             letter-spacing: 0.5px;
         }
         .btn-primary:hover {
@@ -104,42 +125,42 @@
         
         /* Progress Bar Customization */
         #nprogress .bar {
-            background: #00d25b !important;
+            background: var(--primary) !important;
             height: 3px !important;
         }
         #nprogress .spinner-icon {
-            border-top-color: #00d25b !important;
-            border-left-color: #00d25b !important;
+            border-top-color: var(--primary) !important;
+            border-left-color: var(--primary) !important;
         }
 
         /* Focus points */
         .text-focus {
-            color: #00d25b !important;
+            color: var(--primary) !important;
             font-weight: bold;
         }
         .badge-outline-success {
-            border: 1px solid #00d25b;
-            color: #00d25b;
+            border: 1px solid var(--primary);
+            color: var(--primary);
         }
 
         /* SIDEBAR ENHANCEMENT */
         .sidebar .nav .nav-item.active > .nav-link {
             background: rgba(0, 210, 91, 0.1) !important;
             border-radius: 0 50px 50px 0;
-            color: #00d25b !important;
+            color: var(--primary) !important;
         }
         .sidebar .nav .nav-item.active > .nav-link .menu-icon i {
-            color: #00d25b !important;
+            color: var(--primary) !important;
         }
         .sidebar .nav .nav-item .nav-link:hover {
-            color: #00d25b !important;
+            color: var(--primary) !important;
         }
         .sidebar .nav.sub-menu .nav-item .nav-link.active {
-            color: #00d25b !important;
+            color: var(--primary) !important;
             font-weight: 700;
         }
         .sidebar .nav.sub-menu .nav-item .nav-link:before {
-            background: #00d25b !important;
+            background: var(--primary) !important;
         }
 
         /* PRINT STYLES - A4 FORMAL */
@@ -153,7 +174,7 @@
                 color: black !important;
                 font-family: 'Times New Roman', serif !important;
             }
-            .sidebar, .navbar, .footer, .btn, .modal-header .close, .nav-tabs, .card-title .btn {
+            .sidebar, .navbar, .footer, .btn, .modal-header .close, .nav-tabs, .card-title .btn, .no-print {
                 display: none !important;
             }
             .content-wrapper {
@@ -208,16 +229,18 @@
         .ts-control {
             background-color: #2a3038 !important;
             color: #ffffff !important;
-            border: 1px solid #2c2e33 !important;
+            border: 1px solid var(--border) !important;
             padding: 10px 15px !important;
+            border-radius: 8px !important;
         }
         .ts-dropdown {
-            background-color: #191c24 !important;
+            background-color: var(--card-bg) !important;
             color: #ffffff !important;
-            border: 1px solid #2c2e33 !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
         }
         .ts-dropdown .active {
-            background-color: #00d25b !important;
+            background-color: var(--primary) !important;
             color: #000000 !important;
         }
         .ts-dropdown .option {

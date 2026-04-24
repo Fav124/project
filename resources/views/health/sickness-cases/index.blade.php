@@ -436,38 +436,59 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     const chartDefaults = {
-        chart: { theme: 'dark', background: 'transparent', toolbar: { show: false } },
-        grid: { show: false },
-        legend: { position: 'bottom', labels: { colors: '#6c7293' } }
+        chart: { 
+            theme: 'dark', 
+            background: 'transparent', 
+            toolbar: { show: true },
+            fontFamily: 'Inter, sans-serif'
+        },
+        grid: { borderColor: '#191c24' },
+        legend: { position: 'top', labels: { colors: '#6c7293' } }
     };
 
     // Visit Trend Chart (Area)
     new ApexCharts(document.querySelector("#visitChart"), {
         ...chartDefaults,
-        series: [{ name: 'Kunjungan', data: @json($sicknessTrends->pluck('count')) }],
-        chart: { ...chartDefaults.chart, type: 'area', height: 250 },
+        series: [{ name: 'Jumlah Kunjungan', data: @json($sicknessTrends->pluck('count')) }],
+        chart: { ...chartDefaults.chart, type: 'area', height: 280 },
         stroke: { curve: 'smooth', width: 2 },
-        xaxis: { categories: @json($sicknessTrends->pluck('date')), labels: { show: false } },
+        xaxis: { 
+            categories: @json($sicknessTrends->pluck('date')), 
+            labels: { style: { colors: '#6c7293' }, rotate: -45, hideOverlappingLabels: true } 
+        },
+        yaxis: { labels: { style: { colors: '#6c7293' } } },
         colors: ['#00d25b'],
         fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0 } }
     }).render();
 
     // Status Chart (Donut)
+    @php
+        $mappedCaseStatuses = $statusStats->pluck('status')->map(fn($s) => match($s) {
+            'observed' => 'Observasi',
+            'handled' => 'Ditangani',
+            'recovered' => 'Sembuh',
+            'referred' => 'Dirujuk',
+            default => ucfirst($s)
+        });
+    @endphp
     new ApexCharts(document.querySelector("#statusChart"), {
         ...chartDefaults,
         series: @json($statusStats->pluck('count')),
-        chart: { ...chartDefaults.chart, type: 'donut', height: 250 },
-        labels: @json($statusStats->pluck('status')),
+        chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
+        labels: @json($mappedCaseStatuses),
+
         colors: ['#0090e7', '#ffab00', '#00d25b', '#fc424a'],
         dataLabels: { enabled: false }
     }).render();
 
-    // Diagnosis Chart (Bar)
+    // Diagnosis Chart (Horizontal Bar)
     new ApexCharts(document.querySelector("#diagnosisChart"), {
         ...chartDefaults,
-        series: [{ name: 'Kasus', data: @json($diagnosisStats->pluck('count')) }],
-        chart: { ...chartDefaults.chart, type: 'bar', height: 250 },
-        xaxis: { categories: @json($diagnosisStats->pluck('diagnosis')), labels: { show: false } },
+        series: [{ name: 'Jumlah Kasus', data: @json($diagnosisStats->pluck('count')) }],
+        chart: { ...chartDefaults.chart, type: 'bar', height: 280 },
+        plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+        xaxis: { categories: @json($diagnosisStats->pluck('diagnosis')), labels: { style: { colors: '#6c7293' } } },
+        yaxis: { labels: { style: { colors: '#6c7293' }, maxWidth: 120 } },
         colors: ['#8f5fe8']
     }).render();
 
