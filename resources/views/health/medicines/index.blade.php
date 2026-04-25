@@ -76,7 +76,7 @@
                                 </span>
                             </td>
                             <td>
-                                {{ $medicine->expiry_date ? $medicine->expiry_date->format('d/m/Y') : '-' }}
+                                {{ $medicine->expiry_date ? $medicine->expiry_date->translatedFormat('d F Y') : '-' }}
                             </td>
                             <td>
                                 @if($medicine->isExpired())
@@ -272,11 +272,11 @@
                     <div class="col-6 mb-3">
                         <small class="text-muted d-block">Tgl Kadaluarsa</small>
                         @if($detailMedicine->isExpired())
-                            <span class="text-danger font-weight-bold">{{ $detailMedicine->expiry_date->format('d M Y') }} (Expired)</span>
+                            <span class="text-danger font-weight-bold">{{ $detailMedicine->expiry_date->translatedFormat('d F Y') }} (Expired)</span>
                         @elseif($detailMedicine->isExpiringSoon())
-                            <span class="text-warning font-weight-bold">{{ $detailMedicine->expiry_date->format('d M Y') }} (Segera)</span>
+                            <span class="text-warning font-weight-bold">{{ $detailMedicine->expiry_date->translatedFormat('d F Y') }} (Segera)</span>
                         @else
-                            <span class="text-white">{{ $detailMedicine->expiry_date ? $detailMedicine->expiry_date->format('d M Y') : '-' }}</span>
+                            <span class="text-white">{{ $detailMedicine->expiry_date ? $detailMedicine->expiry_date->translatedFormat('d F Y') : '-' }}</span>
                         @endif
                     </div>
                     <div class="col-12 mb-3">

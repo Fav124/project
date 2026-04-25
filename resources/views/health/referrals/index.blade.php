@@ -46,7 +46,7 @@
                 <tbody>
                     @forelse($referrals as $referral)
                         <tr>
-                            <td>{{ $referral->referral_date->format('d/m/Y') }}</td>
+                            <td>{{ $referral->referral_date->translatedFormat('d F Y') }}</td>
                             <td>{{ $referral->santri->name }}</td>
                             <td>{{ $referral->hospital_name }}</td>
                             <td>
@@ -243,7 +243,7 @@
                             <i class="mdi mdi-hospital-building text-white" style="font-size: 32px;"></i>
                         </div>
                         <h4 class="text-white">{{ $detailReferral->hospital_name }}</h4>
-                        <p class="text-muted">Tanggal: {{ $detailReferral->referral_date->format('d F Y') }}</p>
+                        <p class="text-muted">Tanggal: {{ $detailReferral->referral_date->translatedFormat('d F Y') }}</p>
                     </div>
                 </div>
                 <div class="row">

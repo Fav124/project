@@ -31,13 +31,18 @@
                 </button>
             </x-slot>
 
-            <form action="{{ route('sickness-cases.index') }}" method="GET" class="mb-4">
-                <div class="row">
-                    <div class="col-md-6 mb-2">
-                        <input type="text" name="search" class="form-control text-white" placeholder="Cari nama santri..." value="{{ request('search') }}">
+            <div class="filter-bar mb-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md">
+                <form action="{{ route('sickness-cases.index') }}" method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label text-muted text-small uppercase tracking-wider font-bold">Cari Kasus</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white/5 border-white/10 text-muted"><i class="mdi mdi-magnify"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Nama santri..." value="{{ request('search') }}">
+                        </div>
                     </div>
-                    <div class="col-md-4 mb-2">
-                        <select name="status" class="form-select text-white">
+                    <div class="col-md-4">
+                        <label class="form-label text-muted text-small uppercase tracking-wider font-bold">Status Pasien</label>
+                        <select name="status" class="form-select">
                             <option value="">Semua Status</option>
                             <option value="observed" {{ request('status') == 'observed' ? 'selected' : '' }}>Observasi</option>
                             <option value="handled" {{ request('status') == 'handled' ? 'selected' : '' }}>Ditangani</option>
@@ -45,11 +50,16 @@
                             <option value="referred" {{ request('status') == 'referred' ? 'selected' : '' }}>Dirujuk</option>
                         </select>
                     </div>
-                    <div class="col-md-2 mb-2">
-                        <button class="btn btn-primary w-100" type="submit">Filter</button>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary w-full" type="submit">Filter Data</button>
+                            @if(request('search') || request('status'))
+                                <a href="{{ route('sickness-cases.index') }}" class="btn btn-outline-secondary px-3" title="Reset"><i class="mdi mdi-refresh"></i></a>
+                            @endif
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
 
             <x-ui.table>
                 <thead>
@@ -64,7 +74,7 @@
                 <tbody>
                     @forelse($cases as $case)
                         <tr>
-                            <td>{{ $case->visit_date->format('d/m/Y') }}</td>
+                            <td>{{ $case->visit_date->translatedFormat('d F Y') }}</td>
                             <td>{{ $case->santri->name }}</td>
                             <td>{{ Str::limit($case->complaint, 30) }}</td>
                             <td>
@@ -364,7 +374,7 @@
                         <div class="row">
                             <div class="col-6 mb-3">
                                 <small class="text-muted d-block">Tanggal Kunjungan</small>
-                                <span class="text-white">{{ $detailCase->visit_date->format('d F Y') }}</span>
+                                <span class="text-white">{{ $detailCase->visit_date->translatedFormat('d F Y') }}</span>
                             </div>
                             <div class="col-6 mb-3">
                                 <small class="text-muted d-block">Petugas Penanggungjawab</small>

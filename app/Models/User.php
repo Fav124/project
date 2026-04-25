@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -19,6 +20,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'job_title',
+        'address',
+        'bio',
+        'profile_photo_path',
         'role',
         'status',
         'approved_by',
@@ -40,6 +46,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'approved_at'       => 'datetime',
+    ];
+
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     // ─── Role helpers ────────────────────────────────────────────────────────
@@ -117,5 +127,14 @@ class User extends Authenticatable
             'rejected' => 'Ditolak',
             default    => 'Menunggu',
         };
+    }
+
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if ($this->profile_photo_path && Storage::disk('public')->exists($this->profile_photo_path)) {
+            return route('account.profile-photo', $this);
+        }
+
+        return asset('template-assets/images/faces/face15.jpg');
     }
 }

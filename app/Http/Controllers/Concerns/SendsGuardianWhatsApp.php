@@ -56,7 +56,7 @@ trait SendsGuardianWhatsApp
 
         $lines = [
             'Assalamu\'alaikum Bapak/Ibu ' . ($santri->guardian_name ?: 'Wali Santri') . ',',
-            'Kami dari DeisaHealth menyampaikan kondisi santri:',
+            'Kami dari Pondok Pesantren Ma\'had Dar El-Ilmi Sumatera Barat ingin menyampaikan kondisi santri:',
             'Nama: ' . $santri->name,
             'Tanggal pemeriksaan: ' . $case->visit_date->format('d-m-Y'),
             'Keluhan: ' . $case->complaint,
@@ -94,7 +94,7 @@ trait SendsGuardianWhatsApp
 
         $lines = [
             'Assalamu\'alaikum Bapak/Ibu ' . ($santri->guardian_name ?: 'Wali Santri') . ',',
-            'Kami dari DeisaHealth menyampaikan informasi rujukan santri:',
+            'Kami dari Pondok Pesantren Ma\'had Dar El-Ilmi Sumatera Barat ingin menyampaikan informasi rujukan santri:',
             'Nama: ' . $santri->name,
             'Tanggal rujukan: ' . $referral->referral_date->format('d-m-Y'),
             'Rumah sakit: ' . $referral->hospital_name,

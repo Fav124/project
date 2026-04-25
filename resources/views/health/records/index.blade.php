@@ -45,7 +45,7 @@
                 <tbody>
                     @forelse($records as $record)
                         <tr>
-                            <td>{{ $record->record_date->format('d/m/Y') }}</td>
+                            <td>{{ $record->record_date->translatedFormat('d F Y') }}</td>
                             <td class="text-white">{{ $record->santri->name }}</td>
                             <td>{{ $record->height ?: '-' }}</td>
                             <td>{{ $record->weight ?: '-' }}</td>
@@ -259,7 +259,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Tanggal Periksa</span>
-                            <span class="text-white">{{ $detailRecord->record_date->format('d F Y') }}</span>
+                            <span class="text-white">{{ $detailRecord->record_date->translatedFormat('d F Y') }}</span>
                         </div>
                     </div>
                     <div class="col-md-6 mb-4">

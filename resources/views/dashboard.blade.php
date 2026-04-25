@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
-@section('page-title', 'Pusat Analitik Kesehatan DeisaHealth')
+@section('page-title', 'Pusat Analitik Kesehatan DEIHealth')
 
 @section('content')
 {{-- Filter Tanggal --}}
@@ -192,7 +192,7 @@
                                 @endphp
                                 <div class="badge {{ $statusMap['class'] }}">{{ $statusMap['label'] }}</div>
                             </td>
-                            <td>{{ $case->visit_date->diffForHumans() }}</td>
+                            <td>{{ $case->visit_date->translatedFormat('d F Y') }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -248,8 +248,8 @@
             },
             fontFamily: 'Inter, sans-serif'
         },
-        grid: { borderColor: '#191c24', strokeDashArray: 4 },
-        legend: { labels: { colors: '#6c7293' }, position: 'top' },
+        grid: { borderColor: '#d3dce8', strokeDashArray: 4 },
+        legend: { labels: { colors: '#334155' }, position: 'top' },
         tooltip: { theme: 'dark' }
     };
 
@@ -261,16 +261,16 @@
         colors: ['#00d25b'],
         stroke: { curve: 'smooth', width: 3 },
         xaxis: {
-            categories: @json($sicknessTrends->pluck('date')),
+            categories: @json($sicknessTrends->pluck('date_label')),
             labels: { 
-                style: { colors: '#6c7293' },
+                style: { colors: '#334155' },
                 rotate: -45,
                 rotateAlways: false,
                 hideOverlappingLabels: true,
                 maxHeight: 60
             }
         },
-        yaxis: { labels: { style: { colors: '#6c7293' } } },
+        yaxis: { labels: { style: { colors: '#334155' } } },
         fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0 } }
     }).render();
 
@@ -291,7 +291,7 @@
         labels: @json($mappedStatuses),
 
         colors: ['#0090e7', '#ffab00', '#00d25b', '#fc424a'],
-        plotOptions: { pie: { donut: { size: '75%', labels: { show: true, total: { show: true, label: 'Total', color: '#6c7293' } } } } }
+        plotOptions: { pie: { donut: { size: '75%', labels: { show: true, total: { show: true, label: 'Total', color: '#334155' } } } } }
     }).render();
 
     // 3. Jurusan
@@ -303,9 +303,9 @@
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         xaxis: {
             categories: @json($santriByMajor->pluck('name')),
-            labels: { style: { colors: '#6c7293' } }
+            labels: { style: { colors: '#334155' } }
         },
-        yaxis: { labels: { style: { colors: '#6c7293' }, maxWidth: 150 } }
+        yaxis: { labels: { style: { colors: '#334155' }, maxWidth: 150 } }
     }).render();
 
     // 4. Kelas
@@ -318,12 +318,12 @@
         xaxis: {
             categories: @json($santriByClass->pluck('name')),
             labels: { 
-                style: { colors: '#6c7293' },
+                style: { colors: '#334155' },
                 rotate: -45,
                 hideOverlappingLabels: true
             }
         },
-        yaxis: { labels: { style: { colors: '#6c7293' } } }
+        yaxis: { labels: { style: { colors: '#334155' } } }
     }).render();
 </script>
 @endpush

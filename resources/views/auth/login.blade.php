@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | DeisaHealth</title>
+    <title>Login | DEIHealth</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -191,7 +191,7 @@
         <div class="banner-content">
             <div class="logo-wrapper">
                 <div class="logo-icon"><i class="fas fa-heart-pulse"></i></div>
-                <div class="brand-name">DeisaHealth</div>
+                <div class="brand-name">DEIHealth</div>
             </div>
             <h1>Kelola Kesehatan<br>Lebih Modern.</h1>
             <p>Platform terintegrasi untuk pemantauan kesehatan santri dan manajemen operasional UKS secara efisien.</p>
@@ -222,7 +222,7 @@
                     <label class="form-label">Email Kantor / Petugas</label>
                     <div class="input-box">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" name="email" class="form-input" placeholder="nama@deisahealth.com" required value="{{ old('email') }}" autofocus>
+                        <input type="email" name="email" class="form-input" placeholder="nama@deihealth.com" required value="{{ old('email') }}" autofocus>
                     </div>
                     @error('email') <div style="color:#ef4444; font-size:12px; margin-top:4px; font-weight:600;">{{ $message }}</div> @enderror
                 </div>
@@ -247,7 +247,7 @@
 
             <div class="wa-footer">
                 <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Kesulitan masuk? Hubungi Administrator:</p>
-                <a href="https://wa.me/{{ config('app.admin_whatsapp', '6281234567890') }}?text={{ urlencode('Halo Admin, saya butuh bantuan untuk login ke DeisaHealth.') }}" target="_blank" class="wa-btn">
+                <a href="https://wa.me/{{ config('app.admin_whatsapp', '6281234567890') }}?text={{ urlencode('Halo Admin, saya butuh bantuan untuk login ke DEIHealth.') }}" target="_blank" class="wa-btn">
                     <i class="fab fa-whatsapp"></i> Chat Support
                 </a>
             </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AccountSettingController;
 use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\HospitalReferralController;
@@ -22,6 +23,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/login',   [AuthController::class, 'login'])->name('login.submit');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register',[AuthController::class, 'register'])->name('register.submit');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/pengaturan-akun/foto/{user}', [AccountSettingController::class, 'photo'])->name('account.profile-photo');
+    Route::get('/pengaturan-akun', [AccountSettingController::class, 'edit'])->name('account.settings.edit');
+    Route::put('/pengaturan-akun', [AccountSettingController::class, 'update'])->name('account.settings.update');
 });
 
 // ─── Authenticated Routes (approved users) ────────────────────────────────────

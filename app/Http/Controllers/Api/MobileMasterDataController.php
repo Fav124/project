@@ -200,15 +200,9 @@ class MobileMasterDataController extends BaseApiController
     public function dormitories()
     {
         return $this->success([
-            'items' => Dormitory::withCount('santris')->orderBy('name')->get()->map(fn (Dormitory $dormitory) => [
-                'id' => $dormitory->id,
-                'name' => $dormitory->name,
-                'building' => $dormitory->building,
-                'gender' => $dormitory->gender,
-                'supervisor_name' => $dormitory->supervisor_name,
-                'description' => $dormitory->description,
-                'santri_count' => $dormitory->santris_count,
-            ]),
+            'items' => Dormitory::withCount('santris')->orderBy('name')->get()->map(
+                fn (Dormitory $dormitory) => $this->transformDormitory($dormitory)
+            ),
         ]);
     }
 
@@ -227,15 +221,7 @@ class MobileMasterDataController extends BaseApiController
         $dormitory = Dormitory::create($validated)->loadCount('santris');
 
         return $this->success([
-            'item' => [
-                'id' => $dormitory->id,
-                'name' => $dormitory->name,
-                'building' => $dormitory->building,
-                'gender' => $dormitory->gender,
-                'supervisor_name' => $dormitory->supervisor_name,
-                'description' => $dormitory->description,
-                'santri_count' => $dormitory->santris_count,
-            ],
+            'item' => $this->transformDormitory($dormitory),
         ], 'Data asrama berhasil ditambahkan.', 201);
     }
 
@@ -255,16 +241,16 @@ class MobileMasterDataController extends BaseApiController
         $dormitory->loadCount('santris');
 
         return $this->success([
-            'item' => [
-                'id' => $dormitory->id,
-                'name' => $dormitory->name,
-                'building' => $dormitory->building,
-                'gender' => $dormitory->gender,
-                'supervisor_name' => $dormitory->supervisor_name,
-                'description' => $dormitory->description,
-                'santri_count' => $dormitory->santris_count,
-            ],
+            'item' => $this->transformDormitory($dormitory),
         ], 'Data asrama berhasil diperbarui.');
+    }
+
+    public function destroyDormitory(Request $request, Dormitory $dormitory)
+    {
+        $this->ensureHealthAccess($request);
+        $dormitory->delete();
+
+        return $this->success([], 'Data asrama berhasil dihapus.');
     }
 
     public function classes()
@@ -280,6 +266,58 @@ class MobileMasterDataController extends BaseApiController
         ]);
     }
 
+    public function storeClass(Request $request)
+    {
+        $this->ensureHealthAccess($request);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:classes,name'],
+            'description' => ['nullable', 'string'],
+            'major_ids' => ['nullable', 'array'],
+            'major_ids.*' => ['exists:majors,id'],
+        ]);
+
+        $class = SchoolClass::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+        $class->majors()->sync($validated['major_ids'] ?? []);
+
+        return $this->success([
+            'item' => $this->transformClass($class->fresh('majors')),
+        ], 'Data kelas berhasil ditambahkan.', 201);
+    }
+
+    public function updateClass(Request $request, SchoolClass $class)
+    {
+        $this->ensureHealthAccess($request);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('classes', 'name')->ignore($class->id)],
+            'description' => ['nullable', 'string'],
+            'major_ids' => ['nullable', 'array'],
+            'major_ids.*' => ['exists:majors,id'],
+        ]);
+
+        $class->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+        $class->majors()->sync($validated['major_ids'] ?? []);
+
+        return $this->success([
+            'item' => $this->transformClass($class->fresh('majors')),
+        ], 'Data kelas berhasil diperbarui.');
+    }
+
+    public function destroyClass(Request $request, SchoolClass $class)
+    {
+        $this->ensureHealthAccess($request);
+        $class->delete();
+
+        return $this->success([], 'Data kelas berhasil dihapus.');
+    }
+
     public function majors()
     {
         return $this->success([
@@ -289,6 +327,46 @@ class MobileMasterDataController extends BaseApiController
                 'description' => $major->description,
             ]),
         ]);
+    }
+
+    public function storeMajor(Request $request)
+    {
+        $this->ensureHealthAccess($request);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:majors,name'],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $major = Major::create($validated);
+
+        return $this->success([
+            'item' => $this->transformMajor($major),
+        ], 'Data jurusan berhasil ditambahkan.', 201);
+    }
+
+    public function updateMajor(Request $request, Major $major)
+    {
+        $this->ensureHealthAccess($request);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('majors', 'name')->ignore($major->id)],
+            'description' => ['nullable', 'string'],
+        ]);
+
+        $major->update($validated);
+
+        return $this->success([
+            'item' => $this->transformMajor($major->fresh()),
+        ], 'Data jurusan berhasil diperbarui.');
+    }
+
+    public function destroyMajor(Request $request, Major $major)
+    {
+        $this->ensureHealthAccess($request);
+        $major->delete();
+
+        return $this->success([], 'Data jurusan berhasil dihapus.');
     }
 
     private function transformSantri(Santri $santri): array
@@ -311,6 +389,39 @@ class MobileMasterDataController extends BaseApiController
             'guardian_name' => $santri->guardian_name,
             'guardian_phone' => $santri->guardian_phone,
             'notes' => $santri->notes,
+        ];
+    }
+
+    private function transformClass(SchoolClass $class): array
+    {
+        return [
+            'id' => $class->id,
+            'name' => $class->name,
+            'description' => $class->description,
+            'major_ids' => $class->majors->pluck('id')->values(),
+            'major_names' => $class->majors->pluck('name')->values(),
+        ];
+    }
+
+    private function transformMajor(Major $major): array
+    {
+        return [
+            'id' => $major->id,
+            'name' => $major->name,
+            'description' => $major->description,
+        ];
+    }
+
+    private function transformDormitory(Dormitory $dormitory): array
+    {
+        return [
+            'id' => $dormitory->id,
+            'name' => $dormitory->name,
+            'building' => $dormitory->building,
+            'gender' => $dormitory->gender,
+            'supervisor_name' => $dormitory->supervisor_name,
+            'description' => $dormitory->description,
+            'santri_count' => $dormitory->santris_count ?? 0,
         ];
     }
 

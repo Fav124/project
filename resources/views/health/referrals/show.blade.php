@@ -24,7 +24,7 @@
         <div style="text-align: right;">
             <div style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Nomor Rujukan</div>
             <div style="font-size: 18px; font-weight: 800;">#RJK-{{ str_pad($referral->id, 5, '0', STR_PAD_LEFT) }}</div>
-            <div style="font-size: 13px; color: var(--text-muted);">Tanggal: {{ $referral->referral_date->format('d F Y') }}</div>
+            <div style="font-size: 13px; color: var(--text-muted);">Tanggal: {{ $referral->referral_date->translatedFormat('d F Y') }}</div>
         </div>
     </div>
 
@@ -111,7 +111,7 @@
         <div style="text-align: center; width: 250px;">
             <div style="font-size: 14px; margin-bottom: 80px;">Petugas Pengirim,</div>
             <div style="font-size: 15px; font-weight: 700; text-decoration: underline;">{{ optional($referral->referredBy)->name ?: 'Petugas UKS' }}</div>
-            <div style="font-size: 12px; color: var(--text-muted);">Sistem Informasi DeisaHealth</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Sistem Informasi DEIHealth</div>
         </div>
     </div>
 </div>

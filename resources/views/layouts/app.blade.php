@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'DeisaHealth') | Aplikasi Kesehatan</title>
+    <title>@yield('title', 'DEIHealth') | Aplikasi Kesehatan</title>
     
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ asset('template-assets/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -31,224 +31,314 @@
     
     <style>
         :root {
-            --primary: #00d25b;
-            --dark: #0b0c10;
-            --card-bg: #191c24;
-            --border: #2c2e33;
-            --text: #e4e4e4;
+            --primary: #4f7df0;
+            --primary-glow: rgba(79, 125, 240, 0.2);
+            --secondary: #64748b;
+            --dark: #cfd8e3;
+            --card-bg: #ffffff;
+            --glass-bg: rgba(244, 247, 251, 0.9);
+            --border: rgba(71, 85, 105, 0.18);
+            --text: #1f2937;
+            --text-muted: #475569;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(79, 125, 240, 0.08) 0px, transparent 55%),
+                radial-gradient(at 100% 100%, rgba(148, 163, 184, 0.14) 0px, transparent 55%);
             color: var(--text);
+            min-height: 100vh;
+        }
+
+        .main-panel,
+        .content-wrapper {
+            background: transparent !important;
         }
 
         h1, h2, h3, h4, h5, h6, .page-title, .menu-title {
             font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
         }
 
-        /* Custom adjustment for DeisaHealth branding */
-        .sidebar .sidebar-brand-wrapper .sidebar-brand.brand-logo {
-            color: #fff;
-            font-weight: 800;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-family: 'Outfit', sans-serif;
-        }
-        .sidebar .sidebar-brand-wrapper .sidebar-brand.brand-logo span {
-            color: var(--primary);
-        }
-
-        /* BETTER CONTRAST & FOCUS */
+        /* GLASSMORPHISM CARD */
         .card {
-            background-color: var(--card-bg);
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--border);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+            transition: all 0.25s ease;
         }
         .card:hover {
             border-color: var(--primary);
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(79, 125, 240, 0.16);
         }
+
+        .sidebar {
+            background: #e8eef6 !important;
+            backdrop-filter: blur(12px);
+            border-right: 1px solid var(--border);
+        }
+
+        .navbar {
+            background: rgba(244, 247, 251, 0.96) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+        .navbar .nav-link,
+        .navbar .navbar-profile-name,
+        .navbar i {
+            color: #1f2937 !important;
+        }
+        .navbar .form-control {
+            background: #f5f8fc !important;
+            color: #1f2937 !important;
+        }
+
+        .sidebar .nav .nav-item .nav-link,
+        .sidebar .nav.sub-menu .nav-item .nav-link {
+            color: #1f2937 !important;
+        }
+        .sidebar .nav .nav-item .nav-link:hover,
+        .sidebar .nav .nav-item.active > .nav-link {
+            background: rgba(79, 125, 240, 0.26) !important;
+            color: #0f172a !important;
+            border-radius: 10px;
+        }
+        .sidebar .nav .nav-category .nav-link,
+        .sidebar .profile-name span {
+            color: #64748b !important;
+        }
+        .sidebar .profile-name h5 {
+            color: #0f172a !important;
+        }
+
         .table {
-            color: #e4e4e4;
+            color: #1f2937;
+        }
+        .table tbody tr {
+            background: #ffffff !important;
+        }
+        .table tbody tr:nth-child(even) {
+            background: #f8fbff !important;
         }
         .table thead th {
-            background: #2c2e33;
-            color: var(--primary);
+            background: #e8eef6;
+            color: #334155;
             font-weight: 700;
             border-top: none;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-        }
-        .modal-content {
-            background-color: var(--card-bg);
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 30px rgba(0, 210, 91, 0.2);
-        }
-        .modal-header {
             border-bottom: 1px solid var(--border);
-            background: #111318;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            padding: 15px;
+        }
+        .table td {
+            border-bottom: 1px solid var(--border);
+            padding: 15px;
+            vertical-align: middle;
+        }
+        .table tbody tr:hover td,
+        .table tbody tr:hover th {
+            background: rgba(79, 125, 240, 0.16) !important;
+            color: #0f172a !important;
+        }
+        .table .btn:hover i {
+            color: inherit !important;
+        }
+
+        .content-wrapper {
+            background: rgba(236, 241, 247, 0.92);
+            border-radius: 16px;
+            border: 1px solid rgba(71, 85, 105, 0.15);
+            padding: 22px;
+        }
+
+        .page-title {
+            color: #1e293b !important;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(71, 85, 105, 0.2);
+            border-radius: 18px;
+            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.18);
+        }
+        .modal-header,
+        .modal-header.bg-dark {
+            background: #eef3fa !important;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.18);
+            color: #0f172a !important;
         }
         .modal-footer {
-            border-top: 1px solid var(--border);
-            background: #111318;
+            background: #f8fbff !important;
+            border-top: 1px solid rgba(71, 85, 105, 0.15);
         }
+        .modal-title,
+        .modal .text-white,
+        .modal .close,
+        .modal .close.text-white {
+            color: #0f172a !important;
+            opacity: 1;
+        }
+        .main-panel .bg-dark {
+            background: #eef3fa !important;
+            color: #1f2937 !important;
+        }
+        .main-panel .table.table-sm.text-white,
+        .main-panel .table.text-white {
+            color: #1f2937 !important;
+        }
+
         .form-control, .form-select {
-            background-color: #2a3038 !important;
-            border: 1px solid var(--border) !important;
-            color: #ffffff !important;
-            border-radius: 8px;
+            background-color: #ffffff !important;
+            border: 1px solid rgba(100, 116, 139, 0.45) !important;
+            color: #0f172a !important;
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all 0.3s;
         }
         .form-control:focus {
+            background-color: #ffffff !important;
             border-color: var(--primary) !important;
-            box-shadow: 0 0 0 0.2rem rgba(0, 210, 91, 0.25);
+            box-shadow: 0 0 0 4px var(--primary-glow);
         }
+
+        .form-control::placeholder {
+            color: #64748b !important;
+            opacity: 0.85;
+        }
+
         .btn {
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.2s;
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 10px 24px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, var(--primary), #3f72d7);
+            border: none;
+            box-shadow: 0 4px 15px rgba(79, 140, 255, 0.3);
         }
         .btn-primary:hover {
-            background-color: #00ad4b;
-            border-color: #00ad4b;
             transform: translateY(-1px);
-            box-shadow: 0 5px 10px rgba(0,210,91,0.3);
+            box-shadow: 0 8px 20px rgba(79, 140, 255, 0.35);
         }
-        
-        /* Progress Bar Customization */
-        #nprogress .bar {
-            background: var(--primary) !important;
-            height: 3px !important;
+        .btn-outline-primary,
+        .btn-outline-secondary,
+        .btn-outline-info,
+        .btn-outline-warning,
+        .btn-outline-danger {
+            color: #1f2937;
+            border-width: 1px;
         }
-        #nprogress .spinner-icon {
-            border-top-color: var(--primary) !important;
-            border-left-color: var(--primary) !important;
-        }
-
-        /* Focus points */
-        .text-focus {
-            color: var(--primary) !important;
-            font-weight: bold;
-        }
-        .badge-outline-success {
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-
-        /* SIDEBAR ENHANCEMENT */
-        .sidebar .nav .nav-item.active > .nav-link {
-            background: rgba(0, 210, 91, 0.1) !important;
-            border-radius: 0 50px 50px 0;
-            color: var(--primary) !important;
-        }
-        .sidebar .nav .nav-item.active > .nav-link .menu-icon i {
-            color: var(--primary) !important;
-        }
-        .sidebar .nav .nav-item .nav-link:hover {
-            color: var(--primary) !important;
-        }
-        .sidebar .nav.sub-menu .nav-item .nav-link.active {
-            color: var(--primary) !important;
-            font-weight: 700;
-        }
-        .sidebar .nav.sub-menu .nav-item .nav-link:before {
-            background: var(--primary) !important;
-        }
-
-        /* PRINT STYLES - A4 FORMAL */
-        @media print {
-            @page {
-                size: A4;
-                margin: 2cm;
-            }
-            body {
-                background: white !important;
-                color: black !important;
-                font-family: 'Times New Roman', serif !important;
-            }
-            .sidebar, .navbar, .footer, .btn, .modal-header .close, .nav-tabs, .card-title .btn, .no-print {
-                display: none !important;
-            }
-            .content-wrapper {
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .card {
-                border: none !important;
-                box-shadow: none !important;
-                background: white !important;
-            }
-            .card-body {
-                padding: 0 !important;
-            }
-            .text-white, .text-muted, .text-primary, .text-success, .text-warning, .text-danger {
-                color: black !important;
-            }
-            .table {
-                width: 100% !important;
-                border-collapse: collapse !important;
-            }
-            .table th, .table td {
-                border: 1px solid #000 !important;
-                padding: 8px !important;
-                color: black !important;
-            }
-            .badge {
-                border: 1px solid #000 !important;
-                color: black !important;
-                background: transparent !important;
-            }
-            
-            /* Institutional Header (Kop Surat) */
-            .print-header {
-                display: block !important;
-                text-align: center;
-                margin-bottom: 30px;
-                border-bottom: 3px double #000;
-                padding-bottom: 10px;
-            }
-            .print-header h2 { margin: 0; font-size: 24px; font-weight: bold; }
-            .print-header p { margin: 0; font-size: 14px; }
-            
-            .main-panel { width: 100% !important; }
-            .page-body-wrapper { padding-top: 0 !important; }
-        }
-        
-        .print-header { display: none; }
-
-        /* Tom Select Dark Mode Adjustment */
-        .ts-control {
-            background-color: #2a3038 !important;
+        .btn-outline-primary:hover,
+        .btn-outline-secondary:hover,
+        .btn-outline-info:hover,
+        .btn-outline-warning:hover,
+        .btn-outline-danger:hover {
             color: #ffffff !important;
-            border: 1px solid var(--border) !important;
-            padding: 10px 15px !important;
-            border-radius: 8px !important;
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background: rgba(79, 125, 240, 0.16) !important;
+            color: #0f172a !important;
+        }
+
+        /* Tom Select Premium Dark Mode */
+        .ts-wrapper.single .ts-control {
+            background-color: #ffffff !important;
+            border: 1px solid rgba(100, 116, 139, 0.45) !important;
+            border-radius: 12px !important;
+            padding: 12px 16px !important;
+            color: #0f172a !important;
+            transition: all 0.3s;
+        }
+        .ts-wrapper.single.focus .ts-control {
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 4px var(--primary-glow) !important;
         }
         .ts-dropdown {
-            background-color: var(--card-bg) !important;
-            color: #ffffff !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 8px !important;
+            background: #ffffff !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--primary) !important;
+            border-radius: 16px !important;
+            margin-top: 8px !important;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15) !important;
+            overflow: hidden;
+        }
+        .ts-dropdown .option {
+            padding: 12px 16px !important;
+            transition: all 0.2s;
         }
         .ts-dropdown .active {
             background-color: var(--primary) !important;
-            color: #000000 !important;
-        }
-        .ts-dropdown .option {
             color: #ffffff !important;
+            font-weight: 600;
+        }
+        .ts-dropdown .create:hover, .ts-dropdown .option:hover {
+            background-color: rgba(79, 125, 240, 0.12) !important;
+            color: #1e3a8a !important;
         }
         .ts-control input {
-            color: #ffffff !important;
+            color: #0f172a !important;
         }
+        
+        /* Force readable text in light content area */
+        .main-panel .text-white,
+        .main-panel .card-title,
+        .main-panel .preview-subject,
+        .main-panel h1,
+        .main-panel h2,
+        .main-panel h3,
+        .main-panel h4,
+        .main-panel h5,
+        .main-panel h6 {
+            color: #0f172a !important;
+        }
+        .main-panel .text-muted,
+        .main-panel small,
+        .main-panel .page-title + * {
+            color: #5b6472 !important;
+        }
+        .main-panel .badge {
+            font-weight: 700;
+        }
+        .print-header {
+            background: linear-gradient(135deg, #f8fbff, #e8eef7);
+            border: 1px solid rgba(71, 85, 105, 0.18);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
+        }
+        .print-header h2 {
+            color: #1e293b;
+            margin-bottom: 6px;
+            font-size: 1.9rem;
+            letter-spacing: 0.01em;
+        }
+        .print-header p {
+            color: #475569;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        /* Search input inside dropdown */
+        .ts-dropdown-content {
+            padding: 5px;
+        }
+
     </style>
     
     @stack('styles')
@@ -266,9 +356,9 @@
             <!-- partial -->
             <div class="main-panel">
                 <div class="print-header">
-                    <h2>DEISA HEALTH MANAGEMENT SYSTEM</h2>
-                    <p>Layanan Kesehatan Terpadu Santri Pondok Pesantren Deisa</p>
-                    <p>Jl. Kesehatan No. 123, Kota Pendidikan | Telp: (021) 555-0123</p>
+                    <h2>DEI HEALTH MANAGEMENT SYSTEM</h2>
+                    <p>Layanan Kesehatan Terpadu Santri Pondok Pesantren Ma'had Dar El-Ilmi Sumatera Barat</p>
+                    <p>Unit Kesehatan Pondok | Sistem Informasi Resmi</p>
                 </div>
                 <div class="content-wrapper">
                     @if(session('success'))
@@ -305,7 +395,7 @@
                 <!-- partial:partials/_footer.html -->
                 <footer class="footer">
                     <div class="d-sm-flex justify-content-center justify-content-sm-between">
-                        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © DeisaHealth {{ date('Y') }}</span>
+                        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © DEIHealth {{ date('Y') }}</span>
                    </div>
                 </footer>
                 <!-- partial -->
@@ -398,9 +488,9 @@
                             icon: 'success',
                             title: 'Berhasil!',
                             text: response.message || 'Data berhasil disimpan.',
-                            background: '#191c24',
-                            color: '#fff',
-                            confirmButtonColor: '#00d25b'
+                            background: '#f4f7fb',
+                            color: '#1f2937',
+                            confirmButtonColor: '#4f7df0'
                         }).then(() => {
                             // Close modal if exists
                             $('.modal').modal('hide');
@@ -421,8 +511,8 @@
                             icon: 'error',
                             title: 'Gagal!',
                             html: errorMsg,
-                            background: '#191c24',
-                            color: '#fff',
+                            background: '#f4f7fb',
+                            color: '#1f2937',
                             confirmButtonColor: '#ff6258'
                         });
                     },

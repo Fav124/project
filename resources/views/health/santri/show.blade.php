@@ -42,7 +42,7 @@
             <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
                 <div>
                     <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Tempat, Tanggal Lahir</div>
-                    <div style="font-weight: 600; color: var(--text-main);">{{ $santri->birth_place ?: '-' }}, {{ optional($santri->birth_date)->format('d F Y') ?: '-' }}</div>
+                    <div style="font-weight: 600; color: var(--text-main);">{{ $santri->birth_place ?: '-' }}, {{ optional($santri->birth_date)->translatedFormat('d F Y') ?: '-' }}</div>
                 </div>
             </div>
         </div>

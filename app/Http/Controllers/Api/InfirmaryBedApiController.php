@@ -49,6 +49,16 @@ class InfirmaryBedApiController extends Controller
         return response()->json(['success' => true, 'message' => 'Kasur diperbarui.', 'data' => $this->format($bed)]);
     }
 
+    public function destroy($id)
+    {
+        InfirmaryBed::findOrFail($id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kasur berhasil dihapus.',
+        ]);
+    }
+
     private function format(InfirmaryBed $b): array
     {
         return [

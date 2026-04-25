@@ -53,7 +53,11 @@ class DashboardController extends Controller
             ->whereBetween('visit_date', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date')
-            ->get();
+            ->get()
+            ->map(function ($trend) {
+                $trend->date_label = Carbon::parse($trend->date)->translatedFormat('d F Y');
+                return $trend;
+            });
 
         // Chart Data: Case Status Distribution
         $caseDistribution = SicknessCase::select('status', DB::raw('COUNT(*) as count'))

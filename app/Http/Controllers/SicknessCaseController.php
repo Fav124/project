@@ -10,10 +10,13 @@ use App\Models\Santri;
 use App\Models\SicknessCase;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class SicknessCaseController extends Controller
 {
     use HealthManagementValidation, SendsGuardianWhatsApp;
+    private const ACTIVE_STATUSES = ['observed', 'handled', 'referred'];
 
     public function index(Request $request)
     {
@@ -86,28 +89,38 @@ class SicknessCaseController extends Controller
             'cases.*.status' => ['required', 'in:observed,handled,recovered,referred'],
         ]);
 
-        foreach ($validated['cases'] as $caseData) {
-            $caseData['handled_by'] = auth()->id();
-            $medicines = $caseData['medicines'] ?? [];
-            unset($caseData['medicines']);
-            
-            $case = SicknessCase::create($caseData);
-            
-            if (!empty($medicines)) {
-                $attachData = [];
-                foreach ($medicines as $med) {
-                    if (!empty($med['id'])) {
-                        $attachData[$med['id']] = [
-                            'quantity' => $med['quantity'] ?? 1,
-                            'status' => 'pending'
-                        ];
+        $this->validateBatchCaseRelations($validated['cases']);
+
+        DB::transaction(function () use ($validated): void {
+            foreach ($validated['cases'] as $caseData) {
+                $this->ensureCaseRelations(
+                    $caseData['santri_id'],
+                    $caseData['infirmary_bed_id'] ?? null,
+                    $caseData['status']
+                );
+
+                $caseData['handled_by'] = auth()->id();
+                $medicines = $caseData['medicines'] ?? [];
+                unset($caseData['medicines']);
+                
+                $case = SicknessCase::create($caseData);
+                
+                if (!empty($medicines)) {
+                    $attachData = [];
+                    foreach ($medicines as $med) {
+                        if (!empty($med['id'])) {
+                            $attachData[$med['id']] = [
+                                'quantity' => $med['quantity'] ?? 1,
+                                'status' => 'pending'
+                            ];
+                        }
                     }
+                    $case->medicines()->attach($attachData);
                 }
-                $case->medicines()->attach($attachData);
+                
+                $this->syncBedStatus($case);
             }
-            
-            $this->syncBedStatus($case);
-        }
+        });
 
         $message = count($validated['cases']) . ' data santri sakit berhasil ditambahkan.';
         if ($request->ajax()) {
@@ -136,24 +149,39 @@ class SicknessCaseController extends Controller
         $medicines = $validated['medicines'] ?? [];
         unset($validated['medicines']);
 
+        $this->ensureCaseRelations(
+            $validated['santri_id'],
+            $validated['infirmary_bed_id'] ?? null,
+            $validated['status'],
+            $sicknessCase->id
+        );
+
         $oldBedId = $sicknessCase->infirmary_bed_id;
-        $sicknessCase->update($validated);
+        DB::transaction(function () use ($sicknessCase, $validated, $medicines, $oldBedId): void {
+            $sicknessCase->update($validated);
 
-        // Sync medicines
-        $syncData = [];
-        foreach ($medicines as $med) {
-            $syncData[$med['id']] = ['quantity' => $med['quantity']];
-        }
-        $sicknessCase->medicines()->sync($syncData);
+            $syncData = [];
+            foreach ($medicines as $med) {
+                $syncData[$med['id']] = ['quantity' => $med['quantity']];
+            }
+            $sicknessCase->medicines()->sync($syncData);
 
-        if ($oldBedId && $oldBedId !== $sicknessCase->infirmary_bed_id) {
-            InfirmaryBed::whereKey($oldBedId)->update([
-                'status' => 'available',
-                'occupant_name' => null,
-            ]);
-        }
+            if ($oldBedId && $oldBedId !== $sicknessCase->infirmary_bed_id) {
+                $hasAnotherActiveOccupant = SicknessCase::where('infirmary_bed_id', $oldBedId)
+                    ->whereIn('status', self::ACTIVE_STATUSES)
+                    ->whereKeyNot($sicknessCase->id)
+                    ->exists();
 
-        $this->syncBedStatus($sicknessCase);
+                if (!$hasAnotherActiveOccupant) {
+                    InfirmaryBed::whereKey($oldBedId)->update([
+                        'status' => 'available',
+                        'occupant_name' => null,
+                    ]);
+                }
+            }
+
+            $this->syncBedStatus($sicknessCase->fresh('santri'));
+        });
 
         $successMessage = 'Data santri sakit berhasil diperbarui.';
         if ($request->ajax()) {
@@ -173,10 +201,17 @@ class SicknessCaseController extends Controller
     public function destroy(SicknessCase $sicknessCase)
     {
         if ($sicknessCase->infirmary_bed_id) {
-            InfirmaryBed::whereKey($sicknessCase->infirmary_bed_id)->update([
-                'status' => 'available',
-                'occupant_name' => null,
-            ]);
+            $hasAnotherActiveOccupant = SicknessCase::where('infirmary_bed_id', $sicknessCase->infirmary_bed_id)
+                ->whereIn('status', self::ACTIVE_STATUSES)
+                ->whereKeyNot($sicknessCase->id)
+                ->exists();
+
+            if (!$hasAnotherActiveOccupant) {
+                InfirmaryBed::whereKey($sicknessCase->infirmary_bed_id)->update([
+                    'status' => 'available',
+                    'occupant_name' => null,
+                ]);
+            }
         }
 
         $sicknessCase->delete();
@@ -214,12 +249,83 @@ class SicknessCaseController extends Controller
             return;
         }
 
-        $bedStatus = in_array($case->status, ['recovered']) ? 'available' : 'occupied';
+        $bedStatus = $case->status === 'recovered' ? 'available' : 'occupied';
         $occupant = $bedStatus === 'occupied' ? $case->santri->name : null;
 
         InfirmaryBed::whereKey($case->infirmary_bed_id)->update([
             'status' => $bedStatus,
             'occupant_name' => $occupant,
         ]);
+    }
+
+    private function validateBatchCaseRelations(array $cases): void
+    {
+        $seenSantri = [];
+        $seenBeds = [];
+
+        foreach ($cases as $index => $caseData) {
+            $santriId = $caseData['santri_id'] ?? null;
+            $bedId = $caseData['infirmary_bed_id'] ?? null;
+            $isActive = in_array($caseData['status'] ?? null, self::ACTIVE_STATUSES, true);
+
+            if (!$isActive) {
+                continue;
+            }
+
+            if ($santriId && isset($seenSantri[$santriId])) {
+                throw ValidationException::withMessages([
+                    "cases.$index.santri_id" => 'Santri tidak boleh dicatat dua kali dalam kasus aktif pada input yang sama.',
+                ]);
+            }
+
+            if ($bedId && isset($seenBeds[$bedId])) {
+                throw ValidationException::withMessages([
+                    "cases.$index.infirmary_bed_id" => 'Kasur UKS tidak boleh dipakai lebih dari satu kasus aktif.',
+                ]);
+            }
+
+            if ($santriId) {
+                $seenSantri[$santriId] = true;
+            }
+            if ($bedId) {
+                $seenBeds[$bedId] = true;
+            }
+        }
+    }
+
+    private function ensureCaseRelations(int $santriId, ?int $bedId, string $status, ?int $ignoreCaseId = null): void
+    {
+        $isActive = in_array($status, self::ACTIVE_STATUSES, true);
+        if (!$isActive) {
+            return;
+        }
+
+        $santriQuery = SicknessCase::where('santri_id', $santriId)
+            ->whereIn('status', self::ACTIVE_STATUSES);
+
+        if ($ignoreCaseId) {
+            $santriQuery->whereKeyNot($ignoreCaseId);
+        }
+
+        if ($santriQuery->exists()) {
+            throw ValidationException::withMessages([
+                'santri_id' => 'Santri masih memiliki kasus aktif. Selesaikan kasus sebelumnya terlebih dahulu.',
+            ]);
+        }
+
+        if ($bedId) {
+            $bedQuery = SicknessCase::where('infirmary_bed_id', $bedId)
+                ->whereIn('status', self::ACTIVE_STATUSES);
+
+            if ($ignoreCaseId) {
+                $bedQuery->whereKeyNot($ignoreCaseId);
+            }
+
+            if ($bedQuery->exists()) {
+                throw ValidationException::withMessages([
+                    'infirmary_bed_id' => 'Kasur UKS ini sedang dipakai kasus aktif lain.',
+                ]);
+            }
+        }
     }
 }

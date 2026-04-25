@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Resmi Kesehatan - DeisaHealth</title>
+    <title>Laporan Resmi Kesehatan - DEIHealth</title>
     <style>
         @page {
             size: A4;
@@ -239,7 +239,7 @@
             <div class="logo-placeholder">DH</div>
             <div class="kop-info">
                 <h1>Unit Kesehatan Santri (UKS)</h1>
-                <h2>Pondok Pesantren Deisa Al-Ikhlas</h2>
+                <h2>Pondok Pesantren Ma'had Dar El-Ilmi Sumatera Barat</h2>
                 <p>Jl. Pendidikan No. 45, Bangkalan, Jawa Timur | Telp: (031) 1234567 | Email: uks@deisa.id</p>
             </div>
         </div>
@@ -306,7 +306,7 @@
                 @forelse($allCases as $index => $case)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
-                        <td class="text-center">{{ $case->visit_date->format('d/m/Y') }}</td>
+                        <td class="text-center">{{ $case->visit_date->translatedFormat('d F Y') }}</td>
                         <td><span class="font-bold">{{ $case->santri->name }}</span></td>
                         <td>{{ $case->complaint }}</td>
                         <td>{{ $case->diagnosis ?: '-' }}</td>
@@ -344,7 +344,7 @@
                 @forelse($referrals as $index => $ref)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
-                        <td class="text-center">{{ $ref->referral_date->format('d/m/Y') }}</td>
+                        <td class="text-center">{{ $ref->referral_date->translatedFormat('d F Y') }}</td>
                         <td><span class="font-bold">{{ $ref->santri->name }}</span></td>
                         <td>{{ $ref->hospital_name }}</td>
                         <td>{{ $ref->reason }}</td>
@@ -360,9 +360,9 @@
             <div class="signature-container">
                 <div class="signature-box">
                     <p>Mengetahui,</p>
-                    <p style="margin-top: 5px;">Pimpinan Pondok Pesantren</p>
-                    <div class="sign-line" style="margin-top: 80px;">__________________________</div>
-                    <div class="sign-title">K.H. Ahmad Dahlan, M.Pd.I</div>
+                    <p style="margin-top: 5px;">Kepala Sekolah</p>
+                    <div class="sign-line" style="margin-top: 80px;">Ustadz Hafzhan El Hadi, Lc., M.Kom.</div>
+                    <div class="sign-title">Pondok Pesantren Ma'had Dar El-Ilmi Sumatera Barat</div>
                 </div>
                 <div class="signature-box right">
                     <div class="date-location">Bangkalan, {{ now()->translatedFormat('d F Y') }}</div>

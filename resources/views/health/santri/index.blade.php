@@ -31,15 +31,34 @@
                 </button>
             </x-slot>
 
-            <form action="{{ route('santri.index') }}" method="GET" class="mb-4">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control text-white" placeholder="Cari nama, NIS, kelas..." value="{{ request('search') }}">
-                    <button class="btn btn-primary" type="submit">Cari</button>
-                    @if(request('search'))
-                        <a href="{{ route('santri.index') }}" class="btn btn-outline-secondary">Reset</a>
-                    @endif
-                </div>
-            </form>
+            <div class="filter-bar mb-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md">
+                <form action="{{ route('santri.index') }}" method="GET" class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label text-muted text-small uppercase tracking-wider font-bold">Cari Santri</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white/5 border-white/10 text-muted"><i class="mdi mdi-magnify"></i></span>
+                            <input type="text" name="search" class="form-control" placeholder="Nama, NIS, atau Kamar..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted text-small uppercase tracking-wider font-bold">Filter Kelas</label>
+                        <select name="class_id" class="form-select">
+                            <option value="">Semua Kelas</option>
+                            @foreach($classes as $class)
+                                <option value="{{ $class->id }}" {{ request('class_id') == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary w-full" type="submit">Terapkan Filter</button>
+                            @if(request('search') || request('class_id'))
+                                <a href="{{ route('santri.index') }}" class="btn btn-outline-secondary px-3" title="Reset"><i class="mdi mdi-refresh"></i></a>
+                            @endif
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <x-ui.table>
                 <thead>

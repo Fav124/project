@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\DashboardApiController;
+use App\Http\Controllers\Api\MobileAdminController;
+use App\Http\Controllers\Api\MobileMasterDataController;
 use App\Http\Controllers\Api\SicknessCaseApiController;
 use App\Http\Controllers\Api\MedicineApiController;
 use App\Http\Controllers\Api\HospitalReferralApiController;
@@ -63,6 +65,8 @@ Route::prefix('mobile')->group(function () {
             ->middleware('role:super_admin,admin');
         Route::put('/beds/{id}',  [InfirmaryBedApiController::class, 'update'])
             ->middleware('role:super_admin,admin');
+        Route::delete('/beds/{id}', [InfirmaryBedApiController::class, 'destroy'])
+            ->middleware('role:super_admin,admin');
 
         // Rujukan RS
         Route::get('/referrals',           [HospitalReferralApiController::class, 'index']);
@@ -75,5 +79,41 @@ Route::prefix('mobile')->group(function () {
 
         // Laporan
         Route::get('/reports/summary', [DashboardApiController::class, 'reportSummary']);
+
+        // Master Data
+        Route::get('/master/classes', [MobileMasterDataController::class, 'classes']);
+        Route::post('/master/classes', [MobileMasterDataController::class, 'storeClass'])
+            ->middleware('role:super_admin,admin');
+        Route::put('/master/classes/{class}', [MobileMasterDataController::class, 'updateClass'])
+            ->middleware('role:super_admin,admin');
+        Route::delete('/master/classes/{class}', [MobileMasterDataController::class, 'destroyClass'])
+            ->middleware('role:super_admin,admin');
+
+        Route::get('/master/majors', [MobileMasterDataController::class, 'majors']);
+        Route::post('/master/majors', [MobileMasterDataController::class, 'storeMajor'])
+            ->middleware('role:super_admin,admin');
+        Route::put('/master/majors/{major}', [MobileMasterDataController::class, 'updateMajor'])
+            ->middleware('role:super_admin,admin');
+        Route::delete('/master/majors/{major}', [MobileMasterDataController::class, 'destroyMajor'])
+            ->middleware('role:super_admin,admin');
+
+        Route::get('/master/dormitories', [MobileMasterDataController::class, 'dormitories']);
+        Route::post('/master/dormitories', [MobileMasterDataController::class, 'storeDormitory'])
+            ->middleware('role:super_admin,admin');
+        Route::put('/master/dormitories/{dormitory}', [MobileMasterDataController::class, 'updateDormitory'])
+            ->middleware('role:super_admin,admin');
+        Route::delete('/master/dormitories/{dormitory}', [MobileMasterDataController::class, 'destroyDormitory'])
+            ->middleware('role:super_admin,admin');
+
+        // Administrasi Super Admin
+        Route::middleware('role:super_admin')->prefix('/admin')->group(function () {
+            Route::get('/overview', [MobileAdminController::class, 'overview']);
+            Route::get('/users', [MobileAdminController::class, 'users']);
+            Route::post('/users/{user}/approve', [MobileAdminController::class, 'approve']);
+            Route::post('/users/{user}/reject', [MobileAdminController::class, 'reject']);
+            Route::post('/users/{user}/change-role', [MobileAdminController::class, 'changeRole']);
+            Route::post('/users/{user}/quick-reset', [MobileAdminController::class, 'quickResetPassword']);
+            Route::delete('/users/{user}', [MobileAdminController::class, 'destroy']);
+        });
     });
 });

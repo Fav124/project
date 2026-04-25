@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\HealthManagementValidation;
 use App\Models\InfirmaryBed;
+use App\Models\SicknessCase;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class InfirmaryBedController extends Controller
 {
@@ -50,6 +52,13 @@ class InfirmaryBedController extends Controller
             'beds.*.notes' => ['nullable', 'string'],
         ]);
 
+        $codes = collect($validated['beds'])->pluck('code')->filter();
+        if ($codes->count() !== $codes->unique()->count()) {
+            throw ValidationException::withMessages([
+                'beds' => 'Kode kasur pada input yang sama tidak boleh duplikat.',
+            ]);
+        }
+
         foreach ($validated['beds'] as $bedData) {
             if ($bedData['status'] !== 'occupied') {
                 $bedData['occupant_name'] = null;
@@ -68,6 +77,23 @@ class InfirmaryBedController extends Controller
     public function update(Request $request, InfirmaryBed $bed)
     {
         $validated = $request->validate($this->bedRules($bed->id));
+
+        $hasActiveCase = SicknessCase::where('infirmary_bed_id', $bed->id)
+            ->whereIn('status', ['observed', 'handled', 'referred'])
+            ->exists();
+
+        if ($validated['status'] === 'maintenance' && $hasActiveCase) {
+            throw ValidationException::withMessages([
+                'status' => 'Kasur tidak bisa diubah ke maintenance karena masih dipakai kasus aktif.',
+            ]);
+        }
+
+        if ($validated['status'] === 'occupied' && !$hasActiveCase) {
+            throw ValidationException::withMessages([
+                'status' => 'Status occupied ditentukan otomatis dari relasi kasus santri sakit.',
+            ]);
+        }
+
         $this->normalizeBedOccupant($validated);
 
         $bed->update($validated);
@@ -82,6 +108,15 @@ class InfirmaryBedController extends Controller
 
     public function destroy(InfirmaryBed $bed)
     {
+        $hasActiveCase = SicknessCase::where('infirmary_bed_id', $bed->id)
+            ->whereIn('status', ['observed', 'handled', 'referred'])
+            ->exists();
+
+        if ($hasActiveCase) {
+            return redirect()->route('beds.index')
+                ->with('error', 'Kasur tidak dapat dihapus karena masih terhubung dengan kasus aktif.');
+        }
+
         $bed->delete();
 
         return redirect()->route('beds.index')

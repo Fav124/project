@@ -47,7 +47,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                     <div class="navbar-profile">
-                        <img class="img-xs rounded-circle" src="{{ asset('template-assets/images/faces/face15.jpg') }}" alt="">
+                        <img class="img-xs rounded-circle" src="{{ auth()->user()->profile_photo_url }}" alt="Foto Profil" style="object-fit: cover;">
                         <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ auth()->user()->name }}</p>
                         <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                     </div>
@@ -55,7 +55,7 @@
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
                     <h6 class="p-3 mb-0">Profil</h6>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item" href="#">
+                    <a class="dropdown-item preview-item" href="{{ route('account.settings.edit') }}">
                         <div class="preview-thumbnail">
                             <div class="preview-icon bg-dark rounded-circle">
                                 <i class="mdi mdi-settings text-success"></i>

@@ -1,6 +1,6 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-        <a class="sidebar-brand brand-logo" href="{{ route('dashboard') }}">DEISA<span>HEALTH</span></a>
+        <a class="sidebar-brand brand-logo" href="{{ route('dashboard') }}">DEI<span>HEALTH</span></a>
         <a class="sidebar-brand brand-logo-mini" href="{{ route('dashboard') }}"><span class="text-success">D</span>H</a>
     </div>
     <ul class="nav">
@@ -8,12 +8,12 @@
             <div class="profile-desc">
                 <div class="profile-pic">
                     <div class="count-indicator">
-                        <img class="img-xs rounded-circle " src="{{ asset('template-assets/images/faces/face15.jpg') }}" alt="">
+                        <img class="img-xs rounded-circle" src="{{ auth()->user()->profile_photo_url }}" alt="Foto Profil" style="object-fit: cover;">
                         <span class="count bg-success"></span>
                     </div>
                     <div class="profile-name">
                         <h5 class="mb-0 font-weight-normal">{{ auth()->user()->name }}</h5>
-                        <span>{{ auth()->user()->role_label }}</span>
+                        <span>{{ auth()->user()->job_title ?: auth()->user()->role_label }}</span>
                     </div>
                 </div>
             </div>
@@ -98,6 +98,15 @@
             </a>
         </li>
         @endif
+
+        <li class="nav-item menu-items {{ request()->routeIs('account.settings.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('account.settings.edit') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account-cog"></i>
+                </span>
+                <span class="menu-title">Pengaturan Akun</span>
+            </a>
+        </li>
 
         <li class="nav-item nav-category">
             <span class="nav-link">Sesi</span>

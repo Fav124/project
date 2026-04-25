@@ -51,11 +51,11 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
                     <div>
                         <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Tanggal Masuk</div>
-                        <div style="font-weight: 700; color: var(--text-main); font-size: 15px;">{{ $sicknessCase->visit_date->format('d F Y') }}</div>
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 15px;">{{ $sicknessCase->visit_date->translatedFormat('d F Y') }}</div>
                     </div>
                     <div>
                         <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Tanggal Selesai / Sembuh</div>
-                        <div style="font-weight: 700; color: var(--text-main); font-size: 15px;">{{ optional($sicknessCase->return_date)->format('d F Y') ?: 'Belum ditentukan' }}</div>
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 15px;">{{ optional($sicknessCase->return_date)->translatedFormat('d F Y') ?: 'Belum ditentukan' }}</div>
                     </div>
                 </div>
 

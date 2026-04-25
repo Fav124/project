@@ -58,11 +58,11 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Status Pendaftaran Akun DeisaHealth</h1>
+            <h1>Status Pendaftaran Akun DEIHealth</h1>
         </div>
         <div class="content">
             <p>Yth. <strong>{{ $user->name }}</strong>,</p>
-            <p>Terima kasih telah melakukan pendaftaran akun pada sistem DeisaHealth. Kami telah meninjau permohonan pendaftaran Anda.</p>
+            <p>Terima kasih telah melakukan pendaftaran akun pada sistem DEIHealth. Kami telah meninjau permohonan pendaftaran Anda.</p>
             <p>Mohon maaf, saat ini pendaftaran akun Anda <strong>belum dapat kami setujui (Ditolak)</strong>.</p>
             
             @if($reason)
@@ -75,8 +75,8 @@
             <p>Jika Anda merasa ini adalah sebuah kesalahan atau ingin memperbaiki data pendaftaran, silakan hubungi administrator sistem atau balas email ini untuk informasi lebih lanjut.</p>
         </div>
         <div class="footer">
-            <p>Pesan ini dikirim secara otomatis oleh Sistem Manajemen DeisaHealth.</p>
-            <p>&copy; {{ date('Y') }} DeisaHealth. All rights reserved.</p>
+            <p>Pesan ini dikirim secara otomatis oleh Sistem Manajemen DEIHealth.</p>
+            <p>&copy; {{ date('Y') }} DEIHealth. All rights reserved.</p>
         </div>
     </div>
 </body>

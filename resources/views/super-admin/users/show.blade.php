@@ -37,7 +37,7 @@
                     <div class="row">
                         <div class="col-6 mb-3">
                             <small class="text-muted d-block">Terdaftar Pada</small>
-                            <span class="text-white">{{ $user->created_at->format('d M Y, H:i') }}</span>
+                            <span class="text-white">{{ $user->created_at->translatedFormat('d F Y, H:i') }}</span>
                         </div>
                         <div class="col-6 mb-3">
                             <small class="text-muted d-block">Status Akses</small>
@@ -46,7 +46,7 @@
                         @if($user->approved_at)
                             <div class="col-12 mb-3">
                                 <small class="text-muted d-block">{{ $user->status === 'approved' ? 'Disetujui Pada' : 'Ditolak Pada' }}</small>
-                                <span class="text-white">{{ $user->approved_at->format('d M Y, H:i') }}</span>
+                                <span class="text-white">{{ $user->approved_at->translatedFormat('d F Y, H:i') }}</span>
                             </div>
                         @endif
                     </div>

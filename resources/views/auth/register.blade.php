@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Akun | DeisaHealth</title>
+    <title>Daftar Akun | DEIHealth</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -151,7 +151,7 @@
     <div class="auth-banner">
         <div class="logo-wrapper">
             <div class="logo-icon"><i class="fas fa-heart-pulse"></i></div>
-            <div style="font-size: 24px; font-weight: 800;">DeisaHealth</div>
+            <div style="font-size: 24px; font-weight: 800;">DEIHealth</div>
         </div>
         <h1>Bergabung dalam<br>Layanan Kesehatan.</h1>
         

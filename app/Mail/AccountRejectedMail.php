@@ -33,7 +33,7 @@ class AccountRejectedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Pemberitahuan Pendaftaran Akun DeisaHealth')
+        return $this->subject('Pemberitahuan Pendaftaran Akun DEIHealth')
                     ->view('emails.account_rejected');
     }
 }
