@@ -19,6 +19,7 @@
         
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                @if(Auth::check())
                 <li class="nav-item dropdown me-3">
                     @php
                         $unreadCount = auth()->user()->unreadNotifications->count();
@@ -91,7 +92,10 @@
                         @endif
                     </ul>
                 </li>
+                @endif
             </ul>
+
+            @if(Auth::check())
             <div class="dropdown">
                 <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="user-menu d-flex">
@@ -126,6 +130,9 @@
                     </li>
                 </ul>
             </div>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-outline-primary ms-auto">Login Petugas</a>
+            @endif
         </div>
     </div>
 </nav>

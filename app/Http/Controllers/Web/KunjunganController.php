@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Diagnosa;
+use App\Models\KeluhanMaster;
 use App\Models\Kunjungan;
 use App\Models\Obat;
 use App\Models\Santri;
+use App\Models\TindakanMaster;
 use Illuminate\Http\Request;
 
 class KunjunganController extends Controller
@@ -37,21 +40,31 @@ class KunjunganController extends Controller
     public function create()
     {
         $santris = Santri::where('status_santri', 'aktif')->get();
-        // Show all medicines that are not expired and have stock > 0
         $obats = Obat::whereDate('tanggal_kadaluarsa', '>=', now())
-            ->where('stok', '>', 0)
-            ->get();
+            ->where('stok', '>', 0)->get();
         $kasurs = \App\Models\Kasur::where('status', 'tersedia')->get();
-        return view('kunjungan.create', compact('santris', 'obats', 'kasurs'));
+
+        // Master data for tags (grouped by category)
+        $diagnosaGroups = Diagnosa::active()->orderBy('kategori')->orderBy('nama')
+            ->get()->groupBy('kategori');
+        $keluhanGroups = KeluhanMaster::active()->orderBy('kategori')->orderBy('nama')
+            ->get()->groupBy('kategori');
+        $tindakanGroups = TindakanMaster::active()->orderBy('kategori')->orderBy('nama')
+            ->get()->groupBy('kategori');
+
+        return view('kunjungan.create', compact(
+            'santris', 'obats', 'kasurs',
+            'diagnosaGroups', 'keluhanGroups', 'tindakanGroups'
+        ));
     }
 
     public function store(Request $request)
     {
         // 1. Validasi Dasar
         $request->validate([
-            'santri_id' => 'required|exists:santris,id',
-            'keluhan' => 'required|string',
-            'tindak_lanjut' => 'required|in:kembali_kamar,rawat_inap,rujuk_rs,pulang',
+            'santri_id'    => 'required|exists:santris,id',
+            'keluhan_utama'=> 'required|string',
+            'tindak_lanjut'=> 'required|in:kembali_kamar,rawat_inap,rujuk_rs,pulang',
         ]);
 
         // 2. Cek Double Entry (Cek jika santri sedang rawat inap aktif)
@@ -65,23 +78,36 @@ class KunjunganController extends Controller
 
         try {
             \DB::transaction(function() use ($request) {
-                // 3. Simpan Kunjungan
-                $statusKunjungan = 'sembuh'; // Default: Selesai & Kembali ke kamar
+                // 3. Resolve tag IDs (diagnosa, keluhan, tindakan)
+                $diagnosaIds  = array_filter((array) $request->input('diagnosa_ids', []));
+                $keluhanIds   = array_filter((array) $request->input('keluhan_ids', []));
+                $tindakanIds  = array_filter((array) $request->input('tindakan_ids', []));
+
+                // Build a text summary of diagnoses for the legacy field
+                $diagnosaNames = \App\Models\Diagnosa::whereIn('id', $diagnosaIds)->pluck('nama')->join(', ');
+
+                // 4. Simpan Kunjungan
+                $statusKunjungan = 'sembuh';
                 if ($request->tindak_lanjut === 'rawat_inap') $statusKunjungan = 'rawat_inap';
-                if ($request->tindak_lanjut === 'rujuk_rs') $statusKunjungan = 'dirujuk';
-                if ($request->tindak_lanjut === 'pulang') $statusKunjungan = 'sembuh';
+                if ($request->tindak_lanjut === 'rujuk_rs')  $statusKunjungan = 'dirujuk';
+                if ($request->tindak_lanjut === 'pulang')    $statusKunjungan = 'sembuh';
 
                 $kunjungan = Kunjungan::create([
-                    'santri_id' => $request->santri_id,
-                    'user_id' => auth()->id(),
+                    'santri_id'         => $request->santri_id,
+                    'user_id'           => auth()->id(),
                     'tanggal_kunjungan' => now(),
-                    'keluhan_utama' => $request->keluhan,
-                    'riwayat_keluhan' => $request->anamnesis,
-                    'diagnosa_sementara' => $request->diagnosa_sementara,
-                    'tindakan' => $request->tindakan,
-                    'status_kunjungan' => $statusKunjungan,
-                    'catatan' => $request->catatan,
+                    'keluhan_utama'     => $request->keluhan_utama,
+                    'riwayat_keluhan'   => $request->anamnesis,
+                    'diagnosa_sementara'=> $diagnosaNames ?: $request->diagnosa_custom,
+                    'tindakan'          => $request->catatan_tindakan,
+                    'status_kunjungan'  => $statusKunjungan,
+                    'catatan'           => $request->catatan,
                 ]);
+
+                // 5. Sync tags (many-to-many)
+                $kunjungan->diagnosas()->sync($diagnosaIds);
+                $kunjungan->keluhanMasters()->sync($keluhanIds);
+                $kunjungan->tindakanMasters()->sync($tindakanIds);
 
                 // 4. Simpan Resep & Kurangi Stok (Jika ada)
                 if ($request->obats) {

@@ -65,6 +65,48 @@
                 </div>
             </div>
 
+            {{-- Data Kesehatan --}}
+            <div class="card mt-3 border-start border-4 border-danger">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title text-danger"><i class="bi bi-heart-pulse-fill me-2"></i>Informasi Kesehatan</h4>
+                    <a href="{{ route('santri.edit-health', $santri->id) }}" class="btn btn-sm btn-outline-danger">Edit Detail Klinis</a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Golongan Darah</label>
+                            <select name="golongan_darah" class="form-select select2">
+                                <option value="">-</option>
+                                <option value="A" {{ $santri->kesehatan?->golongan_darah == 'A' ? 'selected' : '' }}>A</option>
+                                <option value="B" {{ $santri->kesehatan?->golongan_darah == 'B' ? 'selected' : '' }}>B</option>
+                                <option value="AB" {{ $santri->kesehatan?->golongan_darah == 'AB' ? 'selected' : '' }}>AB</option>
+                                <option value="O" {{ $santri->kesehatan?->golongan_darah == 'O' ? 'selected' : '' }}>O</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tinggi (cm)</label>
+                            <input type="number" name="tinggi_badan" class="form-control" value="{{ old('tinggi_badan', $santri->kesehatan?->tinggi_badan) }}" placeholder="cm">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Berat (kg)</label>
+                            <input type="number" name="berat_badan" class="form-control" value="{{ old('berat_badan', $santri->kesehatan?->berat_badan) }}" placeholder="kg">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Alergi (Obat/Makanan)</label>
+                            <input type="text" name="alergi" class="form-control" value="{{ old('alergi', $santri->kesehatan?->alergi) }}" placeholder="Jika ada, tuliskan di sini">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Riwayat Penyakit Kronis</label>
+                            <textarea name="riwayat_penyakit" class="form-control" rows="2" placeholder="Contoh: Asma, Jantung, dsb">{{ old('riwayat_penyakit', $santri->kesehatan?->riwayat_penyakit) }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Kondisi Khusus Lainnya</label>
+                            <textarea name="kondisi_khusus" class="form-control" rows="2" placeholder="Contoh: Memakai kacamata, pasca operasi, dsb">{{ old('kondisi_khusus', $santri->kesehatan?->kondisi_khusus) }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             @php $wali = $santri->waliSantris->first(); @endphp
             {{-- Data Wali --}}
             <div class="card mt-3">

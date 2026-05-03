@@ -149,17 +149,35 @@
             if (['id', 'password', 'remember_token', 'deleted_at'].includes(key) && !newData[key]) return;
             
             const label = fieldLabels[key] || key.replace(/_/g, ' ').toUpperCase();
-            const oldVal = oldData[key] === null ? '<span class="text-muted italic">Kosong</span>' : oldData[key];
-            const newVal = newData[key] === null ? '<span class="text-muted italic">Kosong</span>' : newData[key];
             
-            const isChanged = oldData[key] !== newData[key];
-            const rowClass = isChanged ? 'table-warning' : '';
+            const hasOld = key in oldData;
+            const hasNew = key in newData;
+
+            let oldValRaw = hasOld ? oldData[key] : null;
+            let newValRaw = hasNew ? newData[key] : (hasOld ? oldData[key] : null);
+
+            // Format for display
+            const formatVal = (val) => {
+                if (val === null || val === undefined) return '<span class="text-muted small">Kosong</span>';
+                if (val === '') return '<span class="text-muted small">String Kosong</span>';
+                return val;
+            };
+
+            const oldDisplay = formatVal(oldValRaw);
+            const newDisplay = formatVal(newValRaw);
+            
+            const isChanged = hasNew && hasOld && oldValRaw !== newValRaw;
+            // If it's a new record, everything is "changed" from nothing
+            const highlightClass = isChanged || (log.event === 'created' && hasNew) || (log.event === 'deleted' && hasOld) ? 'table-warning' : '';
 
             html += `
-                <tr class="${rowClass}">
+                <tr class="${highlightClass}">
                     <td><strong>${label}</strong></td>
-                    <td class="text-danger"><del>${oldVal}</del></td>
-                    <td class="text-success fw-bold">${newVal}</td>
+                    <td class="text-muted">${log.event === 'created' ? '-' : oldDisplay}</td>
+                    <td>
+                        ${isChanged ? `<del class="text-danger small d-block">${oldDisplay}</del>` : ''}
+                        <span class="${isChanged || log.event === 'created' ? 'text-success fw-bold' : ''}">${newDisplay}</span>
+                    </td>
                 </tr>
             `;
         });

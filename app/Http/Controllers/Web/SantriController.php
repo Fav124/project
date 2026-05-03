@@ -69,7 +69,7 @@ class SantriController extends Controller
                 'nama_wali' => $request->nama_wali,
                 'hubungan_wali' => $request->hubungan_wali,
                 'no_hp' => $request->no_hp,
-                'alamat' => $request->alamat,
+                'alamat' => $request->alamat_wali,
             ]);
         }
 
@@ -138,7 +138,7 @@ class SantriController extends Controller
                     'nama_wali' => $request->nama_wali,
                     'hubungan_wali' => $request->hubungan_wali,
                     'no_hp' => $request->no_hp,
-                    'alamat' => $request->alamat,
+                    'alamat' => $request->alamat_wali,
                 ]
             );
         }

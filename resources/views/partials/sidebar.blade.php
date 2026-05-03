@@ -24,7 +24,7 @@
                     </a>
                 </li>
 
-                @if(Auth::user()->role->value === 'super_admin' || Auth::user()->role->value === 'admin')
+                @if(Auth::check() && (Auth::user()->role->value === 'super_admin' || Auth::user()->role->value === 'admin'))
                 <li class="sidebar-item has-sub {{ Request::is('santri*') || Request::is('obat*') || Request::is('master*') ? 'active' : '' }}">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-database-fill"></i>
@@ -74,7 +74,7 @@
                         <li class="submenu-item {{ Request::is('laporan*') ? 'active' : '' }}">
                             <a href="{{ route('laporan.index') }}">Rekap Laporan</a>
                         </li>
-                        @if(Auth::user()->role->value === 'super_admin' || Auth::user()->role->value === 'admin')
+                        @if(Auth::check() && (Auth::user()->role->value === 'super_admin' || Auth::user()->role->value === 'admin'))
                         <li class="submenu-item {{ Request::is('audit-logs*') ? 'active' : '' }}">
                             <a href="{{ route('audit-logs.index') }}">Audit Log Aktivitas</a>
                         </li>
@@ -88,7 +88,7 @@
                         <span>Manajemen Sistem</span>
                     </a>
                     <ul class="submenu {{ Request::is('approvals*') || Request::is('backups*') || Request::is('users*') || Request::is('settings*') ? 'active' : '' }}">
-                        @if(Auth::user()->role->value === 'super_admin' || Auth::user()->role->value === 'admin')
+                        @if(Auth::check() && (Auth::user()->role->value === 'super_admin' || Auth::user()->role->value === 'admin'))
                         <li class="submenu-item {{ Request::is('approvals*') ? 'active' : '' }}">
                             <a href="{{ route('approvals.index') }}" class="d-flex justify-content-between align-items-center">
                                 <span>Persetujuan (Approval)</span>
@@ -99,7 +99,7 @@
                         </li>
                         @endif
 
-                        @if(Auth::user()->role->value === 'super_admin')
+                        @if(Auth::check() && Auth::user()->role->value === 'super_admin')
                         <li class="submenu-item {{ Request::is('users*') ? 'active' : '' }}">
                             <a href="{{ route('users.index') }}">Data Pengguna</a>
                         </li>

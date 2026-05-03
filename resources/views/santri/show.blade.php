@@ -117,12 +117,17 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer d-flex justify-content-between">
+            <div class="card-footer d-flex justify-content-between align-items-center">
                 <a href="{{ route('santri.history', $santri->id) }}" class="btn btn-outline-info">
                     <i class="bi bi-file-medical"></i> Lihat Riwayat Medis Lengkap
                 </a>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('santri.edit', $santri->id) }}" class="btn btn-warning text-white">Edit Data</a>
+                    <a href="{{ route('santri.edit-health', $santri->id) }}" class="btn btn-outline-danger">
+                        <i class="bi bi-heart-pulse"></i> Edit Kesehatan
+                    </a>
+                    <a href="{{ route('santri.edit', $santri->id) }}" class="btn btn-warning text-white">
+                        <i class="bi bi-pencil-square"></i> Edit Data Santri
+                    </a>
                     <a href="{{ route('santri.index') }}" class="btn btn-secondary">Kembali</a>
                 </div>
             </div>

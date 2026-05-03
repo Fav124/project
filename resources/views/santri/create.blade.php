@@ -89,6 +89,48 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Data Kesehatan Awal --}}
+            <div class="card mt-3 border-start border-4 border-danger">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="card-title text-danger"><i class="bi bi-heart-pulse-fill me-2"></i>Informasi Kesehatan Awal</h4>
+                    <span class="badge bg-light-danger text-danger">Penting</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Golongan Darah</label>
+                            <select name="golongan_darah" class="form-select select2">
+                                <option value="">-</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="AB">AB</option>
+                                <option value="O">O</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tinggi (cm)</label>
+                            <input type="number" name="tinggi_badan" class="form-control" placeholder="cm">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Berat (kg)</label>
+                            <input type="number" name="berat_badan" class="form-control" placeholder="kg">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Alergi (Obat/Makanan)</label>
+                            <input type="text" name="alergi" class="form-control" placeholder="Jika ada, tuliskan di sini">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Riwayat Penyakit Kronis</label>
+                            <textarea name="riwayat_penyakit" class="form-control" rows="2" placeholder="Contoh: Asma, Jantung, dsb"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Kondisi Khusus Lainnya</label>
+                            <textarea name="kondisi_khusus" class="form-control" rows="2" placeholder="Contoh: Memakai kacamata, pasca operasi, dsb"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         {{-- Penempatan --}}

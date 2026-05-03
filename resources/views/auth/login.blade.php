@@ -2,6 +2,19 @@
 
 @section('title', 'Login')
 
+@push('styles')
+<style>
+    #auth #auth-right {
+        background: linear-gradient(135deg, rgba(45, 73, 157, 0.4), rgba(63, 84, 145, 0.4)), url('{{ asset('assets/images/bg/login_health.png') }}');
+        background-size: cover;
+        background-position: center;
+    }
+    #auth #auth-left {
+        padding: 2rem 5rem;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="row h-100 m-0">
     <div class="col-lg-5 col-12 p-0">
@@ -13,10 +26,10 @@
                 </a>
             </div>
             <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle">Silakan masuk menggunakan akun yang telah terdaftar.</p>
+            <p class="auth-subtitle mb-4">Silakan masuk menggunakan akun yang telah terdaftar.</p>
 
             @if($errors->any())
-                <div class="alert alert-danger py-2 px-3 shadow-sm mb-3" style="font-size: 0.9rem;">
+                <div class="alert alert-danger py-2 px-3 shadow-sm mb-3" style="font-size: 0.85rem;">
                     <ul class="mb-0 p-0" style="list-style: none;">
                         @foreach($errors->all() as $error)
                             <li><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ $error }}</li>
@@ -28,28 +41,28 @@
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
                 <div class="form-group position-relative has-icon-left mb-3">
-                    <input type="email" name="email" class="form-control form-control-lg shadow-sm" placeholder="Email" value="{{ old('email') }}" required autofocus style="padding-top: 1rem; padding-bottom: 1rem;">
+                    <input type="email" name="email" class="form-control shadow-sm" placeholder="Email" value="{{ old('email') }}" required autofocus style="padding-top: 0.8rem; padding-bottom: 0.8rem;">
                     <div class="form-control-icon">
                         <i class="bi bi-envelope"></i>
                     </div>
                 </div>
                 <div class="form-group position-relative has-icon-left mb-3">
-                    <input type="password" name="password" class="form-control form-control-lg shadow-sm" placeholder="Password" required style="padding-top: 1rem; padding-bottom: 1rem;">
+                    <input type="password" name="password" class="form-control shadow-sm" placeholder="Password" required style="padding-top: 0.8rem; padding-bottom: 0.8rem;">
                     <div class="form-control-icon">
                         <i class="bi bi-shield-lock"></i>
                     </div>
                 </div>
                 <div class="form-check form-check-md d-flex align-items-center mb-4">
                     <input class="form-check-input me-2" type="checkbox" name="remember" id="flexCheckDefault">
-                    <label class="form-check-label text-gray-600" for="flexCheckDefault" style="font-size: 0.9rem;">
+                    <label class="form-check-label text-gray-600" for="flexCheckDefault" style="font-size: 0.85rem;">
                         Tetap masuk
                     </label>
                 </div>
-                <button class="btn btn-primary btn-block btn-lg shadow-lg py-3 fw-bold border-0" style="background: linear-gradient(90deg, #2d499d, #3f5491); transition: all 0.3s;">Masuk Ke Sistem</button>
+                <button class="btn btn-primary btn-block btn-lg shadow-lg py-2 fw-bold border-0" style="background: linear-gradient(90deg, #2d499d, #3f5491); transition: all 0.3s;">Masuk Ke Sistem</button>
             </form>
             <div class="text-center mt-4 text-md">
-                <p class="text-gray-600 mb-1" style="font-size: 0.9rem;">Belum punya akun? <a href="{{ route('register') }}" class="font-bold">Daftar Sekarang</a>.</p>
-                <p style="font-size: 0.9rem;"><a class="font-bold" href="#">Lupa password?</a></p>
+                <p class="text-gray-600 mb-1" style="font-size: 0.85rem;">Belum punya akun? <a href="{{ route('register') }}" class="font-bold">Daftar Sekarang</a>.</p>
+                <p style="font-size: 0.85rem;"><a class="font-bold" href="#">Lupa password?</a></p>
             </div>
         </div>
     </div>

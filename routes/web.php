@@ -20,6 +20,7 @@ use App\Http\Controllers\Web\KelasController;
 use App\Http\Controllers\Web\JurusanController;
 use App\Http\Controllers\Web\KamarController;
 use App\Http\Controllers\Web\ProfileController;
+use App\Http\Controllers\Api\MedicalTagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,22 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
+
+    // ── Medical Tag API (AJAX) ───────────────────────────────
+    Route::prefix('api/medical-tags')->name('api.medical-tags.')->group(function () {
+        // Diagnosa
+        Route::get('diagnosa', [MedicalTagController::class, 'allDiagnosa'])->name('diagnosa.all');
+        Route::get('diagnosa/search', [MedicalTagController::class, 'searchDiagnosa'])->name('diagnosa.search');
+        Route::post('diagnosa', [MedicalTagController::class, 'storeDiagnosa'])->name('diagnosa.store');
+        // Keluhan
+        Route::get('keluhan', [MedicalTagController::class, 'allKeluhan'])->name('keluhan.all');
+        Route::get('keluhan/search', [MedicalTagController::class, 'searchKeluhan'])->name('keluhan.search');
+        Route::post('keluhan', [MedicalTagController::class, 'storeKeluhan'])->name('keluhan.store');
+        // Tindakan
+        Route::get('tindakan', [MedicalTagController::class, 'allTindakan'])->name('tindakan.all');
+        Route::get('tindakan/search', [MedicalTagController::class, 'searchTindakan'])->name('tindakan.search');
+        Route::post('tindakan', [MedicalTagController::class, 'storeTindakan'])->name('tindakan.store');
+    });
 
     /**
      * Sesuai dengan rencana Section 4 - 8, route untuk modul lain akan ditambahkan 
