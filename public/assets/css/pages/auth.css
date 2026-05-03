@@ -1,0 +1,121 @@
+body {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent body scroll */
+}
+
+#auth {
+    height: 100vh;
+    overflow: hidden; /* Rigid height */
+}
+
+#auth #auth-left {
+    padding: 2rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+}
+
+#auth #auth-left .auth-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+#auth #auth-left .auth-subtitle {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: #a8aebb;
+    margin-bottom: 1.5rem;
+}
+
+#auth #auth-left .auth-logo {
+    margin-bottom: 2rem;
+}
+
+#auth #auth-left .auth-logo img {
+    height: 60px !important; /* Smaller logo */
+}
+
+#auth #auth-left .auth-logo h2 {
+    font-size: 1.2rem;
+}
+
+#auth #auth-right {
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(135deg, rgba(45, 73, 157, 0.4), rgba(63, 84, 145, 0.4)), url('../../images/bg/pesantren_health.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#auth #auth-right .auth-right-logo {
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: fadeInScale 1.2s ease-out;
+}
+
+/* Background pattern */
+#auth #auth-right::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('../../images/logo/dei.png') no-repeat center center;
+    background-size: 40%;
+    filter: brightness(0) invert(1);
+    opacity: 0.1;
+    z-index: 1;
+}
+
+/* White inner shadow effect from bottom */
+#auth #auth-right::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to top, rgba(255, 255, 255, 1), transparent);
+    z-index: 3;
+    pointer-events: none;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #auth #auth-left {
+        padding: 2rem;
+    }
+    #auth #auth-left .auth-title {
+        font-size: 2rem;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    #auth #auth-left {
+        padding: 2rem 8rem;
+    }
+}
+
+
