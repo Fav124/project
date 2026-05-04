@@ -12,7 +12,12 @@ class KamarController extends Controller
     public function index(): JsonResponse
     {
         $kamars = Kamar::all();
-        return response()->json($kamars);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'items' => $kamars
+            ]
+        ]);
     }
 
     public function store(Request $request): JsonResponse

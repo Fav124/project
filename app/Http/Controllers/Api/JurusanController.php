@@ -12,7 +12,12 @@ class JurusanController extends Controller
     public function index(): JsonResponse
     {
         $jurusans = Jurusan::withCount('santris')->get();
-        return response()->json($jurusans);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'items' => $jurusans
+            ]
+        ]);
     }
 
     public function store(Request $request): JsonResponse

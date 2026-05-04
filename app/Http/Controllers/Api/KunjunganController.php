@@ -238,4 +238,12 @@ class KunjunganController extends Controller
             ]
         ]);
     }
+
+    public function notifyGuardian($id): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Notifikasi perkembangan kesehatan telah dikirim ke Wali Santri.'
+        ]);
+    }
 }

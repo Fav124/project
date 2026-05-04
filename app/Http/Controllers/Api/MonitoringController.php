@@ -37,7 +37,10 @@ class MonitoringController extends Controller
 
         $cases = $query->orderByDesc('tanggal_mulai')->paginate(15);
 
-        return response()->json($cases);
+        return response()->json([
+            'success' => true,
+            'data' => $cases
+        ]);
     }
 
     /**
@@ -50,7 +53,10 @@ class MonitoringController extends Controller
             ->with(['santri.kelas', 'kunjungan', 'riwayats.petugas', 'riwayatAktif'])
             ->firstOrFail();
 
-        return response()->json($case);
+        return response()->json([
+            'success' => true,
+            'data' => $case
+        ]);
     }
 
     /**

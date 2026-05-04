@@ -12,7 +12,12 @@ class KelasController extends Controller
     public function index(): JsonResponse
     {
         $kelas = Kelas::withCount('santris')->get();
-        return response()->json($kelas);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'items' => $kelas
+            ]
+        ]);
     }
 
     public function store(Request $request): JsonResponse
