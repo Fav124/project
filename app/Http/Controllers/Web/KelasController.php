@@ -16,9 +16,22 @@ class KelasController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama_kelas' => 'required|string|unique:kelas']);
+        $request->validate([
+            'nama_kelas' => 'required|string|unique:kelas',
+            'warna' => 'nullable|string|max:7',
+        ]);
         Kelas::create($request->all());
         return back()->with('success', 'Kelas berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, Kelas $kela)
+    {
+        $request->validate([
+            'nama_kelas' => 'required|string|unique:kelas,nama_kelas,' . $kela->id,
+            'warna' => 'nullable|string|max:7',
+        ]);
+        $kela->update($request->all());
+        return back()->with('success', 'Kelas berhasil diperbarui.');
     }
 
     public function show(Kelas $kela)

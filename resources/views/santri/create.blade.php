@@ -65,26 +65,45 @@
 
             {{-- Data Wali --}}
             <div class="card mt-3">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Data Wali Santri</h4>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="addWaliRow()">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah Wali
+                    </button>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nama Wali</label>
-                            <input type="text" name="nama_wali" class="form-control" placeholder="Nama ayah/ibu/wali">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Hubungan</label>
-                            <input type="text" name="hubungan_wali" class="form-control" placeholder="Ayah, Ibu, Kakak, dsb">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">No. WhatsApp Wali</label>
-                            <input type="text" name="no_hp" class="form-control" placeholder="Contoh: 08123456789">
-                        </div>
-                        <div class="col-12 mb-3">
-                            <label class="form-label">Alamat Wali</label>
-                            <textarea name="alamat_wali" class="form-control" rows="2" placeholder="Alamat lengkap wali"></textarea>
+                    <div id="wali-container">
+                        <div class="wali-row border rounded p-3 mb-3 position-relative shadow-sm" id="wali-row-0">
+                            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="removeWaliRow(0)" title="Hapus Wali"></button>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">Nama Wali</label>
+                                    <input type="text" name="walis[0][nama_wali]" class="form-control" required placeholder="Nama ayah/ibu/wali">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">Hubungan</label>
+                                    <select name="walis[0][hubungan_wali]" class="form-select">
+                                        <option value="Ayah">Ayah</option>
+                                        <option value="Ibu">Ibu</option>
+                                        <option value="Kakek/Nenek">Kakek/Nenek</option>
+                                        <option value="Paman/Bibi">Paman/Bibi</option>
+                                        <option value="Saudara">Saudara</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">No. WhatsApp Wali</label>
+                                    <input type="text" name="walis[0][no_hp]" class="form-control" placeholder="08xxx">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">Pekerjaan</label>
+                                    <input type="text" name="walis[0][pekerjaan]" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Alamat Wali</label>
+                                    <textarea name="walis[0][alamat]" class="form-control" rows="1"></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,3 +206,56 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script>
+    let waliCount = 1;
+
+    function addWaliRow() {
+        const index = waliCount++;
+        const html = `
+            <div class="wali-row border rounded p-3 mb-3 position-relative shadow-sm" id="wali-row-${index}">
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="removeWaliRow(${index})" title="Hapus Wali"></button>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Nama Wali</label>
+                        <input type="text" name="walis[${index}][nama_wali]" class="form-control" required placeholder="Nama ayah/ibu/wali">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Hubungan</label>
+                        <select name="walis[${index}][hubungan_wali]" class="form-select">
+                            <option value="Ayah">Ayah</option>
+                            <option value="Ibu">Ibu</option>
+                            <option value="Kakek/Nenek">Kakek/Nenek</option>
+                            <option value="Paman/Bibi">Paman/Bibi</option>
+                            <option value="Saudara">Saudara</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">No. WhatsApp Wali</label>
+                        <input type="text" name="walis[${index}][no_hp]" class="form-control" placeholder="08xxx">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold">Pekerjaan</label>
+                        <input type="text" name="walis[${index}][pekerjaan]" class="form-control">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small fw-bold">Alamat Wali</label>
+                        <textarea name="walis[${index}][alamat]" class="form-control" rows="1"></textarea>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('wali-container').insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeWaliRow(index) {
+        if (document.querySelectorAll('.wali-row').length > 1) {
+            document.getElementById(`wali-row-${index}`).remove();
+        } else {
+            alert('Minimal harus ada satu data wali.');
+        }
+    }
+</script>
+@endpush

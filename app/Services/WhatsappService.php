@@ -2,56 +2,105 @@
 
 namespace App\Services;
 
-use App\Models\Setting;
+use App\Models\Kunjungan;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class WhatsappService
 {
     /**
-     * Generate a WhatsApp click-to-chat link.
+     * Send a medical report to the santri's primary guardians.
      */
-    public function generateLink($phoneNumber, $message)
+    public function sendMedicalReport(Kunjungan $kunjungan)
     {
-        // Format phone number (remove non-digits, replace leading 0 with 62)
-        $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
-        if (str_starts_with($phoneNumber, '0')) {
-            $phoneNumber = '62' . substr($phoneNumber, 1);
+        $santri = $kunjungan->santri;
+        $walis = $santri->waliSantris;
+
+        if ($walis->isEmpty()) {
+            Log::warning("No wali found for santri: {$santri->nama_lengkap}. WA report skipped.");
+            return;
         }
 
-        return "https://wa.me/{$phoneNumber}?text=" . urlencode($message);
+        $message = $this->formatReportMessage($kunjungan);
+
+        foreach ($walis as $wali) {
+            if ($wali->no_hp) {
+                $this->sendMessage($wali->no_hp, $message);
+            }
+        }
     }
 
     /**
-     * Send a WhatsApp message via API (Placeholder for integration like Fonnte/Wablas).
+     * Format the report to be readable and professional for parents.
      */
-    public function sendMessage($phoneNumber, $message)
+    private function formatReportMessage(Kunjungan $kunjungan)
     {
-        $apiKey = Setting::where('key', 'whatsapp_api_key')->value('value');
+        $santri = $kunjungan->santri;
+        $tanggal = $kunjungan->tanggal_kunjungan->format('d/m/Y H:i');
         
-        if (!$apiKey) {
-            // Fallback to log or just ignore if no API key
-            \Log::info("WhatsApp Message (API Key missing): To {$phoneNumber} - {$message}");
-            return false;
+        $statusMap = [
+            'sembuh' => '✅ Sembuh / Kembali ke Kamar',
+            'rawat_inap' => '🏥 Rawat Inap di UKS',
+            'dirujuk' => '🚑 Dirujuk ke Rumah Sakit',
+            'pulang' => '🏠 Izin Pulang / Dijemput Wali',
+        ];
+
+        $status = $statusMap[$kunjungan->status_kunjungan] ?? $kunjungan->status_kunjungan;
+
+        $message = "📢 *LAPORAN KESEHATAN SANTRI*\n";
+        $message .= "Pondok Pesantren DEI Health\n";
+        $message .= "──────────────────\n\n";
+        $message .= "Nama: *{$santri->nama_lengkap}*\n";
+        $message .= "Kelas: {$santri->kelas->nama_kelas}\n";
+        $message .= "Waktu: {$tanggal}\n\n";
+        
+        $message .= "*Keluhan Utama:*\n{$kunjungan->keluhan_utama}\n\n";
+        
+        if ($kunjungan->diagnosa_sementara) {
+            $message .= "*Diagnosa Sementara:*\n{$kunjungan->diagnosa_sementara}\n\n";
         }
 
-        // Example implementation for Fonnte
-        /*
-        $response = \Http::withHeaders([
-            'Authorization' => $apiKey,
-        ])->post('https://api.fonnte.com/send', [
-            'target' => $phoneNumber,
-            'message' => $message,
-        ]);
-        return $response->successful();
-        */
+        $message .= "*Tindakan:*\n{$kunjungan->tindakan}\n\n";
 
-        return true;
+        if ($kunjungan->pemberianObats->isNotEmpty()) {
+            $message .= "*Obat yang Diberikan:*\n";
+            foreach ($kunjungan->pemberianObats as $pemberian) {
+                $message .= "- {$pemberian->obat->nama_obat} ({$pemberian->aturan_pakai})\n";
+            }
+            $message .= "\n";
+        }
+
+        $message .= "*Status Akhir:*\n{$status}\n\n";
+        
+        $message .= "──────────────────\n";
+        $message .= "_Laporan ini dibuat otomatis oleh Sistem Kesehatan DEI Health. Mohon doa untuk kesembuhan putra/putri Bapak/Ibu._";
+
+        return $message;
     }
 
     /**
-     * Get Admin WhatsApp number from settings.
+     * Core logic to send the message via WA API Provider.
+     * Replace the URL and API Key as per your provider (e.g., Fonnte, Wablas, etc.)
      */
-    public function getAdminNumber()
+    private function sendMessage($phone, $message)
     {
-        return Setting::where('key', 'admin_whatsapp')->value('value') ?? '628123456789';
+        // Example integration with a generic provider
+        // $apiUrl = config('services.whatsapp.url');
+        // $apiKey = config('services.whatsapp.key');
+
+        Log::info("Sending WA to {$phone}: \n{$message}");
+
+        /*
+        try {
+            Http::withHeaders([
+                'Authorization' => $apiKey
+            ])->post($apiUrl, [
+                'target' => $phone,
+                'message' => $message
+            ]);
+        } catch (\Exception $e) {
+            Log::error("WA API Error: " . $e->getMessage());
+        }
+        */
     }
 }

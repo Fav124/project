@@ -62,6 +62,7 @@
                                     'sembuh' => 'success',
                                     'rawat_inap' => 'warning',
                                     'dirujuk' => 'danger',
+                                    'pulang' => 'info',
                                     default => 'secondary'
                                 };
                                 

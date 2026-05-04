@@ -25,7 +25,13 @@ class SantriController extends Controller
 
         $santris = $query->latest()->paginate(10);
 
-        return view('santri.index', compact('santris'));
+        // Stats for the top cards
+        $totalAktif = Santri::where('status_santri', 'aktif')->count();
+        $totalSakit = Santri::whereHas('kasusAktif')->count();
+        $totalPutra = Santri::where('jenis_kelamin', 'L')->count();
+        $totalPutri = Santri::where('jenis_kelamin', 'P')->count();
+
+        return view('santri.index', compact('santris', 'totalAktif', 'totalSakit', 'totalPutra', 'totalPutri'));
     }
 
     /**
@@ -62,8 +68,14 @@ class SantriController extends Controller
 
         $santri = Santri::create($data);
         
-        // Save Guardian Data
-        if ($request->nama_wali) {
+        // Save Guardian Data (Multi-Wali)
+        if ($request->walis) {
+            foreach ($request->walis as $waliData) {
+                if (!empty($waliData['nama_wali'])) {
+                    $santri->waliSantris()->create($waliData);
+                }
+            }
+        } elseif ($request->nama_wali) {
             \App\Models\WaliSantri::create([
                 'santri_id' => $santri->id,
                 'nama_wali' => $request->nama_wali,
@@ -130,8 +142,16 @@ class SantriController extends Controller
 
         $santri->update($data);
 
-        // Update Guardian Data
-        if ($request->nama_wali) {
+        // Update Guardian Data (Multi-Wali)
+        if ($request->walis) {
+            $santri->waliSantris()->delete(); // Clear and re-add for simplicity in this case
+            foreach ($request->walis as $waliData) {
+                if (!empty($waliData['nama_wali'])) {
+                    $santri->waliSantris()->create($waliData);
+                }
+            }
+        } elseif ($request->nama_wali) {
+            // Fallback for legacy simple update
             \App\Models\WaliSantri::updateOrCreate(
                 ['santri_id' => $santri->id],
                 [
@@ -197,5 +217,13 @@ class SantriController extends Controller
         );
 
         return redirect()->route('santri.show', $santri->id)->with('success', 'Data kesehatan berhasil diperbarui.');
+    }
+
+    /**
+     * Get Wali Santri for AJAX requests.
+     */
+    public function getWalis(Santri $santri)
+    {
+        return response()->json($santri->waliSantris);
     }
 }

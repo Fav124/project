@@ -24,20 +24,56 @@
 .tag-selected-badge .remove-tag { cursor:pointer; font-weight:bold; margin-left:2px; }
 .category-label { font-size:.7rem; font-weight:700; color:#6c757d; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
 .hint-box { background:#f0f7ff; border-left:3px solid #0d6efd; padding:8px 12px; border-radius:4px; font-size:.8rem; color:#495057; margin-bottom:12px; }
+.step-wizard-pills .nav-link { border-radius: 0; padding: 16px; font-weight: bold; color: #6c757d; background: #f8f9fa; border-bottom: 3px solid #dee2e6; font-size: 0.95rem; }
+.step-wizard-pills .nav-link.active { background: #fff; color: var(--bs-primary); border-bottom-color: var(--bs-primary); }
+/* Custom Timeline Stepper */
+.stepper-wrapper { display: flex; justify-content: space-between; margin-bottom: 25px; position: relative; padding: 0 10%; }
+.stepper-wrapper::before { content: ''; position: absolute; top: 22px; left: 15%; width: 70%; height: 3px; background: #e9ecef; z-index: 1; }
+.stepper-item { position: relative; display: flex; flex-direction: column; align-items: center; flex: 1; z-index: 2; cursor: pointer; }
+.stepper-item .step-counter { width: 48px; height: 48px; border-radius: 50%; background: #fff; border: 4px solid #e9ecef; display: flex; justify-content: center; align-items: center; font-weight: 800; color: #adb5bd; margin-bottom: 10px; transition: all 0.3s ease; font-size: 1.1rem; }
+.stepper-item .step-name { font-size: 0.9rem; font-weight: 600; color: #adb5bd; transition: all 0.3s ease; }
+/* Active Step */
+.stepper-item.active .step-counter { border-color: var(--bs-primary); background: var(--bs-primary); color: #fff; box-shadow: 0 0 0 5px rgba(13, 110, 253, 0.2); }
+.stepper-item.active .step-name { color: var(--bs-primary); }
+/* Completed Step */
+.stepper-item.completed .step-counter { border-color: var(--bs-primary); background: #fff; color: var(--bs-primary); }
+.stepper-item.completed .step-name { color: var(--bs-primary); }
+
+.card-header-clean { background: transparent; padding-top: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid #f1f3f5; }
 </style>
 @endpush
 
 @section('content')
 <form action="{{ route('kunjungan.store') }}" method="POST" id="formPemeriksaan">
 @csrf
-<div class="row">
 
-{{-- ═══════════════ KIRI ═══════════════ --}}
-<div class="col-md-7">
+<div class="mb-5 mt-3">
+    <div class="stepper-wrapper" id="kunjunganStepper">
+      <div class="stepper-item active">
+        <div class="step-counter" onclick="switchTab('step1')"><i class="bi bi-person-lines-fill"></i></div>
+        <div class="step-name" onclick="switchTab('step1')">Data & Keluhan</div>
+      </div>
+      <div class="stepper-item">
+        <div class="step-counter" onclick="switchTab('step2')"><i class="bi bi-heart-pulse"></i></div>
+        <div class="step-name" onclick="switchTab('step2')">Fisik & Diagnosa</div>
+      </div>
+      <div class="stepper-item">
+        <div class="step-counter" onclick="switchTab('step3')"><i class="bi bi-capsule"></i></div>
+        <div class="step-name" onclick="switchTab('step3')">Tindakan & Obat</div>
+      </div>
+    </div>
+</div>
+
+<div class="tab-content" id="kunjunganStepperContent">
+
+<!-- STEP 1: DATA & KELUHAN -->
+<div class="tab-pane fade show active" id="step1" role="tabpanel">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
 
     {{-- Pilih Santri --}}
-    <div class="card mb-3">
-        <div class="card-header"><h4 class="card-title mb-0"><i class="bi bi-person-fill-check me-2 text-primary"></i>Data Santri</h4></div>
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-primary) !important;">
+        <div class="card-header card-header-clean"><h4 class="card-title mb-0"><i class="bi bi-person-fill-check me-2 text-primary"></i>Data Santri</h4></div>
         <div class="card-body">
             <label class="form-label">Pilih Santri <span class="text-danger">*</span></label>
             <select name="santri_id" class="form-select select2" required>
@@ -50,8 +86,8 @@
     </div>
 
     {{-- Keluhan --}}
-    <div class="card mb-3 border-warning">
-        <div class="card-header bg-warning bg-opacity-10">
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-warning) !important;">
+        <div class="card-header card-header-clean">
             <h4 class="card-title mb-0"><i class="bi bi-chat-square-text-fill me-2 text-warning"></i>Keluhan Santri</h4>
         </div>
         <div class="card-body">
@@ -64,18 +100,26 @@
                 </div>
                 <div id="keluhan-results" class="tag-search-results d-none"></div>
             </div>
-            <div class="hint-box bg-light border-start border-secondary"><small class="text-muted"><i class="bi bi-hand-index me-1"></i>Klik cepat dari daftar umum:</small></div>
-            <div class="tag-pool" id="keluhan-pool">
-                @foreach($keluhanGroups as $cat => $items)
-                    <div class="w-100"><span class="category-label">{{ $cat }}</span></div>
-                    @foreach($items as $k)
-                        <span class="tag-chip" data-type="keluhan" data-id="{{ $k->id }}" data-name="{{ $k->nama }}">{{ $k->nama }}</span>
-                    @endforeach
-                @endforeach
+            <div class="mt-2">
+                <a class="text-decoration-none small fw-bold text-secondary" data-bs-toggle="collapse" href="#collapseKeluhanPool" role="button" aria-expanded="false" aria-controls="collapseKeluhanPool">
+                    <i class="bi bi-list-ul me-1"></i>Tampilkan Daftar Keluhan Umum <i class="bi bi-chevron-down ms-1"></i>
+                </a>
+                <div class="collapse mt-2" id="collapseKeluhanPool">
+                    <div class="tag-pool p-3 border rounded bg-light shadow-sm" id="keluhan-pool" style="max-height: 250px;">
+                        @foreach($keluhanGroups as $cat => $items)
+                            <div class="w-100 mt-1"><span class="category-label text-primary"><i class="bi bi-tags me-1"></i>{{ $cat }}</span></div>
+                            <div class="d-flex flex-wrap gap-2 mb-2 w-100">
+                            @foreach($items as $k)
+                                <span class="tag-chip" data-type="keluhan" data-id="{{ $k->id }}" data-name="{{ $k->nama }}">{{ $k->nama }}</span>
+                            @endforeach
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
             <div class="mt-3">
-                <label class="form-label fw-bold">Keluhan Utama <span class="text-danger">*</span> <small class="text-muted fw-normal">(Ringkasan singkat)</small></label>
-                <textarea name="keluhan_utama" class="form-control" rows="2" required placeholder="Contoh: Demam 2 hari disertai batuk dan pilek"></textarea>
+                <label class="form-label fw-bold">Catatan Keluhan Tambahan <small class="text-muted fw-normal">(Opsional)</small></label>
+                <textarea name="keluhan_utama" class="form-control" rows="2" placeholder="Contoh: Demam mulai tadi malam setelah kehujanan..."></textarea>
             </div>
             <div class="mt-3">
                 <label class="form-label">Riwayat Keluhan / Anamnesis</label>
@@ -84,9 +128,22 @@
         </div>
     </div>
 
+    <div class="d-flex justify-content-end mb-4">
+        <button type="button" class="btn btn-primary px-4 shadow-sm" onclick="nextStep('step2-tab')">Selanjutnya <i class="bi bi-arrow-right ms-2"></i></button>
+    </div>
+    
+        </div>
+    </div>
+</div>
+
+<!-- STEP 2: FISIK & DIAGNOSA -->
+<div class="tab-pane fade" id="step2" role="tabpanel">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+
     {{-- Pemeriksaan Fisik --}}
-    <div class="card mb-3">
-        <div class="card-header"><h4 class="card-title mb-0"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Pemeriksaan Fisik</h4></div>
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-danger) !important;">
+        <div class="card-header card-header-clean"><h4 class="card-title mb-0"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Pemeriksaan Fisik</h4></div>
         <div class="card-body">
             <div class="hint-box"><i class="bi bi-info-circle me-1"></i>Isi tanda vital sesuai hasil pemeriksaan. Kosongkan jika tidak diperiksa.</div>
             <div class="row g-3">
@@ -111,8 +168,8 @@
     </div>
 
     {{-- Diagnosa --}}
-    <div class="card mb-3 border-danger">
-        <div class="card-header bg-danger bg-opacity-10">
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-danger) !important;">
+        <div class="card-header card-header-clean">
             <h4 class="card-title mb-0"><i class="bi bi-clipboard2-pulse-fill me-2 text-danger"></i>Diagnosa Sementara</h4>
         </div>
         <div class="card-body">
@@ -125,22 +182,45 @@
                 </div>
                 <div id="diagnosa-results" class="tag-search-results d-none"></div>
             </div>
-            <div class="tag-pool" id="diagnosa-pool">
-                @foreach($diagnosaGroups as $cat => $items)
-                    <div class="w-100"><span class="category-label">{{ $cat }}</span></div>
-                    @foreach($items as $d)
-                        <span class="tag-chip" data-type="diagnosa" data-id="{{ $d->id }}" data-name="{{ $d->nama }}">
-                            @if($d->kode)<small class="text-muted">[{{ $d->kode }}]</small> @endif{{ $d->nama }}
-                        </span>
-                    @endforeach
-                @endforeach
+            <div class="mt-2">
+                <a class="text-decoration-none small fw-bold text-secondary" data-bs-toggle="collapse" href="#collapseDiagnosaPool" role="button" aria-expanded="false" aria-controls="collapseDiagnosaPool">
+                    <i class="bi bi-list-ul me-1"></i>Tampilkan Daftar Diagnosa Umum <i class="bi bi-chevron-down ms-1"></i>
+                </a>
+                <div class="collapse mt-2" id="collapseDiagnosaPool">
+                    <div class="tag-pool p-3 border rounded bg-light shadow-sm" id="diagnosa-pool" style="max-height: 250px;">
+                        @foreach($diagnosaGroups as $cat => $items)
+                            <div class="w-100 mt-1"><span class="category-label text-danger"><i class="bi bi-tags me-1"></i>{{ $cat }}</span></div>
+                            <div class="d-flex flex-wrap gap-2 mb-2 w-100">
+                            @foreach($items as $d)
+                                <span class="tag-chip" data-type="diagnosa" data-id="{{ $d->id }}" data-name="{{ $d->nama }}">
+                                    @if($d->kode)<small class="text-muted">[{{ $d->kode }}]</small> @endif{{ $d->nama }}
+                                </span>
+                            @endforeach
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="d-flex justify-content-between mb-4">
+        <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep('step1-tab')"><i class="bi bi-arrow-left me-2"></i> Sebelumnya</button>
+        <button type="button" class="btn btn-primary px-4 shadow-sm" onclick="nextStep('step3-tab')">Selanjutnya <i class="bi bi-arrow-right ms-2"></i></button>
+    </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- STEP 3: TINDAKAN & OBAT -->
+<div class="tab-pane fade" id="step3" role="tabpanel">
+    <div class="row">
+        <div class="col-md-7">
+
     {{-- Tindakan --}}
-    <div class="card mb-3 border-info">
-        <div class="card-header bg-info bg-opacity-10">
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-info) !important;">
+        <div class="card-header card-header-clean">
             <h4 class="card-title mb-0"><i class="bi bi-bandaid-fill me-2 text-info"></i>Tindakan Medis</h4>
         </div>
         <div class="card-body">
@@ -153,13 +233,22 @@
                 </div>
                 <div id="tindakan-results" class="tag-search-results d-none"></div>
             </div>
-            <div class="tag-pool" id="tindakan-pool">
-                @foreach($tindakanGroups as $cat => $items)
-                    <div class="w-100"><span class="category-label">{{ $cat }}</span></div>
-                    @foreach($items as $t)
-                        <span class="tag-chip" data-type="tindakan" data-id="{{ $t->id }}" data-name="{{ $t->nama }}">{{ $t->nama }}</span>
-                    @endforeach
-                @endforeach
+            <div class="mt-2">
+                <a class="text-decoration-none small fw-bold text-secondary" data-bs-toggle="collapse" href="#collapseTindakanPool" role="button" aria-expanded="false" aria-controls="collapseTindakanPool">
+                    <i class="bi bi-list-ul me-1"></i>Tampilkan Daftar Tindakan Medis <i class="bi bi-chevron-down ms-1"></i>
+                </a>
+                <div class="collapse mt-2" id="collapseTindakanPool">
+                    <div class="tag-pool p-3 border rounded bg-light shadow-sm" id="tindakan-pool" style="max-height: 250px;">
+                        @foreach($tindakanGroups as $cat => $items)
+                            <div class="w-100 mt-1"><span class="category-label text-info"><i class="bi bi-tags me-1"></i>{{ $cat }}</span></div>
+                            <div class="d-flex flex-wrap gap-2 mb-2 w-100">
+                            @foreach($items as $t)
+                                <span class="tag-chip" data-type="tindakan" data-id="{{ $t->id }}" data-name="{{ $t->nama }}">{{ $t->nama }}</span>
+                            @endforeach
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
             <div class="mt-3">
                 <label class="form-label">Catatan Tindakan Tambahan</label>
@@ -169,9 +258,9 @@
     </div>
 
     {{-- Tindak Lanjut --}}
-    <div class="card border-primary mb-3">
-        <div class="card-header bg-primary py-2"><h5 class="card-title text-white mb-0">Rencana Tindak Lanjut</h5></div>
-        <div class="card-body mt-3">
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-primary) !important;">
+        <div class="card-header card-header-clean"><h4 class="card-title mb-0"><i class="bi bi-signpost-split-fill me-2 text-primary"></i>Rencana Tindak Lanjut</h4></div>
+        <div class="card-body mt-2">
             <div class="d-flex flex-wrap gap-3 mb-3">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="tindak_lanjut" id="tl_kamar" value="kembali_kamar" checked>
@@ -239,17 +328,36 @@
                     </div>
                     <div id="extraPulangFields" class="d-none col-12">
                         <div class="mb-3">
-                            <label class="form-label text-info fw-bold">Nama Penjemput <span class="text-danger">*</span></label>
-                            <input type="text" name="penjemput" id="input_penjemput" class="form-control border-info" placeholder="Ayah Kandung, Paman">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold">Hubungan</label>
-                                <input type="text" name="hubungan_penjemput" class="form-control" placeholder="Ayah, Ibu, dll">
+                            <label class="form-label text-info fw-bold">Pilih Penjemput (Wali Santri) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <select id="wali_select" class="form-select border-info">
+                                    <option value="">-- Pilih Wali Santri --</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-info" onclick="tambahWaliManual()"><i class="bi bi-plus-circle"></i> Tambah Wali / Manual</button>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold">No. WA/Telp</label>
-                                <input type="text" name="kontak_penjemput" class="form-control" placeholder="08xxx">
+                        </div>
+                        <div id="manual_penjemput_container" class="d-none">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Nama Penjemput</label>
+                                <input type="text" name="penjemput" id="input_penjemput" class="form-control" placeholder="Nama Lengkap">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">Hubungan</label>
+                                    <select name="hubungan_penjemput" id="input_hubungan" class="form-select">
+                                        <option value="">Pilih Hubungan...</option>
+                                        <option value="Ayah">Ayah</option>
+                                        <option value="Ibu">Ibu</option>
+                                        <option value="Kakek/Nenek">Kakek/Nenek</option>
+                                        <option value="Paman/Bibi">Paman/Bibi</option>
+                                        <option value="Saudara">Saudara</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold">No. WA/Telp</label>
+                                    <input type="text" name="kontak_penjemput" id="input_kontak" class="form-control" placeholder="08xxx">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,12 +374,12 @@
             </div>
         </div>
     </div>
-</div>
+        </div>
 
 {{-- ═══════════════ KANAN ═══════════════ --}}
 <div class="col-md-5">
-    <div class="card mb-3">
-        <div class="card-header"><h4 class="card-title mb-0"><i class="bi bi-capsule-pill me-2 text-success"></i>Resep / Pemberian Obat</h4></div>
+    <div class="card mb-4 border-0 shadow-sm" style="border-top: 4px solid var(--bs-success) !important;">
+        <div class="card-header card-header-clean"><h4 class="card-title mb-0"><i class="bi bi-capsule-pill me-2 text-success"></i>Resep / Pemberian Obat</h4></div>
         <div class="card-body">
             <p class="text-muted small">Pilih obat dari stok inventaris yang tersedia.</p>
             <div id="obatContainer">
@@ -292,21 +400,26 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
+    <div class="card border-0 shadow-sm bg-primary text-white">
+        <div class="card-body text-center p-4">
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check2-circle me-2"></i>Simpan Pemeriksaan</button>
                 <a href="{{ route('kunjungan.index') }}" class="btn btn-light">Batal</a>
             </div>
         </div>
     </div>
-</div>
+    <div id="tag-hidden-inputs"></div>
+</div>{{-- /col-md-5 --}}
 
-</div>{{-- /row --}}
+</div>{{-- /row inside step 3 --}}
+
+    <div class="d-flex justify-content-start mt-3 mb-4">
+        <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep('step2-tab')"><i class="bi bi-arrow-left me-2"></i> Sebelumnya</button>
+    </div>
+</div>{{-- /tab-pane step3 --}}
+
+</div>{{-- /tab-content --}}
 </form>
-
-{{-- Hidden inputs container for tag IDs --}}
-<div id="tag-hidden-inputs"></div>
 @endsection
 
 @push('scripts')
@@ -471,6 +584,98 @@ document.getElementById('btnAddObat').addEventListener('click', function() {
     });
     container.appendChild(clone);
     obatIndex++;
+});
+
+// ── Stepper Logic ─────────────────────────────────────────────
+function switchTab(targetId) {
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.remove('show', 'active');
+    });
+    // Show target tab pane
+    let targetPane = document.getElementById(targetId);
+    if (targetPane) {
+        targetPane.classList.add('show', 'active');
+    }
+    
+    // Update Stepper visually
+    document.querySelectorAll('.stepper-item').forEach(item => {
+        item.classList.remove('active', 'completed');
+    });
+    
+    let stepNum = parseInt(targetId.replace('step', ''));
+    document.querySelectorAll('.stepper-item').forEach((item, index) => {
+        if (index + 1 < stepNum) {
+            item.classList.add('completed');
+        } else if (index + 1 === stepNum) {
+            item.classList.add('active');
+        }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(tabId) {
+    switchTab(tabId.replace('-tab', ''));
+}
+
+function prevStep(tabId) {
+    switchTab(tabId.replace('-tab', ''));
+}
+
+// ── Wali Santri Logic ──────────────────────────────────────────
+$(document).ready(function() {
+    $('select[name="santri_id"]').on('change', function() {
+        let santriId = $(this).val();
+        let $waliSelect = $('#wali_select');
+        
+        $waliSelect.html('<option value="">-- Pilih Wali Santri --</option>');
+        
+        if (santriId) {
+            $.ajax({
+                url: `/santri/${santriId}/walis`,
+                method: 'GET',
+                success: function(data) {
+                    data.forEach(wali => {
+                        $waliSelect.append(`<option value="${wali.id}" data-nama="${wali.nama_wali}" data-hubungan="${wali.hubungan_wali}" data-kontak="${wali.no_hp}">${wali.nama_wali} (${wali.hubungan_wali})</option>`);
+                    });
+                }
+            });
+        }
+    });
+
+    $('#wali_select').on('change', function() {
+        let $selected = $(this).find(':selected');
+        if ($(this).val()) {
+            $('#input_penjemput').val($selected.data('nama'));
+            $('#input_hubungan').val($selected.data('hubungan'));
+            $('#input_kontak').val($selected.data('kontak'));
+            $('#manual_penjemput_container').addClass('d-none');
+        } else {
+            $('#manual_penjemput_container').addClass('d-none');
+            $('#input_penjemput').val('');
+            $('#input_hubungan').val('');
+            $('#input_kontak').val('');
+        }
+    });
+});
+
+function tambahWaliManual() {
+    $('#wali_select').val('');
+    $('#manual_penjemput_container').removeClass('d-none');
+    $('#input_penjemput').val('').focus();
+    $('#input_hubungan').val('');
+    $('#input_kontak').val('');
+}
+
+// Ensure HTML5 Validation works across hidden tabs
+document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('invalid', function() {
+        let pane = this.closest('.tab-pane');
+        if (pane && !pane.classList.contains('active')) {
+            switchTab(pane.id);
+        }
+    });
 });
 </script>
 @endpush

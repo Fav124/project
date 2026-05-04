@@ -21,6 +21,7 @@ use App\Http\Controllers\Web\JurusanController;
 use App\Http\Controllers\Web\KamarController;
 use App\Http\Controllers\Web\ProfileController;
 use App\Http\Controllers\Api\MedicalTagController;
+use App\Http\Controllers\Web\MasterMedisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,12 +66,14 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('master/kelas', KelasController::class);
     Route::resource('master/jurusan', JurusanController::class);
     Route::resource('master/kamar', KamarController::class);
+    Route::resource('master/kasur', \App\Http\Controllers\Web\KasurController::class);
 
     // Module: Santri & History
     Route::resource('santri', SantriController::class);
     Route::get('santri/{santri}/edit-health', [SantriController::class, 'editHealth'])->name('santri.edit-health');
     Route::put('santri/{santri}/update-health', [SantriController::class, 'updateHealth'])->name('santri.update-health');
     Route::get('santri/{santri}/history', [MedicalHistoryController::class, 'show'])->name('santri.history');
+    Route::get('santri/{santri}/walis', [SantriController::class, 'getWalis'])->name('santri.walis');
 
     // Module: Obat
     Route::resource('obat', ObatController::class);
@@ -129,5 +132,22 @@ Route::middleware(['auth'])->group(function () {
      * setelah implementasi view dasar selesai. 
      * Untuk saat ini, kita fokus pada Layout dan Dashboard.
      */
+
+    // ── Master Medis (Admin & Super Admin only) ──────────────
+    Route::middleware('role:admin')->prefix('master-medis')->name('master-medis.')->group(function () {
+        Route::get('/',                          [MasterMedisController::class, 'index'])->name('index');
+        Route::post('diagnosa',                  [MasterMedisController::class, 'storeDiagnosa'])->name('diagnosa.store');
+        Route::put('diagnosa/{diagnosa}',        [MasterMedisController::class, 'updateDiagnosa'])->name('diagnosa.update');
+        Route::post('diagnosa/{diagnosa}/toggle',[MasterMedisController::class, 'toggleDiagnosa'])->name('diagnosa.toggle');
+        Route::delete('diagnosa/{diagnosa}',     [MasterMedisController::class, 'destroyDiagnosa'])->name('diagnosa.destroy');
+        Route::post('keluhan',                   [MasterMedisController::class, 'storeKeluhan'])->name('keluhan.store');
+        Route::put('keluhan/{keluhan}',          [MasterMedisController::class, 'updateKeluhan'])->name('keluhan.update');
+        Route::post('keluhan/{keluhan}/toggle',  [MasterMedisController::class, 'toggleKeluhan'])->name('keluhan.toggle');
+        Route::delete('keluhan/{keluhan}',       [MasterMedisController::class, 'destroyKeluhan'])->name('keluhan.destroy');
+        Route::post('tindakan',                  [MasterMedisController::class, 'storeTindakan'])->name('tindakan.store');
+        Route::put('tindakan/{tindakan}',        [MasterMedisController::class, 'updateTindakan'])->name('tindakan.update');
+        Route::post('tindakan/{tindakan}/toggle',[MasterMedisController::class, 'toggleTindakan'])->name('tindakan.toggle');
+        Route::delete('tindakan/{tindakan}',     [MasterMedisController::class, 'destroyTindakan'])->name('tindakan.destroy');
+    });
 });
 

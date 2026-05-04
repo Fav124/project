@@ -18,12 +18,14 @@ class RawatInapController extends Controller
 
     public function index()
     {
-        $activeCases = KasusSakit::with(['santri.kelas', 'riwayatAktif.petugas'])
-            ->where('status_kasus', 'aktif')
+        $activeCases = KasusSakit::with(['santri.kelas', 'santri.waliSantris', 'riwayatAktif.petugas'])
+            ->whereIn('status_kasus', ['aktif', 'pulang'])
             ->orderByDesc('tanggal_mulai')
             ->get();
 
-        return view('rawat-inap.index', compact('activeCases'));
+        $availableBeds = \App\Models\Kasur::where('status', 'tersedia')->get();
+
+        return view('rawat-inap.index', compact('activeCases', 'availableBeds'));
     }
 
     /**
@@ -44,6 +46,7 @@ class RawatInapController extends Controller
                 'hubungan_penjemput' => $request->hubungan_penjemput,
                 'kontak_penjemput' => $request->kontak_penjemput,
                 'kondisi_keluar' => $request->kondisi_terakhir,
+                'kasur_id' => $request->kasur_id,
                 'alasan_pindah' => $request->alasan_pindah,
                 'catatan' => $request->catatan,
             ]);

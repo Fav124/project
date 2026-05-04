@@ -8,68 +8,61 @@
     <li class="breadcrumb-item active" aria-current="page">Obat</li>
 @endsection
 
+@push('styles')
+<style>
+.stat-card { border-radius:12px; padding:20px; color:#fff !important; display:flex; align-items:center; gap:16px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-3px); }
+.stat-card .icon { font-size:2.5rem; opacity:.9; color:#fff !important; }
+.stat-card .info h3 { font-size:2rem; font-weight:800; margin:0; color:#fff !important; }
+.stat-card .info p { margin:0; opacity:.9; font-size:.85rem; color:#fff !important; }
+.table-primary-header th { background-color: var(--bs-primary) !important; color: #fff !important; border-bottom: none; }
+</style>
+@endpush
+
 @section('content')
-<div class="row">
-    {{-- Stats Row --}}
+<div class="row g-3 mb-2">
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body py-4 px-3">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon green mb-2"><i class="bi bi-capsule"></i></div>
-                    <div class="ms-3">
-                        <h6 class="text-muted font-semibold">Total Item</h6>
-                        <h6 class="font-extrabold mb-0">{{ $stats['aktif'] + $stats['stok_menipis'] + $stats['kadaluarsa'] }}</h6>
-                    </div>
-                </div>
-            </div>
+        <div class="stat-card" style="background:linear-gradient(135deg,#198754,#146c43)">
+            <div class="icon"><i class="bi bi-capsule"></i></div>
+            <div class="info"><h3>{{ ($stats['aktif'] ?? 0) + ($stats['stok_menipis'] ?? 0) + ($stats['kadaluarsa'] ?? 0) }}</h3><p>Total Item</p></div>
         </div>
     </div>
     <div class="col-md-3">
-        <a href="{{ route('obat.index', ['filter' => 'stok_menipis']) }}" class="card">
-            <div class="card-body py-4 px-3">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon orange mb-2"><i class="bi bi-graph-down-arrow"></i></div>
-                    <div class="ms-3">
-                        <h6 class="text-muted font-semibold">Stok Menipis</h6>
-                        <h6 class="font-extrabold mb-0">{{ $stats['stok_menipis'] }}</h6>
-                    </div>
-                </div>
+        <a href="{{ route('obat.index', ['filter' => 'stok_menipis']) }}" class="text-decoration-none">
+            <div class="stat-card" style="background:linear-gradient(135deg,#fd7e14,#ca6510)">
+                <div class="icon"><i class="bi bi-graph-down-arrow"></i></div>
+                <div class="info"><h3>{{ $stats['stok_menipis'] }}</h3><p>Stok Menipis</p></div>
             </div>
         </a>
     </div>
     <div class="col-md-3">
-        <a href="{{ route('obat.index', ['filter' => 'kadaluarsa']) }}" class="card">
-            <div class="card-body py-4 px-3">
-                <div class="d-flex align-items-center">
-                    <div class="stats-icon red mb-2"><i class="bi bi-calendar-x"></i></div>
-                    <div class="ms-3">
-                        <h6 class="text-muted font-semibold">Kadaluarsa</h6>
-                        <h6 class="font-extrabold mb-0">{{ $stats['kadaluarsa'] }}</h6>
-                    </div>
-                </div>
+        <a href="{{ route('obat.index', ['filter' => 'hampir_kadaluarsa']) }}" class="text-decoration-none">
+            <div class="stat-card" style="background:linear-gradient(135deg,#ffc107,#d39e00)">
+                <div class="icon"><i class="bi bi-calendar-minus"></i></div>
+                <div class="info"><h3>{{ $stats['hampir_kadaluarsa'] ?? 0 }}</h3><p>Hampir Exp</p></div>
             </div>
         </a>
     </div>
     <div class="col-md-3">
-        <div class="card">
-            <div class="card-body py-4 px-3 text-center">
-                <a href="{{ route('obat.create') }}" class="btn btn-primary w-100 py-3">
-                    <i class="bi bi-plus-circle me-2"></i> Tambah Obat Baru
-                </a>
+        <a href="{{ route('obat.index', ['filter' => 'kadaluarsa']) }}" class="text-decoration-none">
+            <div class="stat-card" style="background:linear-gradient(135deg,#dc3545,#b02a37)">
+                <div class="icon"><i class="bi bi-calendar-x"></i></div>
+                <div class="info"><h3>{{ $stats['kadaluarsa'] }}</h3><p>Kadaluarsa</p></div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 
-<div class="card mt-2">
-    <div class="card-header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="card-title">Daftar Inventaris Obat</h4>
-            <div class="d-flex gap-2">
-                @if(request('filter'))
-                    <a href="{{ route('obat.index') }}" class="btn btn-sm btn-light">Hapus Filter</a>
-                @endif
-            </div>
+<div class="card shadow-sm">
+    <div class="card-header bg-transparent d-flex justify-content-between align-items-center pb-2">
+        <h5 class="card-title mb-0"><i class="bi bi-prescription2 me-2 text-primary"></i>Daftar Inventaris Obat</h5>
+        <div class="d-flex gap-2">
+            @if(request('filter'))
+                <a href="{{ route('obat.index') }}" class="btn btn-sm btn-outline-secondary">Hapus Filter</a>
+            @endif
+            <a href="{{ route('obat.create') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Obat
+            </a>
         </div>
     </div>
     <div class="card-body">
@@ -85,17 +78,17 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
+            <table class="table table-hover table-sm align-middle">
+                <thead class="table-primary-header">
                     <tr>
-                        <th>Foto</th>
-                        <th>Kode</th>
+                        <th width="60" class="text-center">Foto</th>
+                        <th width="100">Kode</th>
                         <th>Nama Obat</th>
-                        <th>Golongan</th>
+                        <th class="text-center">Golongan</th>
                         <th>Stok</th>
                         <th>Tgl Kadaluarsa</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th class="text-center">Status</th>
+                        <th width="100" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>

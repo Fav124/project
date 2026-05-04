@@ -19,7 +19,7 @@ class MedicalCaseService
             $case = KasusSakit::create([
                 'santri_id' => $data['santri_id'],
                 'kunjungan_id' => $data['kunjungan_id'] ?? null,
-                'status_kasus' => 'aktif',
+                'status_kasus' => $data['status_kasus'] ?? 'aktif',
                 'diagnosa_terakhir' => $data['diagnosa'] ?? null,
                 'tanggal_mulai' => now(),
             ]);

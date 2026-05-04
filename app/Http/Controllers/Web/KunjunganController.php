@@ -15,11 +15,17 @@ class KunjunganController extends Controller
 {
     protected \App\Services\ObatService $obatService;
     protected \App\Services\MedicalCaseService $medicalService;
+    protected \App\Services\WhatsappService $waService;
+    private $lastSavedKunjungan;
 
-    public function __construct(\App\Services\ObatService $obatService, \App\Services\MedicalCaseService $medicalService)
-    {
+    public function __construct(
+        \App\Services\ObatService $obatService, 
+        \App\Services\MedicalCaseService $medicalService,
+        \App\Services\WhatsappService $waService
+    ) {
         $this->obatService = $obatService;
         $this->medicalService = $medicalService;
+        $this->waService = $waService;
     }
 
     public function index(Request $request)
@@ -63,7 +69,6 @@ class KunjunganController extends Controller
         // 1. Validasi Dasar
         $request->validate([
             'santri_id'    => 'required|exists:santris,id',
-            'keluhan_utama'=> 'required|string',
             'tindak_lanjut'=> 'required|in:kembali_kamar,rawat_inap,rujuk_rs,pulang',
         ]);
 
@@ -83,26 +88,40 @@ class KunjunganController extends Controller
                 $keluhanIds   = array_filter((array) $request->input('keluhan_ids', []));
                 $tindakanIds  = array_filter((array) $request->input('tindakan_ids', []));
 
-                // Build a text summary of diagnoses for the legacy field
+                // Build a text summary for legacy fields
                 $diagnosaNames = \App\Models\Diagnosa::whereIn('id', $diagnosaIds)->pluck('nama')->join(', ');
+                $keluhanNames  = \App\Models\KeluhanMaster::whereIn('id', $keluhanIds)->pluck('nama')->join(', ');
+                $tindakanNames = \App\Models\TindakanMaster::whereIn('id', $tindakanIds)->pluck('nama')->join(', ');
+
+                $keluhanUtama = $keluhanNames;
+                if ($request->keluhan_utama) {
+                    $keluhanUtama = $keluhanUtama ? $keluhanUtama . ' - ' . $request->keluhan_utama : $request->keluhan_utama;
+                }
+
+                $tindakanSummary = $tindakanNames;
+                if ($request->catatan_tindakan) {
+                    $tindakanSummary = $tindakanSummary ? $tindakanSummary . ' - ' . $request->catatan_tindakan : $request->catatan_tindakan;
+                }
 
                 // 4. Simpan Kunjungan
                 $statusKunjungan = 'sembuh';
                 if ($request->tindak_lanjut === 'rawat_inap') $statusKunjungan = 'rawat_inap';
                 if ($request->tindak_lanjut === 'rujuk_rs')  $statusKunjungan = 'dirujuk';
-                if ($request->tindak_lanjut === 'pulang')    $statusKunjungan = 'sembuh';
+                if ($request->tindak_lanjut === 'pulang')    $statusKunjungan = 'pulang';
 
-                $kunjungan = Kunjungan::create([
+                $this->lastSavedKunjungan = Kunjungan::create([
                     'santri_id'         => $request->santri_id,
                     'user_id'           => auth()->id(),
                     'tanggal_kunjungan' => now(),
-                    'keluhan_utama'     => $request->keluhan_utama,
+                    'keluhan_utama'     => $keluhanUtama ?: 'Tidak ada keluhan spesifik',
                     'riwayat_keluhan'   => $request->anamnesis,
                     'diagnosa_sementara'=> $diagnosaNames ?: $request->diagnosa_custom,
-                    'tindakan'          => $request->catatan_tindakan,
+                    'tindakan'          => $tindakanSummary,
                     'status_kunjungan'  => $statusKunjungan,
                     'catatan'           => $request->catatan,
                 ]);
+
+                $kunjungan = $this->lastSavedKunjungan;
 
                 // 5. Sync tags (many-to-many)
                 $kunjungan->diagnosas()->sync($diagnosaIds);
@@ -159,11 +178,17 @@ class KunjunganController extends Controller
                         'kontak_penjemput' => $request->kontak_penjemput,
                         'kasur_id' => $request->kasur_id,
                         'diagnosa' => $kunjungan->diagnosa_sementara,
-                        'kondisi' => $request->kondisi_masuk ?: $request->keluhan,
+                        'kondisi' => $kunjungan->keluhan_utama, // Use keluhan_utama from Kunjungan
                         'catatan' => $request->alasan_rawat ?: ($request->alasan_luar ?: $request->catatan),
+                        'status_kasus' => ($request->tindak_lanjut === 'pulang') ? 'pulang' : 'aktif',
                     ]);
                 }
             });
+
+            // 6. Kirim Laporan WA ke Orang Tua (Setelah transaksi sukses)
+            if ($this->lastSavedKunjungan) {
+                $this->waService->sendMedicalReport($this->lastSavedKunjungan->load(['santri.kelas', 'pemberianObats.obat']));
+            }
 
             return redirect()->route('kunjungan.index')->with('success', 'Data pemeriksaan berhasil disimpan.');
         } catch (\Exception $e) {

@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Pagination\Paginator::useBootstrapFive();
+        
         \Illuminate\Support\Facades\View::composer(['partials.navbar', 'partials.sidebar'], function ($view) {
             $count = \App\Models\ApprovalRequest::where('status', 'pending')->count();
             $view->with('pendingApprovalsCount', $count);

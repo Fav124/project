@@ -16,9 +16,22 @@ class JurusanController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama_jurusan' => 'required|string|unique:jurusans']);
+        $request->validate([
+            'nama_jurusan' => 'required|string|unique:jurusans',
+            'warna' => 'nullable|string|max:7',
+        ]);
         Jurusan::create($request->all());
         return back()->with('success', 'Jurusan berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, Jurusan $jurusan)
+    {
+        $request->validate([
+            'nama_jurusan' => 'required|string|unique:jurusans,nama_jurusan,' . $jurusan->id,
+            'warna' => 'nullable|string|max:7',
+        ]);
+        $jurusan->update($request->all());
+        return back()->with('success', 'Jurusan berhasil diperbarui.');
     }
 
     public function destroy(Jurusan $jurusan)
