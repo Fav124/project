@@ -81,10 +81,27 @@ class ObatController extends Controller
             } catch (Exception $e) {}
         }
 
+        $obat->setAppends(['status_obat']);
+        $data = [
+            'id' => $obat->id,
+            'kode_obat' => $obat->kode_obat,
+            'name' => $obat->nama_obat,
+            'kategori' => $obat->kategori,
+            'bentuk_sediaan' => $obat->bentuk_sediaan,
+            'unit' => $obat->satuan,
+            'stock' => $obat->stok,
+            'minimum_stock' => $obat->stok_minimum,
+            'expiry_date' => $obat->tanggal_kadaluarsa ? $obat->tanggal_kadaluarsa->toDateString() : null,
+            'lokasi_penyimpanan' => $obat->lokasi_penyimpanan,
+            'description' => $obat->deskripsi,
+            'status' => $obat->status_obat,
+            'riwayat_stok' => []
+        ];
+
         return response()->json([
             'success' => true,
             'message' => 'Obat berhasil didaftarkan.',
-            'data' => $obat
+            'data' => $data
         ], 201);
     }
 
@@ -113,6 +130,8 @@ class ObatController extends Controller
                     'id' => $r->id,
                     'type' => $r->jenis_mutasi,
                     'amount' => $r->jumlah,
+                    'stok_sebelum' => $r->stok_sebelum,
+                    'stok_sesudah' => $r->stok_sesudah,
                     'date' => $r->created_at->format('Y-m-d H:i'),
                     'notes' => $r->catatan,
                 ];
@@ -128,11 +147,26 @@ class ObatController extends Controller
     public function update(ObatRequest $request, Obat $obat): JsonResponse
     {
         $obat->update($request->validated());
+        $obat->setAppends(['status_obat']);
+        $data = [
+            'id' => $obat->id,
+            'kode_obat' => $obat->kode_obat,
+            'name' => $obat->nama_obat,
+            'kategori' => $obat->kategori,
+            'bentuk_sediaan' => $obat->bentuk_sediaan,
+            'unit' => $obat->satuan,
+            'stock' => $obat->stok,
+            'minimum_stock' => $obat->stok_minimum,
+            'expiry_date' => $obat->tanggal_kadaluarsa ? $obat->tanggal_kadaluarsa->toDateString() : null,
+            'lokasi_penyimpanan' => $obat->lokasi_penyimpanan,
+            'description' => $obat->deskripsi,
+            'status' => $obat->status_obat,
+        ];
 
         return response()->json([
             'success' => true,
             'message' => 'Data obat berhasil diperbarui.',
-            'data' => $obat
+            'data' => $data
         ]);
     }
 

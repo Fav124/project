@@ -100,6 +100,63 @@ class DashboardController extends Controller
                 ];
             });
 
+        // 6. Class Distribution
+        $classDistribution = $this->laporanService->kunjunganBerdasarkanKelas($startDate, $endDate)
+            ->map(function ($c) {
+                return [
+                    'class_name' => $c->nama_kelas,
+                    'count' => $c->total_kunjungan,
+                ];
+            });
+
+        // 7. Major Distribution
+        $majorDistribution = $this->laporanService->kunjunganBerdasarkanJurusan($startDate, $endDate)
+            ->map(function ($j) {
+                return [
+                    'major_name' => $j->nama_jurusan,
+                    'count' => $j->total_kunjungan,
+                ];
+            });
+
+        // 8. Top/Frequent Medicines
+        $frequentMedicines = $this->laporanService->obatPalingSeringDigunakan($startDate, $endDate, 5)
+            ->map(function ($o) {
+                return [
+                    'medicine_name' => $o->obat ? $o->obat->nama_obat : 'Obat Terhapus',
+                    'count' => (int)$o->total_keluar,
+                ];
+            });
+
+        // 9. Alert Medicines (stok menipis, hampir kadaluarsa, kadaluarsa)
+        $expiredMedicines = Obat::whereDate('tanggal_kadaluarsa', '<', now()->addDays(90))
+            ->get()
+            ->map(function ($o) {
+                $isExpired = $o->tanggal_kadaluarsa->isPast();
+                return [
+                    'id' => $o->id,
+                    'name' => $o->nama_obat,
+                    'status' => $isExpired ? 'expired' : 'hampir_kadaluarsa',
+                    'stock' => $o->stok,
+                    'unit' => $o->satuan,
+                    'expiry_date' => $o->tanggal_kadaluarsa->format('Y-m-d'),
+                ];
+            });
+
+        $lowStockAlerts = Obat::whereColumn('stok', '<=', 'stok_minimum')
+            ->get()
+            ->map(function ($o) {
+                return [
+                    'id' => $o->id,
+                    'name' => $o->nama_obat,
+                    'status' => 'menipis',
+                    'stock' => $o->stok,
+                    'unit' => $o->satuan,
+                    'expiry_date' => $o->tanggal_kadaluarsa ? $o->tanggal_kadaluarsa->format('Y-m-d') : null,
+                ];
+            });
+
+        $alertMedicines = $expiredMedicines->concat($lowStockAlerts)->unique('id')->values();
+
         return response()->json([
             'success' => true,
             'message' => 'Dashboard data retrieved.',
@@ -109,6 +166,10 @@ class DashboardController extends Controller
                 'low_stock_medicines' => $lowStockMedicines,
                 'sickness_trends' => $sicknessTrends,
                 'case_distribution' => $distribution,
+                'class_distribution' => $classDistribution,
+                'major_distribution' => $majorDistribution,
+                'frequent_medicines' => $frequentMedicines,
+                'alert_medicines' => $alertMedicines,
                 'filter' => [
                     'start_date' => $startDate->toDateString(),
                     'end_date' => $endDate->toDateString(),

@@ -11,7 +11,29 @@ class KelasController extends Controller
 {
     public function index(): JsonResponse
     {
-        $kelas = Kelas::withCount('santris')->get();
+        $kelas = Kelas::with(['santris.jurusan', 'santris.kamar'])->withCount('santris')->get();
+        
+        $kelas->each(function($k) {
+            $majors = $k->santris->pluck('jurusan')->filter()->unique('id');
+            $k->major_ids = $majors->pluck('id')->values()->toArray();
+            $k->major_names = $majors->pluck('nama_jurusan')->values()->toArray();
+            
+            $k->santris_list = $k->santris->map(function($s) {
+                return [
+                    'id' => $s->id,
+                    'name' => $s->nama_lengkap,
+                    'nis' => $s->nis,
+                    'gender' => $s->jenis_kelamin,
+                    'gender_label' => $s->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+                    'major' => $s->jurusan?->nama_jurusan,
+                    'dormitory' => $s->kamar?->nama_kamar,
+                ];
+            })->values()->toArray();
+            
+            // Remove nested full relation to keep response size light
+            unset($k->santris);
+        });
+
         return response()->json([
             'success' => true,
             'data' => [
