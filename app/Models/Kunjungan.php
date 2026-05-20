@@ -15,7 +15,7 @@ use App\Traits\Auditable;
     'santri_id', 'user_id', 'tanggal_kunjungan', 'keluhan_utama',
     'riwayat_keluhan', 'suhu', 'tekanan_darah', 'denyut_nadi',
     'pernapasan', 'diagnosa_sementara', 'tindakan', 'catatan',
-    'status_kunjungan', 'catatan_petugas', 'catatan_tindak_lanjut'
+    'status_kunjungan', 'catatan_petugas', 'catatan_tindak_lanjut', 'foto'
 ])]
 class Kunjungan extends Model
 {

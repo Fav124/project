@@ -79,6 +79,7 @@ class KunjunganController extends Controller
             'status_label' => $this->getStatusLabel($k->status_kunjungan),
             'visit_date' => $k->tanggal_kunjungan->format('Y-m-d H:i'),
             'handled_by' => $k->petugas?->name,
+            'photo_url' => $k->foto ? url($k->foto) : null,
             'medicines' => $k->pemberianObats->map(function($p) {
                 return [
                     'id' => $p->obat_id,
@@ -104,16 +105,21 @@ class KunjunganController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'santri_id' => 'required|exists:santris,id',
-            'complaint' => 'required|string',
+            'santri_ids' => 'required|array|min:1',
+            'santri_ids.*' => 'exists:santris,id',
+            'complaint' => 'nullable|string',
             'diagnosis' => 'nullable|string',
             'action_taken' => 'nullable|string',
+            'diagnosa_ids' => 'nullable|array',
+            'keluhan_ids' => 'nullable|array',
+            'tindakan_ids' => 'nullable|array',
             'status' => 'required|in:observed,handled,recovered,referred,rawat_inap,sembuh,dirujuk',
             'notes' => 'nullable|string',
             'medicines' => 'nullable|array',
             'medicines.*.id' => 'required|exists:obats,id',
             'medicines.*.quantity' => 'required|integer|min:1',
             'notify_guardian' => 'nullable|boolean',
+            'photo_base64' => 'nullable|string',
         ]);
 
         try {
@@ -130,40 +136,81 @@ class KunjunganController extends Controller
                 ];
                 $statusKunjungan = $statusMap[$request->status] ?? 'sembuh';
                 
-                $kunjungan = Kunjungan::create([
-                    'santri_id' => $request->santri_id,
-                    'user_id' => auth()->id(),
-                    'tanggal_kunjungan' => now(),
-                    'keluhan_utama' => $request->complaint,
-                    'diagnosa_sementara' => $request->diagnosis,
-                    'tindakan' => $request->action_taken,
-                    'status_kunjungan' => $statusKunjungan,
-                    'catatan' => $request->notes,
-                ]);
+                $diagnosaIds  = array_filter((array) $request->input('diagnosa_ids', []));
+                $keluhanIds   = array_filter((array) $request->input('keluhan_ids', []));
+                $tindakanIds  = array_filter((array) $request->input('tindakan_ids', []));
 
-                // Handle Medicines
-                if ($request->has('medicines')) {
-                    foreach ($request->medicines as $med) {
-                        $this->obatService->distribute($med['id'], [
-                            'santri_id' => $request->santri_id,
-                            'jumlah' => $med['quantity'],
-                            'kunjungan_id' => $kunjungan->id,
-                            'keterangan' => 'Pemberian dari kunjungan/pemeriksaan',
-                        ]);
-                    }
+                $diagnosaNames = \App\Models\Diagnosa::whereIn('id', $diagnosaIds)->pluck('nama')->join(', ');
+                $keluhanNames  = \App\Models\KeluhanMaster::whereIn('id', $keluhanIds)->pluck('nama')->join(', ');
+                $tindakanNames = \App\Models\TindakanMaster::whereIn('id', $tindakanIds)->pluck('nama')->join(', ');
+
+                $keluhanUtama = $keluhanNames;
+                if ($request->complaint) {
+                    $keluhanUtama = $keluhanUtama ? $keluhanUtama . ' - ' . $request->complaint : $request->complaint;
                 }
 
-                // Handle Monitoring (KasusSakit)
-                if (in_array($statusKunjungan, ['rawat_inap', 'dirujuk', 'observasi'])) {
-                    $this->medicalService->startCase([
-                        'santri_id' => $request->santri_id,
-                        'kunjungan_id' => $kunjungan->id,
-                        'diagnosa' => $request->diagnosis,
-                        'lokasi' => $statusKunjungan === 'dirujuk' ? 'rumah_sakit' : 'uks',
-                        'kasur_id' => $request->infirmary_bed_id,
-                        'kondisi' => 'Baru Datang',
+                $tindakanSummary = $tindakanNames;
+                if ($request->action_taken) {
+                    $tindakanSummary = $tindakanSummary ? $tindakanSummary . ' - ' . $request->action_taken : $request->action_taken;
+                }
+
+                $fotoPath = null;
+                if ($request->photo_base64) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->photo_base64));
+                    $imageName = 'kunjungan_' . time() . '_' . uniqid() . '.jpg';
+                    \Illuminate\Support\Facades\Storage::disk('public')->put('kunjungan_photos/' . $imageName, $imageData);
+                    $fotoPath = 'storage/kunjungan_photos/' . $imageName;
+                }
+
+                foreach ($request->santri_ids as $santri_id) {
+                    $kunjungan = Kunjungan::create([
+                        'santri_id' => $santri_id,
+                        'user_id' => auth()->id(),
+                        'tanggal_kunjungan' => now(),
+                        'keluhan_utama' => $keluhanUtama ?: 'Tidak ada keluhan spesifik',
+                        'diagnosa_sementara' => $diagnosaNames ?: $request->diagnosis,
+                        'tindakan' => $tindakanSummary,
+                        'status_kunjungan' => $statusKunjungan,
                         'catatan' => $request->notes,
+                        'foto' => $fotoPath,
                     ]);
+
+                    // Sync tags
+                    if (!empty($diagnosaIds)) $kunjungan->diagnosas()->sync($diagnosaIds);
+                    if (!empty($keluhanIds)) $kunjungan->keluhanMasters()->sync($keluhanIds);
+                    if (!empty($tindakanIds)) $kunjungan->tindakanMasters()->sync($tindakanIds);
+
+                    // Add medicines
+                    if ($request->medicines) {
+                        foreach ($request->medicines as $med) {
+                            \App\Models\PemberianObat::create([
+                                'kunjungan_id' => $kunjungan->id,
+                                'obat_id' => $med['id'],
+                                'jumlah' => $med['quantity'],
+                                'aturan_pakai' => 'Sesuai anjuran dokter',
+                                'diberikan_oleh' => auth()->id(),
+                                'waktu_pemberian' => now(),
+                            ]);
+                            
+                            $obat = \App\Models\Obat::find($med['id']);
+                            if ($obat) {
+                                $obat->decrement('stok', $med['quantity']);
+                            }
+                        }
+                    }
+
+                    // Create KasusSakit if needed
+                    if (in_array($statusKunjungan, ['observasi', 'rawat_inap', 'dirujuk'])) {
+                        \App\Models\KasusSakit::create([
+                            'santri_id' => $santri_id,
+                            'kunjungan_id' => $kunjungan->id,
+                            'status' => $statusKunjungan,
+                        ]);
+                    }
+
+                    if ($request->notify_guardian) {
+                        // In a real app, this would queue a WhatsApp notification job
+                    }
                 }
 
                 return $kunjungan;
@@ -229,12 +276,25 @@ class KunjunganController extends Controller
             return ['id' => $b->id, 'code' => $b->kode_kasur, 'status' => $b->status];
         });
 
+        $diagnosas = \App\Models\Diagnosa::where('status', 'aktif')->orderBy('nama')->get()->map(function($d) {
+            return ['id' => $d->id, 'name' => $d->nama];
+        });
+        $keluhans = \App\Models\KeluhanMaster::where('status', 'aktif')->orderBy('nama')->get()->map(function($k) {
+            return ['id' => $k->id, 'name' => $k->nama];
+        });
+        $tindakans = \App\Models\TindakanMaster::where('status', 'aktif')->orderBy('nama')->get()->map(function($t) {
+            return ['id' => $t->id, 'name' => $t->nama];
+        });
+
         return response()->json([
             'success' => true,
             'data' => [
                 'santris' => $santris,
                 'medicines' => $obats,
                 'beds' => $beds,
+                'diagnoses' => $diagnosas,
+                'keluhans' => $keluhans,
+                'tindakans' => $tindakans,
             ]
         ]);
     }
