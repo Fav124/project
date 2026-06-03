@@ -150,6 +150,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('/status-obat', [LaporanController::class, 'statusObat'])->name('status-obat');
             Route::get('/rawat-inap', [LaporanController::class, 'rawatInap'])->name('rawat-inap');
             Route::get('/rekap-demografi', [LaporanController::class, 'rekapDemografi'])->name('rekap-demografi');
+            Route::get('/sickness', [LaporanController::class, 'sicknessReport'])->name('sickness');
+            Route::get('/medicine', [LaporanController::class, 'medicineReport'])->name('medicine');
         });
 
         // Hospital Referrals (Rujukan RS)

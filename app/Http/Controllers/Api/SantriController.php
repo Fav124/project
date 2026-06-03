@@ -57,6 +57,7 @@ class SantriController extends Controller
             'nis' => $santri->nis,
             'gender' => $santri->jenis_kelamin,
             'gender_label' => $santri->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan',
+            'photo_url' => $santri->foto ? url($santri->foto) : null,
             'class' => $santri->kelas?->nama_kelas,
             'major' => $santri->jurusan?->nama_jurusan,
             'dormitory' => $santri->kamar?->nama_kamar,
@@ -112,6 +113,7 @@ class SantriController extends Controller
             'guardian_phone' => 'nullable|string|max:20',
             'guardian_address' => 'nullable|string',
             'guardian_job' => 'nullable|string|max:255',
+            'photo_base64' => 'nullable|string',
         ]);
 
         try {
@@ -127,6 +129,14 @@ class SantriController extends Controller
                     'tanggal_lahir' => $request->birth_date,
                     'status_santri' => 'aktif',
                 ]);
+
+                if ($request->photo_base64) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->photo_base64));
+                    $imageName = 'santri_' . time() . '_' . uniqid() . '.jpg';
+                    \Illuminate\Support\Facades\Storage::disk('public')->put('santri_photos/' . $imageName, $imageData);
+                    $santri->foto = 'storage/santri_photos/' . $imageName;
+                    $santri->save();
+                }
 
                 if ($request->notes) {
                     $santri->kesehatan()->updateOrCreate(
@@ -199,6 +209,7 @@ class SantriController extends Controller
             'guardian_phone' => 'nullable|string|max:20',
             'guardian_address' => 'nullable|string',
             'guardian_job' => 'nullable|string|max:255',
+            'photo_base64' => 'nullable|string',
         ]);
 
         try {
@@ -213,6 +224,14 @@ class SantriController extends Controller
                     'tempat_lahir' => $request->birth_place,
                     'tanggal_lahir' => $request->birth_date,
                 ]);
+
+                if ($request->photo_base64) {
+                    $imageData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->photo_base64));
+                    $imageName = 'santri_' . time() . '_' . uniqid() . '.jpg';
+                    \Illuminate\Support\Facades\Storage::disk('public')->put('santri_photos/' . $imageName, $imageData);
+                    $santri->foto = 'storage/santri_photos/' . $imageName;
+                    $santri->save();
+                }
 
                 $santri->kesehatan()->updateOrCreate(
                     ['santri_id' => $santri->id],
