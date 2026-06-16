@@ -30,8 +30,7 @@ class SicknessCaseApiController extends BaseApiController
                     'relationship' => $g->relationship, 'is_primary' => (bool) $g->is_primary,
                 ])->values(),
             ])->values(),
-                'id' => $b->id, 'code' => $b->code, 'room' => $b->room_name,
-            ])->values(),
+
             'medicines' => Medicine::orderBy('name')->get(['id', 'name', 'unit', 'stock'])->map(fn($m) => [
                 'id' => $m->id, 'name' => $m->name, 'unit' => $m->unit, 'stock' => $m->stock,
             ])->values(),
@@ -45,7 +44,7 @@ class SicknessCaseApiController extends BaseApiController
 
     public function index(Request $request)
     {
-        $query = SicknessCase::with(['santri:id,name,nis,gender', 'medicines:id,name', 'bed:id,code,room_name']);
+        $query = SicknessCase::with(['santri:id,name,nis,gender', 'medicines:id,name']);
 
         if ($request->filled('status'))     $query->where('status', $request->status);
         if ($request->filled('search')) {
@@ -73,7 +72,7 @@ class SicknessCaseApiController extends BaseApiController
     {
         $case = SicknessCase::with([
             'santri.dormitory', 'santri.schoolClass', 'santri.major', 'santri.guardians',
-            'medicines', 'bed', 'handledBy:id,name',
+            'medicines', 'handledBy:id,name',
             'keluhans', 'diagnosas', 'tindakans',
         ])->findOrFail($id);
 
@@ -144,14 +143,14 @@ class SicknessCaseApiController extends BaseApiController
         if (!empty($diagnosaIds)) $case->diagnosas()->sync($diagnosaIds);
         if (!empty($tindakanIds)) $case->tindakans()->sync($tindakanIds);
 
-        $this->syncBedStatus($case);
+
 
         if ($notifyGuardian) {
             $this->sendSicknessNotification($case->load('santri'), $whatsApp);
         }
 
         return $this->success(
-            $this->formatCaseDetail($case->load(['santri', 'medicines', 'bed', 'handledBy', 'keluhans', 'diagnosas', 'tindakans'])),
+            $this->formatCaseDetail($case->load(['santri', 'medicines', 'handledBy', 'keluhans', 'diagnosas', 'tindakans'])),
             'Data kasus sakit berhasil disimpan.',
             201
         );
@@ -203,11 +202,9 @@ class SicknessCaseApiController extends BaseApiController
         if ($diagnosaIds !== null) $case->diagnosas()->sync($diagnosaIds);
         if ($tindakanIds !== null) $case->tindakans()->sync($tindakanIds);
 
-        }
-        $this->syncBedStatus($case);
 
         return $this->success(
-            $this->formatCaseDetail($case->load(['santri', 'medicines', 'bed', 'handledBy', 'keluhans', 'diagnosas', 'tindakans'])),
+            $this->formatCaseDetail($case->load(['santri', 'medicines', 'handledBy', 'keluhans', 'diagnosas', 'tindakans'])),
             'Data berhasil diperbarui.'
         );
     }
@@ -216,7 +213,6 @@ class SicknessCaseApiController extends BaseApiController
     {
         $case = SicknessCase::findOrFail($id);
 
-        }
 
         $case->delete();
 
@@ -229,7 +225,7 @@ class SicknessCaseApiController extends BaseApiController
     {
         $case = SicknessCase::findOrFail($id);
         $case->update(['status' => 'recovered', 'return_date' => now()]);
-        $this->syncBedStatus($case);
+
 
         return $this->success(
             ['status' => 'recovered', 'status_label' => 'Sembuh'],
@@ -252,10 +248,10 @@ class SicknessCaseApiController extends BaseApiController
             'return_date' => now(),
         ]));
 
-        $this->syncBedStatus($case);
+
 
         return $this->success(
-            $this->formatCaseDetail($case->load(['santri', 'medicines', 'bed', 'handledBy'])),
+            $this->formatCaseDetail($case->load(['santri', 'medicines', 'handledBy'])),
             'Santri berhasil dipulangkan.'
         );
     }
@@ -273,31 +269,14 @@ class SicknessCaseApiController extends BaseApiController
 
         $case->update(array_merge($validated, ['status' => 'referred']));
 
-        $this->syncBedStatus($case);
+
 
         return $this->success(
-            $this->formatCaseDetail($case->load(['santri', 'medicines', 'bed', 'handledBy'])),
+            $this->formatCaseDetail($case->load(['santri', 'medicines', 'handledBy'])),
             'Santri berhasil dirujuk.'
         );
     }
 
-    public function assignBed(Request $request, $id)
-    {
-        $case = SicknessCase::findOrFail($id);
-
-        $validated = $request->validate([
-        ]);
-
-
-        }
-
-        $this->syncBedStatus($case);
-
-        return $this->success(
-            $this->formatCaseDetail($case->load(['santri', 'medicines', 'bed', 'handledBy'])),
-            'Kasur berhasil ditetapkan.'
-        );
-    }
 
     public function notifyGuardian($id, WhatsAppService $whatsApp)
     {
@@ -309,13 +288,6 @@ class SicknessCaseApiController extends BaseApiController
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    private function syncBedStatus(SicknessCase $case): void
-    {
-        $isOccupied = !in_array($case->status, ['recovered']);
-            'status'        => $isOccupied ? 'occupied' : 'available',
-            'occupant_name' => $isOccupied ? $case->santri?->name : null,
-        ]);
-    }
 
     private function saveBase64Photo(string $base64): ?string
     {
@@ -388,7 +360,6 @@ class SicknessCaseApiController extends BaseApiController
                 'name'          => $case->santri->name,
                 'nis'           => $case->santri->nis,
                 'gender'        => $case->santri->gender,
-                'dormitory'     => $case->santri->dormitory?->name,
                 'class'         => $case->santri->schoolClass?->name,
                 'guardian_name' => $case->santri->guardian_name,
                 'guardian_phone'=> $case->santri->guardian_phone,
@@ -415,9 +386,7 @@ class SicknessCaseApiController extends BaseApiController
             'picked_up_by'   => $case->picked_up_by ?? null,
             'picked_up_at'   => $case->picked_up_at ?? null,
             'discharge_notes'=> $case->discharge_notes ?? null,
-            'bed'            => $case->bed ? [
-                'id' => $case->bed->id, 'code' => $case->bed->code, 'room' => $case->bed->room_name,
-            ] : null,
+
             'medicines'      => $case->medicines->map(fn($m) => [
                 'id'       => $m->id,
                 'name'     => $m->name,

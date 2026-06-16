@@ -10,7 +10,7 @@ class MobileLookupController extends BaseApiController
 {
     public function santris(Request $request)
     {
-        $query = Santri::with(['schoolClass', 'major', 'dormitory'])->orderBy('name');
+        $query = Santri::with(['schoolClass', 'major'])->orderBy('name');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -27,7 +27,7 @@ class MobileLookupController extends BaseApiController
             'gender' => $santri->gender,
             'class_name' => $santri->schoolClass?->name,
             'major_name' => $santri->major?->name,
-            'dormitory_name' => $santri->dormitory?->name,
+
             'guardian_name' => $santri->guardian_name,
             'guardian_phone' => $santri->guardian_phone,
         ]);
@@ -49,15 +49,5 @@ class MobileLookupController extends BaseApiController
         return $this->success(['items' => $items]);
     }
 
-    public function beds()
-    {
-            'id' => $bed->id,
-            'code' => $bed->code,
-            'room_name' => $bed->room_name,
-            'status' => $bed->status,
-            'occupant_name' => $bed->occupant_name,
-        ]);
 
-        return $this->success(['items' => $items]);
-    }
 }

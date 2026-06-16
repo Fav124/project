@@ -91,7 +91,6 @@
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
             letter-spacing: -0.03em;
-            font-size: 1.25rem !important;
         }
         .sidebar .sidebar-brand span { color: rgba(255,255,255,0.85) !important; }
 
@@ -132,6 +131,10 @@
             background: var(--primary-light) !important;
             color: var(--primary) !important;
             font-weight: 600;
+        }
+        .sidebar .nav .nav-item.active > .nav-link .menu-title,
+        .sidebar .nav .nav-item .nav-link.active .menu-title {
+            color: var(--primary) !important;
         }
         .sidebar .nav .nav-item .nav-link .menu-icon {
             background: transparent !important;
@@ -254,44 +257,39 @@
         }
         .card .text-muted, .card small { color: var(--text-secondary) !important; }
 
-        /* Stat Cards — Minimal Style with Left Border */
+        /* Stat Cards — Modern Style */
         .stat-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-lg);
-            padding: 20px 24px;
+            padding: 24px;
             position: relative;
-            overflow: hidden;
             box-shadow: var(--shadow-sm);
             transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .stat-card:hover {
             box-shadow: var(--shadow-md);
             transform: translateY(-2px);
         }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            width: 4px;
-            border-radius: 4px 0 0 4px;
+
+        .stat-card .d-flex.align-items-center.justify-content-between.mb-2 {
+            margin-bottom: 12px !important;
         }
-        .stat-card.stat-primary::before { background: var(--primary); }
-        .stat-card.stat-success::before { background: var(--success); }
-        .stat-card.stat-warning::before { background: var(--accent); }
-        .stat-card.stat-danger::before  { background: var(--danger); }
 
         .stat-card .stat-icon {
-            width: 44px; height: 44px;
-            border-radius: 12px;
+            width: 48px; height: 48px;
+            border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
         }
-        .stat-card.stat-primary .stat-icon { background: var(--primary-light); color: var(--primary); }
-        .stat-card.stat-success .stat-icon { background: var(--success-light); color: var(--success); }
-        .stat-card.stat-warning .stat-icon { background: var(--accent-light); color: var(--accent); }
-        .stat-card.stat-danger  .stat-icon { background: var(--danger-light); color: var(--danger); }
-
+        .stat-card.stat-primary .stat-icon { background: rgba(2, 120, 212, 0.1); color: var(--primary); }
+        .stat-card.stat-success .stat-icon { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .stat-card.stat-info .stat-icon    { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; }
+        .stat-card.stat-warning .stat-icon { background: rgba(245, 158, 11, 0.1); color: var(--accent); }
+        .stat-card.stat-danger .stat-icon  { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .stat-card .stat-value {
             font-family: 'Outfit', sans-serif;
             font-size: 1.75rem;

@@ -63,9 +63,6 @@ class SicknessCase extends Model
                     ->withTimestamps();
     }
 
-    {
-    }
-
     public function keluhans()
     {
         return $this->belongsToMany(Keluhan::class, 'keluhan_sickness_case', 'sickness_case_id', 'keluhan_id');

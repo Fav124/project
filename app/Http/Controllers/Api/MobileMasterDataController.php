@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Dormitory;
 use App\Models\Major;
 use App\Models\Medicine;
 use App\Models\Santri;
@@ -14,7 +13,7 @@ class MobileMasterDataController extends BaseApiController
 {
     public function santris(Request $request)
     {
-        $query = Santri::with(['schoolClass', 'major', 'dormitory'])->orderBy('name');
+        $query = Santri::with(['schoolClass', 'major'])->orderBy('name');
 
         if ($request->filled('search')) {
             $search = $request->string('search');
@@ -42,15 +41,13 @@ class MobileMasterDataController extends BaseApiController
             'birth_date' => ['nullable', 'date'],
             'class_id' => ['nullable', 'exists:classes,id'],
             'major_id' => ['nullable', 'exists:majors,id'],
-            'dormitory_id' => ['nullable', 'exists:dormitories,id'],
             'class_room' => ['nullable', 'string', 'max:100'],
-            'dorm_room' => ['nullable', 'string', 'max:100'],
             'guardian_name' => ['nullable', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:50'],
             'notes' => ['nullable', 'string'],
         ]);
 
-        $santri = Santri::create($validated)->load(['schoolClass', 'major', 'dormitory']);
+        $santri = Santri::create($validated)->load(['schoolClass', 'major']);
 
         return $this->success([
             'item' => $this->transformSantri($santri),
@@ -69,9 +66,7 @@ class MobileMasterDataController extends BaseApiController
             'birth_date' => ['nullable', 'date'],
             'class_id' => ['nullable', 'exists:classes,id'],
             'major_id' => ['nullable', 'exists:majors,id'],
-            'dormitory_id' => ['nullable', 'exists:dormitories,id'],
             'class_room' => ['nullable', 'string', 'max:100'],
-            'dorm_room' => ['nullable', 'string', 'max:100'],
             'guardian_name' => ['nullable', 'string', 'max:255'],
             'guardian_phone' => ['nullable', 'string', 'max:50'],
             'notes' => ['nullable', 'string'],
@@ -80,7 +75,7 @@ class MobileMasterDataController extends BaseApiController
         $santri->update($validated);
 
         return $this->success([
-            'item' => $this->transformSantri($santri->fresh(['schoolClass', 'major', 'dormitory'])),
+            'item' => $this->transformSantri($santri->fresh(['schoolClass', 'major'])),
         ], 'Data santri berhasil diperbarui.');
     }
 
@@ -137,116 +132,7 @@ class MobileMasterDataController extends BaseApiController
         ], 'Data obat berhasil diperbarui.');
     }
 
-    public function beds(Request $request)
-    {
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        return $this->success([
-        ]);
-    }
-
-    public function storeBed(Request $request)
-    {
-        $this->ensureHealthAccess($request);
-
-        $validated = $request->validate([
-            'code' => ['required', 'string', 'max:50', 'unique:infirmary_beds,code'],
-            'room_name' => ['required', 'string', 'max:100'],
-            'status' => ['required', 'in:available,occupied,maintenance'],
-            'occupant_name' => ['nullable', 'string', 'max:255'],
-            'notes' => ['nullable', 'string'],
-        ]);
-
-        if ($validated['status'] !== 'occupied') {
-            $validated['occupant_name'] = null;
-        }
-
-
-        return $this->success([
-            'item' => $this->transformBed($bed),
-        ], 'Data kasur UKS berhasil ditambahkan.', 201);
-    }
-
-    {
-        $this->ensureHealthAccess($request);
-
-        $validated = $request->validate([
-            'code' => ['required', 'string', 'max:50', Rule::unique('infirmary_beds', 'code')->ignore($bed->id)],
-            'room_name' => ['required', 'string', 'max:100'],
-            'status' => ['required', 'in:available,occupied,maintenance'],
-            'occupant_name' => ['nullable', 'string', 'max:255'],
-            'notes' => ['nullable', 'string'],
-        ]);
-
-        if ($validated['status'] !== 'occupied') {
-            $validated['occupant_name'] = null;
-        }
-
-        $bed->update($validated);
-
-        return $this->success([
-            'item' => $this->transformBed($bed->fresh()),
-        ], 'Data kasur UKS berhasil diperbarui.');
-    }
-
-    public function dormitories()
-    {
-        return $this->success([
-            'items' => Dormitory::withCount('santris')->orderBy('name')->get()->map(
-                fn (Dormitory $dormitory) => $this->transformDormitory($dormitory)
-            ),
-        ]);
-    }
-
-    public function storeDormitory(Request $request)
-    {
-        $this->ensureHealthAccess($request);
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'building' => ['nullable', 'string', 'max:255'],
-            'gender' => ['required', 'in:L,P'],
-            'supervisor_name' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-        ]);
-
-        $dormitory = Dormitory::create($validated)->loadCount('santris');
-
-        return $this->success([
-            'item' => $this->transformDormitory($dormitory),
-        ], 'Data asrama berhasil ditambahkan.', 201);
-    }
-
-    public function updateDormitory(Request $request, Dormitory $dormitory)
-    {
-        $this->ensureHealthAccess($request);
-
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'building' => ['nullable', 'string', 'max:255'],
-            'gender' => ['required', 'in:L,P'],
-            'supervisor_name' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-        ]);
-
-        $dormitory->update($validated);
-        $dormitory->loadCount('santris');
-
-        return $this->success([
-            'item' => $this->transformDormitory($dormitory),
-        ], 'Data asrama berhasil diperbarui.');
-    }
-
-    public function destroyDormitory(Request $request, Dormitory $dormitory)
-    {
-        $this->ensureHealthAccess($request);
-        $dormitory->delete();
-
-        return $this->success([], 'Data asrama berhasil dihapus.');
-    }
 
     public function classes()
     {
@@ -377,10 +263,7 @@ class MobileMasterDataController extends BaseApiController
             'class_name' => $santri->schoolClass?->name,
             'major_id' => $santri->major_id,
             'major_name' => $santri->major?->name,
-            'dormitory_id' => $santri->dormitory_id,
-            'dormitory_name' => $santri->dormitory?->name,
             'class_room' => $santri->class_room,
-            'dorm_room' => $santri->dorm_room,
             'guardian_name' => $santri->guardian_name,
             'guardian_phone' => $santri->guardian_phone,
             'notes' => $santri->notes,
@@ -407,43 +290,4 @@ class MobileMasterDataController extends BaseApiController
         ];
     }
 
-    private function transformDormitory(Dormitory $dormitory): array
-    {
-        return [
-            'id' => $dormitory->id,
-            'name' => $dormitory->name,
-            'building' => $dormitory->building,
-            'gender' => $dormitory->gender,
-            'supervisor_name' => $dormitory->supervisor_name,
-            'description' => $dormitory->description,
-            'santri_count' => $dormitory->santris_count ?? 0,
-        ];
-    }
-
-    private function transformMedicine(Medicine $medicine): array
-    {
-        return [
-            'id' => $medicine->id,
-            'name' => $medicine->name,
-            'unit' => $medicine->unit,
-            'stock' => $medicine->stock,
-            'minimum_stock' => $medicine->minimum_stock,
-            'expiry_date' => optional($medicine->expiry_date)->toDateString(),
-            'description' => $medicine->description,
-            'is_low_stock' => $medicine->stock <= $medicine->minimum_stock,
-            'is_expired' => $medicine->isExpired(),
-            'is_expiring_soon' => $medicine->isExpiringSoon(),
-        ];
-    }
-
-    {
-        return [
-            'id' => $bed->id,
-            'code' => $bed->code,
-            'room_name' => $bed->room_name,
-            'status' => $bed->status,
-            'occupant_name' => $bed->occupant_name,
-            'notes' => $bed->notes,
-        ];
-    }
 }

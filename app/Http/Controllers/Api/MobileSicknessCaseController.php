@@ -9,7 +9,7 @@ class MobileSicknessCaseController extends BaseApiController
 {
     public function index(Request $request)
     {
-        $query = SicknessCase::with(['santri', 'bed', 'medicines', 'handler'])->latest('visit_date');
+        $query = SicknessCase::with(['santri', 'medicines', 'handler'])->latest('visit_date');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -36,10 +36,8 @@ class MobileSicknessCaseController extends BaseApiController
 
         $case = SicknessCase::create($validated);
         $this->syncMedicines($case, $medicineIds);
-        $this->syncBed($case);
-
         return $this->success([
-            'item' => $this->transformItem($case->fresh(['santri', 'bed', 'medicines', 'handler'])),
+            'item' => $this->transformItem($case->fresh(['santri', 'medicines', 'handler'])),
         ], 'Kasus sakit berhasil dibuat.', 201);
     }
 
@@ -53,15 +51,8 @@ class MobileSicknessCaseController extends BaseApiController
         $sicknessCase->update($validated);
         $this->syncMedicines($sicknessCase, $medicineIds);
 
-                'status' => 'available',
-                'occupant_name' => null,
-            ]);
-        }
-
-        $this->syncBed($sicknessCase);
-
         return $this->success([
-            'item' => $this->transformItem($sicknessCase->fresh(['santri', 'bed', 'medicines', 'handler'])),
+            'item' => $this->transformItem($sicknessCase->fresh(['santri', 'medicines', 'handler'])),
         ], 'Kasus sakit berhasil diperbarui.');
     }
 
@@ -92,15 +83,6 @@ class MobileSicknessCaseController extends BaseApiController
         $case->update(['medicine_id' => $medicineIds[0] ?? null]);
     }
 
-    private function syncBed(SicknessCase $case): void
-    {
-            return;
-        }
-
-            'status' => $case->status === 'recovered' ? 'available' : 'occupied',
-            'occupant_name' => $case->status === 'recovered' ? null : $case->santri?->name,
-        ]);
-    }
 
     private function transformItem(SicknessCase $case): array
     {
@@ -120,11 +102,7 @@ class MobileSicknessCaseController extends BaseApiController
                 'nis' => $case->santri?->nis,
                 'guardian_phone' => $case->santri?->guardian_phone,
             ],
-            'bed' => $case->bed ? [
-                'id' => $case->bed->id,
-                'code' => $case->bed->code,
-                'room_name' => $case->bed->room_name,
-            ] : null,
+
             'medicines' => $case->medicines->map(fn ($medicine) => [
                 'id' => $medicine->id,
                 'name' => $medicine->name,
