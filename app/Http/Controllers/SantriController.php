@@ -14,7 +14,7 @@ class SantriController extends Controller
 
     public function index(Request $request)
     {
-        $query = Santri::with(['schoolClass', 'major', 'dormitory']);
+        $query = Santri::with(['schoolClass', 'major']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -42,7 +42,7 @@ class SantriController extends Controller
             
         $classes = SchoolClass::with('majors')->orderBy('name')->get();
         $majors = Major::orderBy('name')->get();
-        $dormitories = \App\Models\Dormitory::orderBy('name')->get();
+
         $showForm = $request->boolean('create') || $editSantri || $request->isMethod('post');
 
         // Chart Data
@@ -51,7 +51,7 @@ class SantriController extends Controller
         $majorStats = Major::withCount('santris')->get();
 
         return view('health.santri.index', compact(
-            'santris', 'editSantri', 'detailSantri', 'classes', 'majors', 'dormitories', 'showForm',
+            'santris', 'editSantri', 'detailSantri', 'classes', 'majors', 'showForm',
             'genderStats', 'classStats', 'majorStats'
         ));
     }
@@ -71,8 +71,7 @@ class SantriController extends Controller
             'santris.*.gender' => ['required', 'in:L,P'],
             'santris.*.school_class_id' => ['nullable', 'exists:classes,id'],
             'santris.*.major_id' => ['nullable', 'exists:majors,id'],
-            'santris.*.dormitory_id' => ['nullable', 'exists:dormitories,id'],
-            'santris.*.dorm_room' => ['nullable', 'string', 'max:100'],
+
             'santris.*.guardian_name' => ['nullable', 'string', 'max:255'],
             'santris.*.guardian_phone' => ['nullable', 'string', 'max:50'],
         ]);

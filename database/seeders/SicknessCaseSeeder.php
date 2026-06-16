@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\InfirmaryBed;
 use App\Models\Medicine;
 use App\Models\Santri;
 use App\Models\SicknessCase;
@@ -14,7 +13,6 @@ class SicknessCaseSeeder extends Seeder
     {
         $santris = Santri::all();
         $medicines = Medicine::all();
-        $beds = InfirmaryBed::all();
 
         $complaints = [
             'Demam tinggi dan batuk berdahak sejak semalam.',

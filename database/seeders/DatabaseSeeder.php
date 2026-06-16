@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             SchoolClassSeeder::class,
             SantriSeeder::class,
             MedicineSeeder::class,
-            InfirmaryBedSeeder::class,
             SicknessCaseSeeder::class,
             HospitalReferralSeeder::class,
             AlignSeeder::class,

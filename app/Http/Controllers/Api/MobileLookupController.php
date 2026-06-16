@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\InfirmaryBed;
 use App\Models\Medicine;
 use App\Models\Santri;
 use Illuminate\Http\Request;
@@ -52,7 +51,6 @@ class MobileLookupController extends BaseApiController
 
     public function beds()
     {
-        $items = InfirmaryBed::orderBy('code')->get()->map(fn ($bed) => [
             'id' => $bed->id,
             'code' => $bed->code,
             'room_name' => $bed->room_name,

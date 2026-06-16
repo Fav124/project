@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\HospitalReferral;
-use App\Models\InfirmaryBed;
 use App\Models\Medicine;
 use App\Models\Santri;
 use App\Models\SicknessCase;
@@ -22,7 +21,6 @@ class MobileReportController extends BaseApiController
             'santri_sakit' => SicknessCase::whereBetween('visit_date', [$startDate, $endDate])->count(),
             'rujukan_rs' => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
-            'kasur_tersedia' => InfirmaryBed::where('status', 'available')->count(),
         ];
 
         $topComplaints = SicknessCase::selectRaw('COALESCE(diagnosis, complaint) as label, count(*) as total')

@@ -42,11 +42,11 @@
 @if($stats['obat_kadaluarsa'] > 0)
 <div class="row">
     <div class="col-12 grid-margin">
-        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center" role="alert" style="background: rgba(252, 66, 74, 0.1); border-left: 5px solid #fc424a !important;">
-            <i class="mdi mdi-alert-octagon mr-3" style="font-size: 24px; color: #fc424a;"></i>
+        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center" role="alert" style="background: rgba(239, 68, 68, 0.1); border-left: 5px solid var(--danger) !important;">
+            <i class="mdi mdi-alert-octagon mr-3" style="font-size: 24px; color: var(--danger);"></i>
             <div>
-                <h5 class="alert-heading mb-1" style="color: #fc424a; font-weight: 800;">PERINGATAN: OBAT KADALUARSA!</h5>
-                <p class="mb-0 text-white">Ada <strong>{{ $stats['obat_kadaluarsa'] }} jenis obat</strong> yang sudah kadaluarsa. Mohon segera diperiksa.</p>
+                <h5 class="alert-heading mb-1" style="color: var(--danger); font-weight: 800;">PERINGATAN: OBAT KADALUARSA!</h5>
+                <p class="mb-0 text-dark">Ada <strong>{{ $stats['obat_kadaluarsa'] }} jenis obat</strong> yang sudah kadaluarsa. Mohon segera diperiksa.</p>
             </div>
             <div class="ml-auto">
                 <a href="{{ route('medicines.index', ['expired' => 1]) }}" class="btn btn-danger btn-sm font-weight-bold">Periksa Stok</a>
@@ -59,67 +59,54 @@
 {{-- Stat Cards --}}
 <div class="row">
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-gradient-primary">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-box-primary mr-3">
-                        <i class="mdi mdi-account-group icon-md"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted font-weight-normal mb-1">Total Santri</h6>
-                        <h3 class="mb-0 font-weight-bold">{{ $stats['santri_total'] }}</h3>
-                        <small class="text-white-50">{{ $stats['santri_l'] }} L / {{ $stats['santri_p'] }} P</small>
-                    </div>
+        <div class="stat-card stat-primary">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Total Santri</div>
+                <div class="stat-icon">
+                    <i class="mdi mdi-account-group"></i>
                 </div>
             </div>
+            <div class="stat-value">{{ $stats['santri_total'] }}</div>
+            <div class="stat-sub mt-1">{{ $stats['santri_l'] }} L / {{ $stats['santri_p'] }} P</div>
         </div>
     </div>
+    
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-gradient-success">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-box-success mr-3">
-                        <i class="mdi mdi-emoticon-sick icon-md"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted font-weight-normal mb-1">Santri Sakit</h6>
-                        <h3 class="mb-0 font-weight-bold">{{ $stats['santri_sakit_aktif'] }}</h3>
-                        <small class="text-white-50">Sedang Dirawat</small>
-                    </div>
+        <div class="stat-card stat-success">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Santri Sakit</div>
+                <div class="stat-icon">
+                    <i class="mdi mdi-emoticon-sick"></i>
                 </div>
             </div>
+            <div class="stat-value">{{ $stats['santri_sakit_aktif'] }}</div>
+            <div class="stat-sub mt-1">Sedang Dirawat</div>
         </div>
     </div>
+
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-gradient-info">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-box-info mr-3">
-                        <i class="mdi mdi-hospital-building icon-md"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted font-weight-normal mb-1">Rujukan RS</h6>
-                        <h3 class="mb-0 font-weight-bold">{{ $stats['rujukan'] }}</h3>
-                        <small class="text-white-50">Periode Ini</small>
-                    </div>
+        <div class="stat-card stat-info">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Rujukan RS</div>
+                <div class="stat-icon">
+                    <i class="mdi mdi-hospital-building"></i>
                 </div>
             </div>
+            <div class="stat-value">{{ $stats['rujukan'] }}</div>
+            <div class="stat-sub mt-1">Periode Ini</div>
         </div>
     </div>
+
     <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
-        <div class="card card-gradient-danger">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="icon-box-danger mr-3">
-                        <i class="mdi mdi-pill icon-md"></i>
-                    </div>
-                    <div>
-                        <h6 class="text-muted font-weight-normal mb-1">Stok Kritis</h6>
-                        <h3 class="mb-0 font-weight-bold">{{ $stats['obat_menipis'] }}</h3>
-                        <small class="text-white-50">Jenis Obat</small>
-                    </div>
+        <div class="stat-card stat-danger">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Stok Kritis</div>
+                <div class="stat-icon">
+                    <i class="mdi mdi-pill"></i>
                 </div>
             </div>
+            <div class="stat-value">{{ $stats['obat_menipis'] }}</div>
+            <div class="stat-sub mt-1">Jenis Obat</div>
         </div>
     </div>
 </div>
@@ -127,110 +114,131 @@
 {{-- Grafik Utama --}}
 <div class="row">
     <div class="col-md-8 grid-margin stretch-card">
-        <x-ui.card title="Tren Kunjungan Santri Sakit">
-            <div id="visitChart" style="min-height: 350px;"></div>
-        </x-ui.card>
+        <div class="card w-100">
+            <div class="card-body">
+                <h4 class="card-title">Tren Kunjungan Santri Sakit</h4>
+                <div id="visitChart" style="min-height: 350px;"></div>
+            </div>
+        </div>
     </div>
     <div class="col-md-4 grid-margin stretch-card">
-        <x-ui.card title="Status Penanganan">
-            <div id="statusChart" style="min-height: 350px;"></div>
-        </x-ui.card>
+        <div class="card w-100">
+            <div class="card-body">
+                <h4 class="card-title">Status Penanganan</h4>
+                <div id="statusChart" style="min-height: 350px;"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-6 grid-margin stretch-card">
-        <x-ui.card title="Populasi Santri per Jurusan">
-            <div id="majorChart" style="min-height: 350px;"></div>
-        </x-ui.card>
+        <div class="card w-100">
+            <div class="card-body">
+                <h4 class="card-title">Populasi Santri per Jurusan</h4>
+                <div id="majorChart" style="min-height: 350px;"></div>
+            </div>
+        </div>
     </div>
     <div class="col-md-6 grid-margin stretch-card">
-        <x-ui.card title="Populasi Santri per Kelas">
-            <div id="classChart" style="min-height: 350px;"></div>
-        </x-ui.card>
+        <div class="card w-100">
+            <div class="card-body">
+                <h4 class="card-title">Populasi Santri per Kelas</h4>
+                <div id="classChart" style="min-height: 350px;"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 {{-- Aktifitas & Inventori --}}
 <div class="row">
     <div class="col-md-7 grid-margin stretch-card">
-        <x-ui.card title="Kunjungan UKS Terakhir">
-            <x-slot name="header">
-                <h4 class="card-title">Kunjungan UKS Terakhir</h4>
-                <a href="{{ route('sickness-cases.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
-            </x-slot>
-            <x-ui.table>
-                <thead>
-                    <tr>
-                        <th>Santri</th>
-                        <th>Keluhan</th>
-                        <th>Status</th>
-                        <th>Waktu</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($recentCases as $case)
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm bg-dark p-1 rounded mr-2">
-                                        <i class="mdi mdi-account text-primary"></i>
-                                    </div>
-                                    <span>{{ $case->santri->name }}</span>
-                                </div>
-                            </td>
-                            <td>{{ Str::limit($case->complaint, 30) }}</td>
-                            <td>
-                                @php
-                                    $statusMap = match($case->status) {
-                                        'observed' => ['class' => 'badge-outline-warning', 'label' => 'Observasi'],
-                                        'handled' => ['class' => 'badge-outline-info', 'label' => 'Ditangani'],
-                                        'recovered' => ['class' => 'badge-outline-success', 'label' => 'Sembuh'],
-                                        'referred' => ['class' => 'badge-outline-danger', 'label' => 'Dirujuk'],
-                                        default => ['class' => 'badge-outline-secondary', 'label' => $case->status]
-                                    };
-                                @endphp
-                                <div class="badge {{ $statusMap['class'] }}">{{ $statusMap['label'] }}</div>
-                            </td>
-                            <td>{{ $case->visit_date->translatedFormat('d F Y') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-4">Belum ada aktifitas untuk ditampilkan</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </x-ui.table>
-        </x-ui.card>
-    </div>
-    <div class="col-md-5 grid-margin stretch-card">
-        <x-ui.card title="Obat Segera Habis">
-            <div class="preview-list">
-                @forelse($lowStockMedicines as $medicine)
-                    <div class="preview-item border-bottom">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-danger">
-                                <i class="mdi mdi-pill"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content d-sm-flex flex-grow">
-                            <div class="flex-grow">
-                                <h6 class="preview-subject">{{ $medicine->name }}</h6>
-                                <p class="text-muted mb-0">Tersisa: {{ $medicine->stock }} {{ $medicine->unit }}</p>
-                            </div>
-                            <div class="mr-auto text-sm-right pt-2 pt-sm-0">
-                                <a href="{{ route('medicines.index', ['search' => $medicine->name]) }}" class="btn btn-outline-danger btn-xs">Update</a>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-center py-4">
-                        <i class="mdi mdi-check-circle text-success" style="font-size: 40px;"></i>
-                        <p class="text-muted mt-2">Seluruh stok obat dalam kondisi aman</p>
-                    </div>
-                @endforelse
+        <div class="card w-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Kunjungan UKS Terakhir</h4>
+                    <a href="{{ route('sickness-cases.index') }}" class="btn btn-outline-primary btn-sm">Lihat Semua</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Santri</th>
+                                <th>Keluhan</th>
+                                <th>Status</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentCases as $case)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-primary-light text-primary rounded mr-2" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(2, 120, 212, 0.12);">
+                                                <i class="mdi mdi-account"></i>
+                                            </div>
+                                            <span class="font-weight-medium">{{ $case->santri->name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ Str::limit($case->complaint, 30) }}</td>
+                                    <td>
+                                        @php
+                                            $statusMap = match($case->status) {
+                                                'observed' => ['class' => 'badge-outline-warning', 'label' => 'Observasi'],
+                                                'handled' => ['class' => 'badge-outline-info', 'label' => 'Ditangani'],
+                                                'recovered' => ['class' => 'badge-outline-success', 'label' => 'Sembuh'],
+                                                'referred' => ['class' => 'badge-outline-danger', 'label' => 'Dirujuk'],
+                                                default => ['class' => 'badge-outline-secondary', 'label' => $case->status]
+                                            };
+                                        @endphp
+                                        <div class="badge {{ $statusMap['class'] }}">{{ $statusMap['label'] }}</div>
+                                    </td>
+                                    <td>{{ $case->visit_date->translatedFormat('d F Y') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">Belum ada aktifitas untuk ditampilkan</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </x-ui.card>
+        </div>
+    </div>
+    
+    <div class="col-md-5 grid-margin stretch-card">
+        <div class="card w-100">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Obat Segera Habis</h4>
+                <div class="preview-list">
+                    @forelse($lowStockMedicines as $medicine)
+                        <div class="preview-item border-bottom px-0">
+                            <div class="preview-thumbnail">
+                                <div class="preview-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="mdi mdi-pill"></i>
+                                </div>
+                            </div>
+                            <div class="preview-item-content d-sm-flex flex-grow ml-3">
+                                <div class="flex-grow">
+                                    <h6 class="preview-subject font-weight-medium mb-1">{{ $medicine->name }}</h6>
+                                    <p class="text-muted mb-0" style="font-size: 0.8rem;">Tersisa: {{ $medicine->stock }} {{ $medicine->unit }}</p>
+                                </div>
+                                <div class="mr-auto text-sm-right pt-2 pt-sm-0">
+                                    <a href="{{ route('medicines.index', ['search' => $medicine->name]) }}" class="btn btn-outline-danger btn-sm px-3">Update</a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-5">
+                            <i class="mdi mdi-check-decagram text-success" style="font-size: 48px;"></i>
+                            <h6 class="font-weight-medium mt-3">Stok Obat Aman</h6>
+                            <p class="text-muted text-sm mt-1 mb-0">Seluruh stok obat dalam kondisi aman</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -248,8 +256,8 @@
             },
             fontFamily: 'Inter, sans-serif'
         },
-        grid: { borderColor: '#d3dce8', strokeDashArray: 4 },
-        legend: { labels: { colors: '#334155' }, position: 'top' },
+        grid: { borderColor: 'var(--border)', strokeDashArray: 4 },
+        legend: { labels: { colors: 'var(--text)' }, position: 'top' },
         tooltip: { theme: 'light' }
     };
 
@@ -258,20 +266,20 @@
         ...chartDefaults,
         series: [{ name: 'Jumlah Santri', data: @json($sicknessTrends->pluck('count')) }],
         chart: { ...chartDefaults.chart, type: 'area', height: 350 },
-        colors: ['#0090E7'],
+        colors: ['#0278D4'],
         stroke: { curve: 'smooth', width: 3 },
         xaxis: {
             categories: @json($sicknessTrends->pluck('date_label')),
             labels: { 
-                style: { colors: '#334155' },
+                style: { colors: 'var(--text-secondary)' },
                 rotate: -45,
                 rotateAlways: false,
                 hideOverlappingLabels: true,
                 maxHeight: 60
             }
         },
-        yaxis: { labels: { style: { colors: '#334155' } } },
-        fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0 } }
+        yaxis: { labels: { style: { colors: 'var(--text-secondary)' } } },
+        fill: { type: 'gradient', gradient: { opacityFrom: 0.2, opacityTo: 0 } }
     }).render();
 
     // 2. Status Penanganan
@@ -290,8 +298,8 @@
         chart: { ...chartDefaults.chart, type: 'donut', height: 350 },
         labels: @json($mappedStatuses),
 
-        colors: ['#0090E7', '#007BCA', '#2D499D', '#FF8C00'],
-        plotOptions: { pie: { donut: { size: '75%', labels: { show: true, total: { show: true, label: 'Total', color: '#334155' } } } } }
+        colors: ['#F59E0B', '#0278D4', '#10B981', '#EF4444'],
+        plotOptions: { pie: { donut: { size: '75%', labels: { show: true, total: { show: true, label: 'Total', color: 'var(--text)' } } } } }
     }).render();
 
     // 3. Jurusan
@@ -299,13 +307,13 @@
         ...chartDefaults,
         series: [{ name: 'Santri', data: @json($santriByMajor->pluck('santris_count')) }],
         chart: { ...chartDefaults.chart, type: 'bar', height: 350 },
-        colors: ['#2D499D'],
+        colors: ['#12306F'],
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         xaxis: {
             categories: @json($santriByMajor->pluck('name')),
-            labels: { style: { colors: '#334155' } }
+            labels: { style: { colors: 'var(--text-secondary)' } }
         },
-        yaxis: { labels: { style: { colors: '#334155' }, maxWidth: 150 } }
+        yaxis: { labels: { style: { colors: 'var(--text-secondary)' }, maxWidth: 150 } }
     }).render();
 
     // 4. Kelas
@@ -313,32 +321,17 @@
         ...chartDefaults,
         series: [{ name: 'Santri', data: @json($santriByClass->pluck('santris_count')) }],
         chart: { ...chartDefaults.chart, type: 'bar', height: 350 },
-        colors: ['#007BCA'],
+        colors: ['#FF8C00'],
         plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
         xaxis: {
             categories: @json($santriByClass->pluck('name')),
             labels: { 
-                style: { colors: '#334155' },
+                style: { colors: 'var(--text-secondary)' },
                 rotate: -45,
                 hideOverlappingLabels: true
             }
         },
-        yaxis: { labels: { style: { colors: '#334155' } } }
+        yaxis: { labels: { style: { colors: 'var(--text-secondary)' } } }
     }).render();
 </script>
 @endpush
-
-<style>
-    .card-gradient-primary { background: linear-gradient(135deg, #075EA6, #0278D4); }
-    .card-gradient-success { background: linear-gradient(135deg, #0F766E, #12306F); }
-    .card-gradient-info { background: linear-gradient(135deg, #12306F, #075EA6); }
-    .card-gradient-danger { background: linear-gradient(135deg, #B45309, #075EA6); }
-    
-    .icon-box-primary, .icon-box-success, .icon-box-info, .icon-box-danger {
-        width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .icon-md { font-size: 24px; color: white; }
-    
-    .avatar-sm { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-</style>

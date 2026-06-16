@@ -78,7 +78,6 @@ trait HealthManagementValidation
         return [
             'santri_id' => ['required', 'exists:santris,id'],
             'medicine_id' => ['nullable', 'exists:medicines,id'],
-            'infirmary_bed_id' => ['nullable', 'exists:infirmary_beds,id'],
             'visit_date' => ['required', 'date'],
             'complaint' => ['required', 'string'],
             'diagnosis' => ['nullable', 'string', 'max:255'],

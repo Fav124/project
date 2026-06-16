@@ -12,7 +12,6 @@ class SicknessCase extends Model
     protected $fillable = [
         'santri_id',
         'handled_by',
-        'infirmary_bed_id',
         'visit_date',
         'complaint',
         'diagnosis',
@@ -64,9 +63,7 @@ class SicknessCase extends Model
                     ->withTimestamps();
     }
 
-    public function bed()
     {
-        return $this->belongsTo(InfirmaryBed::class, 'infirmary_bed_id');
     }
 
     public function keluhans()

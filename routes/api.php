@@ -9,7 +9,6 @@ use App\Http\Controllers\Api\MedicineApiController;
 use App\Http\Controllers\Api\HospitalReferralApiController;
 use App\Http\Controllers\Api\SantriApiController;
 use App\Http\Controllers\Api\WhatsAppApiController;
-use App\Http\Controllers\Api\InfirmaryBedApiController;
 use App\Http\Controllers\Api\SettingsApiController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('kunjungan/{id}/notify-guardian',   [SicknessCaseApiController::class, 'notifyGuardian']);
     Route::post('kunjungan/{id}/discharge',         [SicknessCaseApiController::class, 'discharge']);
     Route::post('kunjungan/{id}/refer',             [SicknessCaseApiController::class, 'refer']);
-    Route::post('kunjungan/{id}/assign-bed',        [SicknessCaseApiController::class, 'assignBed']);
+
 
     // ── Santri ────────────────────────────────────────────────────────────────
     Route::get('santri/lookups',    [SantriApiController::class, 'lookups']);
@@ -72,14 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware('role:super_admin,admin');
     Route::post('obat/mutasi',  [MedicineApiController::class, 'recordMutation']);
 
-    // ── Rawat Inap (Beds) ─────────────────────────────────────────────────────
-    Route::get('rawat-inap',         [InfirmaryBedApiController::class, 'index']);
-    Route::post('rawat-inap',        [InfirmaryBedApiController::class, 'store'])
-        ->middleware('role:super_admin,admin');
-    Route::put('rawat-inap/{id}',    [InfirmaryBedApiController::class, 'update'])
-        ->middleware('role:super_admin,admin');
-    Route::delete('rawat-inap/{id}', [InfirmaryBedApiController::class, 'destroy'])
-        ->middleware('role:super_admin,admin');
+
 
     // ── Master Data ───────────────────────────────────────────────────────────
     Route::get('master/kelas',              [MobileMasterDataController::class, 'classes']);
@@ -98,13 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('master/jurusan/{id}',    [MobileMasterDataController::class, 'destroyMajor'])
         ->middleware('role:super_admin,admin');
 
-    Route::get('master/kamar',              [MobileMasterDataController::class, 'dormitories']);
-    Route::post('master/kamar',             [MobileMasterDataController::class, 'storeDormitory'])
-        ->middleware('role:super_admin,admin');
-    Route::put('master/kamar/{id}',         [MobileMasterDataController::class, 'updateDormitory'])
-        ->middleware('role:super_admin,admin');
-    Route::delete('master/kamar/{id}',      [MobileMasterDataController::class, 'destroyDormitory'])
-        ->middleware('role:super_admin,admin');
+
 
     // ── Rujukan RS ────────────────────────────────────────────────────────────
     Route::get('rujukan',           [HospitalReferralApiController::class, 'index']);

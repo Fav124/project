@@ -16,7 +16,7 @@ class SantriApiController extends BaseApiController
         return $this->success([
             'classes'     => \App\Models\SchoolClass::orderBy('name')->get(['id', 'name']),
             'majors'      => \App\Models\Major::orderBy('name')->get(['id', 'name']),
-            'dormitories' => \App\Models\Dormitory::orderBy('name')->get(['id', 'name']),
+            'dormitories' => [],
         ]);
     }
 
@@ -24,7 +24,7 @@ class SantriApiController extends BaseApiController
 
     public function index(Request $request)
     {
-        $query = Santri::with(['schoolClass:id,name', 'major:id,name', 'dormitory:id,name']);
+        $query = Santri::with(['schoolClass:id,name', 'major:id,name']);
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -33,7 +33,6 @@ class SantriApiController extends BaseApiController
         if ($request->filled('gender'))       $query->where('gender', $request->gender);
         if ($request->filled('class_id'))     $query->where('class_id', $request->class_id);
         if ($request->filled('major_id'))     $query->where('major_id', $request->major_id);
-        if ($request->filled('dormitory_id')) $query->where('dormitory_id', $request->dormitory_id);
 
         $santris = $query->orderBy('name')->paginate((int) $request->input('per_page', 20));
 
@@ -51,7 +50,7 @@ class SantriApiController extends BaseApiController
     public function show($id)
     {
         $santri = Santri::with([
-            'schoolClass', 'major', 'dormitory',
+            'schoolClass', 'major',
             'guardians',
             'sicknessCases' => fn($q) => $q->latest('visit_date')->take(5),
             'hospitalReferrals' => fn($q) => $q->latest('referral_date')->take(3),
@@ -86,7 +85,7 @@ class SantriApiController extends BaseApiController
 
         $santri = Santri::create($validated);
         return $this->success(
-            $this->format($santri->load(['schoolClass', 'major', 'dormitory'])),
+            $this->format($santri->load(['schoolClass', 'major'])),
             'Santri berhasil ditambahkan.',
             201
         );
@@ -119,7 +118,7 @@ class SantriApiController extends BaseApiController
 
         $santri->update($validated);
         return $this->success(
-            $this->format($santri->load(['schoolClass', 'major', 'dormitory'])),
+            $this->format($santri->load(['schoolClass', 'major'])),
             'Data santri diperbarui.'
         );
     }
@@ -224,8 +223,8 @@ class SantriApiController extends BaseApiController
             'gender_label'           => $s->gender === 'L' ? 'Laki-laki' : 'Perempuan',
             'class'                  => $s->schoolClass?->name,
             'major'                  => $s->major?->name,
-            'dormitory'              => $s->dormitory?->name,
-            'dorm_room'              => $s->dorm_room,
+            'dormitory'              => null,
+            'dorm_room'              => null,
             'guardian_name'          => $s->guardian_name,
             'guardian_phone'         => $s->guardian_phone,
             'guardian_relationship'  => $s->guardian_relationship ?? null,

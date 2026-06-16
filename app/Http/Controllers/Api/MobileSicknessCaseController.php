@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\InfirmaryBed;
 use App\Models\SicknessCase;
 use Illuminate\Http\Request;
 
@@ -51,12 +50,9 @@ class MobileSicknessCaseController extends BaseApiController
         $medicineIds = $validated['medicine_ids'] ?? [];
         unset($validated['medicine_ids']);
 
-        $oldBedId = $sicknessCase->infirmary_bed_id;
         $sicknessCase->update($validated);
         $this->syncMedicines($sicknessCase, $medicineIds);
 
-        if ($oldBedId && $oldBedId !== $sicknessCase->infirmary_bed_id) {
-            InfirmaryBed::whereKey($oldBedId)->update([
                 'status' => 'available',
                 'occupant_name' => null,
             ]);
@@ -78,7 +74,6 @@ class MobileSicknessCaseController extends BaseApiController
             'diagnosis' => ['nullable', 'string', 'max:255'],
             'action_taken' => ['nullable', 'string'],
             'medicine_notes' => ['nullable', 'string'],
-            'infirmary_bed_id' => ['nullable', 'exists:infirmary_beds,id'],
             'status' => ['required', 'in:observed,handled,recovered,referred'],
             'return_date' => ['nullable', 'date'],
             'notes' => ['nullable', 'string'],
@@ -99,11 +94,9 @@ class MobileSicknessCaseController extends BaseApiController
 
     private function syncBed(SicknessCase $case): void
     {
-        if (!$case->infirmary_bed_id) {
             return;
         }
 
-        InfirmaryBed::whereKey($case->infirmary_bed_id)->update([
             'status' => $case->status === 'recovered' ? 'available' : 'occupied',
             'occupant_name' => $case->status === 'recovered' ? null : $case->santri?->name,
         ]);

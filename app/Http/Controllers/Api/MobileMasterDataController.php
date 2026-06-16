@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Dormitory;
-use App\Models\InfirmaryBed;
 use App\Models\Major;
 use App\Models\Medicine;
 use App\Models\Santri;
@@ -140,14 +139,12 @@ class MobileMasterDataController extends BaseApiController
 
     public function beds(Request $request)
     {
-        $query = InfirmaryBed::orderBy('room_name')->orderBy('code');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
         return $this->success([
-            'items' => $query->get()->map(fn (InfirmaryBed $bed) => $this->transformBed($bed)),
         ]);
     }
 
@@ -167,14 +164,12 @@ class MobileMasterDataController extends BaseApiController
             $validated['occupant_name'] = null;
         }
 
-        $bed = InfirmaryBed::create($validated);
 
         return $this->success([
             'item' => $this->transformBed($bed),
         ], 'Data kasur UKS berhasil ditambahkan.', 201);
     }
 
-    public function updateBed(Request $request, InfirmaryBed $bed)
     {
         $this->ensureHealthAccess($request);
 
@@ -441,7 +436,6 @@ class MobileMasterDataController extends BaseApiController
         ];
     }
 
-    private function transformBed(InfirmaryBed $bed): array
     {
         return [
             'id' => $bed->id,

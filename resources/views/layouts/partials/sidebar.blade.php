@@ -31,37 +31,35 @@
         </li>
 
         @can('manage-master-data')
-        <li class="nav-item menu-items {{ request()->routeIs('santri*', 'classes*', 'majors*', 'dormitories*') ? 'active' : '' }}">
-            <a class="nav-link" data-toggle="collapse" href="#ui-master" aria-expanded="{{ request()->routeIs('santri*', 'classes*', 'majors*', 'dormitories*') ? 'true' : 'false' }}" aria-controls="ui-master">
+        <li class="nav-item menu-items {{ request()->routeIs('santri*', 'classes*', 'majors*') ? 'active' : '' }}">
+            <a class="nav-link" data-toggle="collapse" href="#ui-master" aria-expanded="{{ request()->routeIs('santri*', 'classes*', 'majors*') ? 'true' : 'false' }}" aria-controls="ui-master">
                 <span class="menu-icon">
                     <i class="mdi mdi-database"></i>
                 </span>
                 <span class="menu-title">Master Data</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('santri*', 'classes*', 'majors*', 'dormitories*') ? 'show' : '' }}" id="ui-master">
+            <div class="collapse {{ request()->routeIs('santri*', 'classes*', 'majors*') ? 'show' : '' }}" id="ui-master">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('santri*') ? 'active' : '' }}" href="{{ route('santri.index') }}">Data Santri</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('classes*') ? 'active' : '' }}" href="{{ route('classes.index') }}">Data Kelas</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('majors*') ? 'active' : '' }}" href="{{ route('majors.index') }}">Data Jurusan</a></li>
-                    <li class="nav-item"> <a class="nav-link {{ request()->routeIs('dormitories*') ? 'active' : '' }}" href="{{ route('dormitories.index') }}">Data Asrama</a></li>
                 </ul>
             </div>
         </li>
         @endcan
 
-        <li class="nav-item menu-items {{ request()->routeIs('medicines*', 'beds*', 'health-records*', 'sickness-cases*', 'referrals*') ? 'active' : '' }}">
-            <a class="nav-link" data-toggle="collapse" href="#ui-health" aria-expanded="{{ request()->routeIs('medicines*', 'beds*', 'health-records*', 'sickness-cases*', 'referrals*') ? 'true' : 'false' }}" aria-controls="ui-health">
+        <li class="nav-item menu-items {{ request()->routeIs('medicines*', 'sickness-cases*', 'referrals*') ? 'active' : '' }}">
+            <a class="nav-link" data-toggle="collapse" href="#ui-health" aria-expanded="{{ request()->routeIs('medicines*', 'sickness-cases*', 'referrals*') ? 'true' : 'false' }}" aria-controls="ui-health">
                 <span class="menu-icon">
                     <i class="mdi mdi-medical-bag"></i>
                 </span>
                 <span class="menu-title">Modul Kesehatan</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('medicines*', 'beds*', 'health-records*', 'sickness-cases*', 'referrals*') ? 'show' : '' }}" id="ui-health">
+            <div class="collapse {{ request()->routeIs('medicines*', 'sickness-cases*', 'referrals*') ? 'show' : '' }}" id="ui-health">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('medicines*') ? 'active' : '' }}" href="{{ route('medicines.index') }}">Stok Obat</a></li>
-                    <li class="nav-item"> <a class="nav-link {{ request()->routeIs('beds*') ? 'active' : '' }}" href="{{ route('beds.index') }}">Kasur UKS</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('sickness-cases*') ? 'active' : '' }}" href="{{ route('sickness-cases.index') }}">Santri Sakit</a></li>
                     <li class="nav-item"> <a class="nav-link {{ request()->routeIs('referrals*') ? 'active' : '' }}" href="{{ route('referrals.index') }}">Rujukan RS</a></li>
                 </ul>

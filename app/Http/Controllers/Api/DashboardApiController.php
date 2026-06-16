@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Dormitory;
 use App\Models\HospitalReferral;
-use App\Models\InfirmaryBed;
 use App\Models\Major;
 use App\Models\Medicine;
 use App\Models\Santri;
@@ -28,8 +26,6 @@ class DashboardApiController extends BaseApiController
             'santri_sakit_aktif' => SicknessCase::whereIn('status', ['observed', 'handled', 'referred'])->count(),
             'obat_menipis'       => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
             'obat_kadaluarsa'    => Medicine::where('expiry_date', '<', now())->count(),
-            'kasur_tersedia'     => InfirmaryBed::where('status', 'available')->count(),
-            'kasur_total'        => InfirmaryBed::count(),
             'rujukan'            => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
         ];
 
@@ -135,9 +131,6 @@ class DashboardApiController extends BaseApiController
             'santri_sakit'   => SicknessCase::whereBetween('visit_date', [$startDate, $endDate])->count(),
             'rujukan_rs'     => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
             'obat_menipis'   => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
-            'kasur_tersedia' => InfirmaryBed::where('status', 'available')->count(),
-            'rawat_inap'     => SicknessCase::whereBetween('visit_date', [$startDate, $endDate])
-                ->whereNotNull('infirmary_bed_id')->count(),
             'sembuh'         => SicknessCase::whereBetween('visit_date', [$startDate, $endDate])
                 ->where('status', 'recovered')->count(),
         ];

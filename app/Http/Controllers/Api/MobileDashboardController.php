@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\HospitalReferral;
-use App\Models\InfirmaryBed;
 use App\Models\Medicine;
 use App\Models\Santri;
 use App\Models\SicknessCase;
@@ -17,7 +16,6 @@ class MobileDashboardController extends BaseApiController
             'kasus_aktif' => SicknessCase::whereIn('status', ['observed', 'handled', 'referred'])->count(),
             'rujukan_aktif' => HospitalReferral::whereIn('status', ['pending', 'ongoing'])->count(),
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
-            'kasur_tersedia' => InfirmaryBed::where('status', 'available')->count(),
         ];
 
         $recentCases = SicknessCase::with(['santri', 'bed'])

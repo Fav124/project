@@ -267,26 +267,21 @@
 
         <div class="section-header">I. Ringkasan Statistik Kesehatan</div>
         <div class="summary-stats">
-            <div class="stat-card">
+            <div class="stat-card" style="width: 25%;">
                 <span class="value">{{ $summary['total_santri'] }}</span>
                 <span class="label">Populasi Santri</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="width: 25%;">
                 <span class="value">{{ $summary['santri_sakit'] }}</span>
                 <span class="label">Kasus Sakit</span>
             </div>
-
-            <div class="stat-card">
+            <div class="stat-card" style="width: 25%;">
                 <span class="value">{{ $summary['rujukan_rs'] }}</span>
                 <span class="label">Rujukan RS</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" style="width: 25%;">
                 <span class="value">{{ $summary['obat_menipis'] }}</span>
                 <span class="label">Stok Kritis</span>
-            </div>
-            <div class="stat-card">
-                <span class="value">{{ $summary['kasur_tersedia'] }}</span>
-                <span class="label">Fasilitas UKS</span>
             </div>
         </div>
 
@@ -365,7 +360,7 @@
                     <div class="sign-title">Pondok Pesantren Ma'had Dar El-Ilmi Sumatera Barat</div>
                 </div>
                 <div class="signature-box right">
-                    <div class="date-location">Bangkalan, {{ now()->translatedFormat('d F Y') }}</div>
+                    <div class="date-location">Payakumbuh, {{ now()->translatedFormat('d F Y') }}</div>
                     <p>Dibuat oleh,</p>
                     <p style="margin-top: 5px;">Kepala Unit Kesehatan</p>
                     <div class="sign-line">{{ auth()->user()->name }}</div>

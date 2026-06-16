@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Diagnosa;
-use App\Models\InfirmaryBed;
 use App\Models\Keluhan;
 use App\Models\Medicine;
 use App\Models\Santri;
@@ -31,7 +30,6 @@ class SicknessCaseApiController extends BaseApiController
                     'relationship' => $g->relationship, 'is_primary' => (bool) $g->is_primary,
                 ])->values(),
             ])->values(),
-            'beds'      => InfirmaryBed::where('status', 'available')->orderBy('code')->get()->map(fn($b) => [
                 'id' => $b->id, 'code' => $b->code, 'room' => $b->room_name,
             ])->values(),
             'medicines' => Medicine::orderBy('name')->get(['id', 'name', 'unit', 'stock'])->map(fn($m) => [
@@ -88,7 +86,6 @@ class SicknessCaseApiController extends BaseApiController
             'santri_id'        => 'required|exists:santris,id',
             'santri_ids'       => 'nullable|array',
             'santri_ids.*'     => 'exists:santris,id',
-            'infirmary_bed_id' => 'nullable|exists:infirmary_beds,id',
             'visit_date'       => 'required|date',
             'complaint'        => 'nullable|string',
             'diagnosis'        => 'nullable|string|max:255',
@@ -166,7 +163,6 @@ class SicknessCaseApiController extends BaseApiController
 
         $validated = $request->validate([
             'santri_id'        => 'required|exists:santris,id',
-            'infirmary_bed_id' => 'nullable|exists:infirmary_beds,id',
             'visit_date'       => 'required|date',
             'complaint'        => 'nullable|string',
             'diagnosis'        => 'nullable|string|max:255',
@@ -187,7 +183,6 @@ class SicknessCaseApiController extends BaseApiController
             'companion_name'   => 'nullable|string|max:100',
         ]);
 
-        $oldBedId      = $case->infirmary_bed_id;
         $medicinesData = $validated['medicines'] ?? [];
         $keluhanIds    = $validated['keluhan_ids'] ?? null;
         $diagnosaIds   = $validated['diagnosa_ids'] ?? null;
@@ -208,8 +203,6 @@ class SicknessCaseApiController extends BaseApiController
         if ($diagnosaIds !== null) $case->diagnosas()->sync($diagnosaIds);
         if ($tindakanIds !== null) $case->tindakans()->sync($tindakanIds);
 
-        if ($oldBedId && $oldBedId !== $case->infirmary_bed_id) {
-            InfirmaryBed::whereKey($oldBedId)->update(['status' => 'available', 'occupant_name' => null]);
         }
         $this->syncBedStatus($case);
 
@@ -223,8 +216,6 @@ class SicknessCaseApiController extends BaseApiController
     {
         $case = SicknessCase::findOrFail($id);
 
-        if ($case->infirmary_bed_id) {
-            InfirmaryBed::whereKey($case->infirmary_bed_id)->update(['status' => 'available', 'occupant_name' => null]);
         }
 
         $case->delete();
@@ -295,16 +286,11 @@ class SicknessCaseApiController extends BaseApiController
         $case = SicknessCase::findOrFail($id);
 
         $validated = $request->validate([
-            'infirmary_bed_id' => 'required|exists:infirmary_beds,id',
         ]);
 
-        $oldBedId = $case->infirmary_bed_id;
 
-        if ($oldBedId && $oldBedId !== $validated['infirmary_bed_id']) {
-            InfirmaryBed::whereKey($oldBedId)->update(['status' => 'available', 'occupant_name' => null]);
         }
 
-        $case->update(['infirmary_bed_id' => $validated['infirmary_bed_id']]);
         $this->syncBedStatus($case);
 
         return $this->success(
@@ -325,9 +311,7 @@ class SicknessCaseApiController extends BaseApiController
 
     private function syncBedStatus(SicknessCase $case): void
     {
-        if (!$case->infirmary_bed_id) return;
         $isOccupied = !in_array($case->status, ['recovered']);
-        InfirmaryBed::whereKey($case->infirmary_bed_id)->update([
             'status'        => $isOccupied ? 'occupied' : 'available',
             'occupant_name' => $isOccupied ? $case->santri?->name : null,
         ]);

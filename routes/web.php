@@ -5,7 +5,6 @@ use App\Http\Controllers\AccountSettingController;
 use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\HospitalReferralController;
-use App\Http\Controllers\InfirmaryBedController;
 use App\Http\Controllers\MajorController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ReportController;
@@ -13,7 +12,6 @@ use App\Http\Controllers\SantriController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\SicknessCaseController;
 use App\Http\Controllers\SuperAdminController;
-use App\Http\Controllers\DormitoryController;
 use Illuminate\Support\Facades\Route;
 
 // ─── Guest Routes ─────────────────────────────────────────────────────────────
@@ -61,13 +59,6 @@ Route::middleware(['auth', 'approved'])->group(function () {
         ->middleware('role:super_admin,admin')
         ->name('majors.destroy');
 
-    Route::get('/asrama', [DormitoryController::class, 'index'])->name('dormitories.index');
-    Route::post('/asrama', [DormitoryController::class, 'store'])->name('dormitories.store');
-    Route::put('/asrama/{dormitory}', [DormitoryController::class, 'update'])->name('dormitories.update');
-    Route::delete('/asrama/{dormitory}', [DormitoryController::class, 'destroy'])
-        ->middleware('role:super_admin,admin')
-        ->name('dormitories.destroy');
-
     Route::get('/obat', [MedicineController::class, 'index'])->name('medicines.index');
     Route::post('/obat', [MedicineController::class, 'store'])->name('medicines.store');
     Route::get('/obat/{medicine}', [MedicineController::class, 'show'])->name('medicines.show');
@@ -75,14 +66,6 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::delete('/obat/{medicine}', [MedicineController::class, 'destroy'])
         ->middleware('role:super_admin,admin')
         ->name('medicines.destroy');
-
-    Route::get('/kasur-uks', [InfirmaryBedController::class, 'index'])->name('beds.index');
-    Route::post('/kasur-uks', [InfirmaryBedController::class, 'store'])->name('beds.store');
-    Route::get('/kasur-uks/{bed}', [InfirmaryBedController::class, 'show'])->name('beds.show');
-    Route::put('/kasur-uks/{bed}', [InfirmaryBedController::class, 'update'])->name('beds.update');
-    Route::delete('/kasur-uks/{bed}', [InfirmaryBedController::class, 'destroy'])
-        ->middleware('role:super_admin,admin')
-        ->name('beds.destroy');
 
 
     Route::get('/santri-sakit', [SicknessCaseController::class, 'index'])->name('sickness-cases.index');

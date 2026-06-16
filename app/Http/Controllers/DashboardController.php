@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dormitory;
 use App\Models\HospitalReferral;
-use App\Models\InfirmaryBed;
 use App\Models\Major;
 use App\Models\Medicine;
 use App\Models\Santri;
@@ -29,11 +27,9 @@ class DashboardController extends Controller
             'santri_p' => Santri::where('gender', 'P')->count(),
             'kelas' => SchoolClass::count(),
             'jurusan' => Major::count(),
-            'asrama' => Dormitory::count(),
             'santri_sakit_aktif' => SicknessCase::whereIn('status', ['observed', 'handled', 'referred'])->count(),
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
             'obat_kadaluarsa' => Medicine::where('expiry_date', '<', now())->count(),
-            'kasur_tersedia' => InfirmaryBed::where('status', 'available')->count(),
             'rujukan' => HospitalReferral::whereBetween('referral_date', [$startDate, $endDate])->count(),
         ];
 
