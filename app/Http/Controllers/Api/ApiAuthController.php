@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class ApiAuthController extends Controller
@@ -40,16 +42,35 @@ class ApiAuthController extends Controller
             'data' => [
                 'token'      => $token,
                 'token_type' => 'Bearer',
-                'user' => [
-                    'id'     => $user->id,
-                    'name'   => $user->name,
-                    'email'  => $user->email,
-                    'role'   => $user->role,
-                    'role_label' => $user->role_label,
-                    'status' => $user->status,
-                ],
+                'user'       => $this->formatUser($user),
             ],
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name'                  => 'required|string|max:255',
+            'email'                 => 'required|email|unique:users,email',
+            'no_hp'                 => 'nullable|string|max:20',
+            'password'              => 'required|string|min:8|confirmed',
+            'role'                  => 'nullable|in:petugas_kesehatan,admin',
+        ]);
+
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'no_hp'    => $validated['no_hp'] ?? null,
+            'password' => Hash::make($validated['password']),
+            'role'     => $validated['role'] ?? 'petugas_kesehatan',
+            'status'   => 'pending',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Registrasi berhasil. Tunggu persetujuan admin.',
+            'data'    => $this->formatUser($user),
+        ], 201);
     }
 
     public function logout(Request $request)
@@ -68,14 +89,21 @@ class ApiAuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'id'         => $user->id,
-                'name'       => $user->name,
-                'email'      => $user->email,
-                'role'       => $user->role,
-                'role_label' => $user->role_label,
-                'status'     => $user->status,
-            ],
+            'data'    => $this->formatUser($user),
         ]);
+    }
+
+    private function formatUser(User $user): array
+    {
+        return [
+            'id'          => $user->id,
+            'name'        => $user->name,
+            'email'       => $user->email,
+            'no_hp'       => $user->no_hp ?? null,
+            'role'        => $user->role,
+            'role_label'  => $user->role_label,
+            'is_approved' => $user->status === 'approved',
+            'status'      => $user->status,
+        ];
     }
 }

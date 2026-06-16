@@ -12,7 +12,6 @@ class SicknessCase extends Model
     protected $fillable = [
         'santri_id',
         'handled_by',
-        'medicine_id',
         'infirmary_bed_id',
         'visit_date',
         'complaint',
@@ -22,21 +21,40 @@ class SicknessCase extends Model
         'status',
         'return_date',
         'notes',
+        'photo_path',
+        // Referral fields
+        'hospital_name',
+        'transport',
+        'companion_name',
+        // Discharge fields
+        'picked_up_by',
+        'picked_up_at',
+        'discharge_notes',
+        'discharge_guardian_id',
     ];
 
     protected $casts = [
-        'visit_date' => 'date',
+        'visit_date'  => 'date',
         'return_date' => 'date',
+        'picked_up_at'=> 'datetime',
     ];
+
+    // ─── Relationships ────────────────────────────────────────────────────────
 
     public function santri()
     {
         return $this->belongsTo(Santri::class);
     }
 
-    public function handler()
+    public function handledBy()
     {
         return $this->belongsTo(User::class, 'handled_by');
+    }
+
+    /** @deprecated use handledBy() */
+    public function handler()
+    {
+        return $this->handledBy();
     }
 
     public function medicines()
@@ -49,5 +67,25 @@ class SicknessCase extends Model
     public function bed()
     {
         return $this->belongsTo(InfirmaryBed::class, 'infirmary_bed_id');
+    }
+
+    public function keluhans()
+    {
+        return $this->belongsToMany(Keluhan::class, 'keluhan_sickness_case', 'sickness_case_id', 'keluhan_id');
+    }
+
+    public function diagnosas()
+    {
+        return $this->belongsToMany(Diagnosa::class, 'diagnosa_sickness_case', 'sickness_case_id', 'diagnosa_id');
+    }
+
+    public function tindakans()
+    {
+        return $this->belongsToMany(Tindakan::class, 'tindakan_sickness_case', 'sickness_case_id', 'tindakan_id');
+    }
+
+    public function dischargeGuardian()
+    {
+        return $this->belongsTo(Guardian::class, 'discharge_guardian_id');
     }
 }

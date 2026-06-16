@@ -265,7 +265,7 @@
 <script>
     const chartDefaults = {
         chart: { 
-            theme: 'dark', 
+            theme: 'light',
             background: 'transparent', 
             toolbar: { show: true },
             fontFamily: 'Inter, sans-serif'
@@ -294,7 +294,7 @@
         series: @json($majorStats->pluck('santris_count')),
         chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
         labels: @json($majorStats->pluck('name')),
-        colors: ['#0090e7', '#8f5fe8', '#00d25b', '#fc424a', '#ffab00'],
+        colors: ['#0090E7', '#007BCA', '#2D499D', '#fc424a', '#FF8C00'],
         dataLabels: { enabled: true }
     }).render();
 

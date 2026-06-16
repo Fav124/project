@@ -19,7 +19,7 @@
                         @php
                             $roleTheme = match($user->role) {
                                 'admin' => ['class' => 'badge-outline-primary', 'label' => 'Administrator'],
-                                'petugas_kesehatan' => ['class' => 'badge-outline-info', 'label' => 'Nakes'],
+                                'petugas_kesehatan' => ['class' => 'badge-outline-info', 'label' => 'Petugas Kesehatan'],
                                 default => ['class' => 'badge-outline-secondary', 'label' => $user->role],
                             };
                             $statusTheme = match($user->status) {

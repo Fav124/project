@@ -19,6 +19,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'no_hp',
         'password',
         'phone',
         'job_title',
@@ -132,7 +133,8 @@ class User extends Authenticatable
     public function getProfilePhotoUrlAttribute(): string
     {
         if ($this->profile_photo_path && Storage::disk('public')->exists($this->profile_photo_path)) {
-            return route('account.profile-photo', $this);
+            $timestamp = Storage::disk('public')->lastModified($this->profile_photo_path);
+            return route('account.profile-photo', $this) . '?v=' . $timestamp;
         }
 
         return asset('template-assets/images/faces/face15.jpg');

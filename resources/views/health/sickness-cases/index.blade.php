@@ -447,7 +447,7 @@
 <script>
     const chartDefaults = {
         chart: { 
-            theme: 'dark', 
+            theme: 'light',
             background: 'transparent', 
             toolbar: { show: true },
             fontFamily: 'Inter, sans-serif'
@@ -467,7 +467,7 @@
             labels: { style: { colors: '#6c7293' }, rotate: -45, hideOverlappingLabels: true } 
         },
         yaxis: { labels: { style: { colors: '#6c7293' } } },
-        colors: ['#00d25b'],
+        colors: ['#0090E7'],
         fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0 } }
     }).render();
 
@@ -487,7 +487,7 @@
         chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
         labels: @json($mappedCaseStatuses),
 
-        colors: ['#0090e7', '#ffab00', '#00d25b', '#fc424a'],
+        colors: ['#0090E7', '#007BCA', '#2D499D', '#FF8C00'],
         dataLabels: { enabled: false }
     }).render();
 

@@ -360,7 +360,7 @@
 <script>
     const chartDefaults = {
         chart: { 
-            theme: 'dark', 
+            theme: 'light',
             background: 'transparent', 
             toolbar: { show: true },
             fontFamily: 'Inter, sans-serif'

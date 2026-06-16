@@ -182,25 +182,27 @@
             name: 'Pendaftar Baru',
             data: @json($registrationTrends->pluck('count'))
         }],
-        chart: { type: 'bar', height: 350, theme: 'dark', background: 'transparent', toolbar: { show: false } },
-        colors: ['#00d25b'],
+        chart: { type: 'bar', height: 350, theme: 'light', background: 'transparent', toolbar: { show: false } },
+        colors: ['#0090E7'],
         plotOptions: { bar: { borderRadius: 4, columnWidth: '40%' } },
         xaxis: {
             categories: @json($registrationTrends->pluck('date')),
-            labels: { style: { colors: '#6c7293' } }
+            labels: { style: { colors: '#334155', fontWeight: 600 } }
         },
-        yaxis: { labels: { style: { colors: '#6c7293' } } },
-        grid: { borderColor: '#191c24' }
+        yaxis: { labels: { style: { colors: '#334155', fontWeight: 600 } } },
+        dataLabels: { style: { colors: ['#FFFFFF'], fontWeight: 700 } },
+        grid: { borderColor: '#D5DEE9', strokeDashArray: 4 },
+        tooltip: { theme: 'light' }
     };
     new ApexCharts(document.querySelector("#regChart"), regOptions).render();
 
     // User Composition Chart
     const roleOptions = {
         series: [{{ $stats['petugas'] }}, {{ $stats['admin'] }}],
-        chart: { type: 'donut', height: 350, theme: 'dark', background: 'transparent' },
+        chart: { type: 'donut', height: 350, theme: 'light', background: 'transparent' },
         labels: ['Petugas UKS', 'Administrator'],
         colors: ['#0090e7', '#ffab00'],
-        legend: { position: 'bottom', labels: { colors: '#6c7293' } },
+        legend: { position: 'bottom', labels: { colors: '#334155' }, fontWeight: 600 },
         dataLabels: { enabled: false },
         plotOptions: {
             pie: {
@@ -212,7 +214,8 @@
                             show: true,
                             label: 'Aktif',
                             fontSize: '14px',
-                            color: '#6c7293'
+                            color: '#334155',
+                            fontWeight: 700
                         }
                     }
                 }

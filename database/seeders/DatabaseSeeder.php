@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             InfirmaryBedSeeder::class,
             SicknessCaseSeeder::class,
             HospitalReferralSeeder::class,
+            AlignSeeder::class,
         ]);
     }
 }

@@ -240,7 +240,7 @@
 <script>
     const chartDefaults = {
         chart: { 
-            theme: 'dark', 
+            theme: 'light', 
             background: 'transparent', 
             toolbar: { 
                 show: true,
@@ -250,7 +250,7 @@
         },
         grid: { borderColor: '#d3dce8', strokeDashArray: 4 },
         legend: { labels: { colors: '#334155' }, position: 'top' },
-        tooltip: { theme: 'dark' }
+        tooltip: { theme: 'light' }
     };
 
     // 1. Tren Kunjungan
@@ -258,7 +258,7 @@
         ...chartDefaults,
         series: [{ name: 'Jumlah Santri', data: @json($sicknessTrends->pluck('count')) }],
         chart: { ...chartDefaults.chart, type: 'area', height: 350 },
-        colors: ['#00d25b'],
+        colors: ['#0090E7'],
         stroke: { curve: 'smooth', width: 3 },
         xaxis: {
             categories: @json($sicknessTrends->pluck('date_label')),
@@ -290,7 +290,7 @@
         chart: { ...chartDefaults.chart, type: 'donut', height: 350 },
         labels: @json($mappedStatuses),
 
-        colors: ['#0090e7', '#ffab00', '#00d25b', '#fc424a'],
+        colors: ['#0090E7', '#007BCA', '#2D499D', '#FF8C00'],
         plotOptions: { pie: { donut: { size: '75%', labels: { show: true, total: { show: true, label: 'Total', color: '#334155' } } } } }
     }).render();
 
@@ -299,7 +299,7 @@
         ...chartDefaults,
         series: [{ name: 'Santri', data: @json($santriByMajor->pluck('santris_count')) }],
         chart: { ...chartDefaults.chart, type: 'bar', height: 350 },
-        colors: ['#8f5fe8'],
+        colors: ['#2D499D'],
         plotOptions: { bar: { borderRadius: 4, horizontal: true } },
         xaxis: {
             categories: @json($santriByMajor->pluck('name')),
@@ -313,7 +313,7 @@
         ...chartDefaults,
         series: [{ name: 'Santri', data: @json($santriByClass->pluck('santris_count')) }],
         chart: { ...chartDefaults.chart, type: 'bar', height: 350 },
-        colors: ['#ffab00'],
+        colors: ['#007BCA'],
         plotOptions: { bar: { borderRadius: 4, columnWidth: '50%' } },
         xaxis: {
             categories: @json($santriByClass->pluck('name')),
@@ -329,10 +329,10 @@
 @endpush
 
 <style>
-    .card-gradient-primary { background: linear-gradient(135deg, #0090e7, #00d25b); }
-    .card-gradient-success { background: linear-gradient(135deg, #00d25b, #0090e7); }
-    .card-gradient-info { background: linear-gradient(135deg, #8f5fe8, #0090e7); }
-    .card-gradient-danger { background: linear-gradient(135deg, #fc424a, #ffab00); }
+    .card-gradient-primary { background: linear-gradient(135deg, #075EA6, #0278D4); }
+    .card-gradient-success { background: linear-gradient(135deg, #0F766E, #12306F); }
+    .card-gradient-info { background: linear-gradient(135deg, #12306F, #075EA6); }
+    .card-gradient-danger { background: linear-gradient(135deg, #B45309, #075EA6); }
     
     .icon-box-primary, .icon-box-success, .icon-box-info, .icon-box-danger {
         width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15);

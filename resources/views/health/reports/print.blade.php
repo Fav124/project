@@ -240,7 +240,7 @@
             <div class="kop-info">
                 <h1>Unit Kesehatan Santri (UKS)</h1>
                 <h2>Pondok Pesantren Ma'had Dar El-Ilmi Sumatera Barat</h2>
-                <p>Jl. Pendidikan No. 45, Bangkalan, Jawa Timur | Telp: (031) 1234567 | Email: uks@deisa.id</p>
+                <p>Payakumbuh | Telp: (031) 1234567 | Email: dei.email@gmail.com</p>
             </div>
         </div>
 

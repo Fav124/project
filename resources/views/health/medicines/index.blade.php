@@ -298,7 +298,7 @@
 <script>
     const chartDefaults = {
         chart: { 
-            theme: 'dark', 
+            theme: 'light',
             background: 'transparent', 
             toolbar: { show: true },
             fontFamily: 'Inter, sans-serif'
@@ -324,7 +324,7 @@
         series: [@json($expiryStats['expired']), @json($expiryStats['expiring_soon']), @json($expiryStats['safe'])],
         chart: { ...chartDefaults.chart, type: 'donut', height: 280 },
         labels: ['Kadaluarsa', 'Segera Expired', 'Aman'],
-        colors: ['#fc424a', '#ffab00', '#00d25b'],
+        colors: ['#fc424a', '#FF8C00', '#0090E7'],
         dataLabels: { enabled: true }
     }).render();
 

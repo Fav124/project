@@ -10,11 +10,15 @@ class Medicine extends Model
     use HasFactory;
 
     protected $fillable = [
+        'kode_obat',
         'name',
+        'kategori',
+        'bentuk_sediaan',
         'unit',
         'stock',
         'minimum_stock',
         'expiry_date',
+        'lokasi_penyimpanan',
         'description',
     ];
 
@@ -22,16 +26,9 @@ class Medicine extends Model
         'expiry_date' => 'date',
     ];
 
-    public function isExpired()
+    public function mutations()
     {
-        return $this->expiry_date && $this->expiry_date->isPast();
-    }
-
-    public function isExpiringSoon()
-    {
-        return $this->expiry_date && 
-               $this->expiry_date->isFuture() && 
-               $this->expiry_date->diffInMonths(now()) < 3;
+        return $this->hasMany(MedicineMutation::class);
     }
 
     public function sicknessCases()
@@ -39,5 +36,17 @@ class Medicine extends Model
         return $this->belongsToMany(SicknessCase::class, 'medicine_sickness_case')
                     ->withPivot(['id', 'quantity', 'status', 'notes'])
                     ->withTimestamps();
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expiry_date && $this->expiry_date->isPast();
+    }
+
+    public function isExpiringSoon(): bool
+    {
+        return $this->expiry_date &&
+               $this->expiry_date->isFuture() &&
+               $this->expiry_date->diffInMonths(now()) < 3;
     }
 }

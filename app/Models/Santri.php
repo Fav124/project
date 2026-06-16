@@ -22,12 +22,30 @@ class Santri extends Model
         'dorm_room',
         'guardian_name',
         'guardian_phone',
+        'guardian_relationship',
+        'guardian_job',
+        'guardian_address',
         'notes',
+        'blood_type',
+        'blood_pressure',
+        'height',
+        'weight',
+        'allergies',
+        'medical_history',
+        'special_condition',
+        'photo_path',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
+        'height' => 'double',
+        'weight' => 'double',
     ];
+
+    public function guardians()
+    {
+        return $this->hasMany(Guardian::class);
+    }
 
     public function dormitory()
     {

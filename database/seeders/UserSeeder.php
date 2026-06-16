@@ -12,8 +12,8 @@ class UserSeeder extends Seeder
     {
         // Super Admin
         User::create([
-            'name' => 'Favian Super Admin',
-            'email' => 'superadmin@deisa.id',
+            'name' => 'Ustadz Fulan',
+            'email' => 'superadmin@deihealth.id',
             'password' => Hash::make('password'),
             'role' => 'super_admin',
             'status' => 'approved',
@@ -21,8 +21,8 @@ class UserSeeder extends Seeder
 
         // Admin
         User::create([
-            'name' => 'Ahmad Admin',
-            'email' => 'admin@deisa.id',
+            'name' => 'Admin Fauzi',
+            'email' => 'admin@deihealth.id',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'status' => 'approved',
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
 
         // Petugas Kesehatan
         User::create([
-            'name' => 'Dr. Siti Petugas',
+            'name' => 'Dr. Budi',
             'email' => 'petugas@deisa.id',
             'password' => Hash::make('password'),
             'role' => 'petugas_kesehatan',
@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         // Pending User
         User::create([
             'name' => 'Calon Petugas',
-            'email' => 'pending@deisa.id',
+            'email' => 'pending@deihelath.id',
             'password' => Hash::make('password'),
             'role' => 'petugas_kesehatan',
             'status' => 'pending',

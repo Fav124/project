@@ -10,13 +10,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         :root {
-            --primary: #00d25b;
-            --primary-dark: #00ad4b;
-            --bg-auth: #0b0c10;
-            --text-main: #e4e4e4;
-            --text-muted: #abb2b9;
-            --border: #2c2e33;
-            --card-bg: #191c24;
+            --primary: #0278D4;
+            --primary-dark: #075EA6;
+            --primary-navy: #12306F;
+            --bg-auth: #F3F7FB;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border: #CBD5E1;
+            --card-bg: #FFFFFF;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,17 +37,27 @@
         /* ─── Left Panel ─── */
         .auth-banner {
             flex: 1.2;
-            background: #000000;
-            background-image: 
-                radial-gradient(at top left, rgba(0, 210, 91, 0.2), transparent 50%),
-                radial-gradient(at bottom right, rgba(0, 210, 91, 0.1), transparent 50%),
-                url('https://www.transparenttextures.com/patterns/cubes.png');
+            background-color: #12306F;
+            background-image:
+                linear-gradient(135deg, rgba(18, 48, 111, 0.98), rgba(2, 120, 212, 0.94)),
+                radial-gradient(at top left, rgba(255, 255, 255, 0.18), transparent 42%),
+                radial-gradient(at bottom right, rgba(255, 140, 0, 0.22), transparent 46%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 80px;
             color: white;
             position: relative;
+            overflow: hidden;
+        }
+
+        .auth-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.08;
+            pointer-events: none;
         }
 
         .banner-content { position: relative; z-index: 10; max-width: 500px; }
@@ -60,48 +71,48 @@
         
         .logo-icon {
             width: 56px; height: 56px;
-            background: rgba(0, 210, 91, 0.1);
+            background: rgba(255, 255, 255, 0.20);
             backdrop-filter: blur(10px);
             border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
             font-size: 26px;
-            color: #00d25b;
-            border: 1px solid rgba(0, 210, 91, 0.2);
-            box-shadow: 0 0 30px rgba(0, 210, 91, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            box-shadow: 0 0 30px rgba(0, 144, 231, 0.30);
         }
 
-        .brand-name { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
-        .brand-name span { color: #00d25b; }
+        .brand-name { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+        .brand-name span { color: #eaf8ff; }
 
-        .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; color: #fff; }
-        .banner-content p { font-size: 18px; color: rgba(255,255,255,0.7); line-height: 1.6; font-weight: 400; }
+        .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; color: #fff; text-shadow: 0 3px 16px rgba(0,0,0,0.32); }
+        .banner-content p { font-size: 18px; color: #F8FAFC; line-height: 1.6; font-weight: 500; text-shadow: 0 2px 10px rgba(0,0,0,0.25); }
 
         .feature-list { margin-top: 56px; display: flex; flex-direction: column; gap: 20px; }
         .feature-tag {
             display: flex; align-items: center; gap: 12px;
-            font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.9);
+            font-size: 15px; font-weight: 700; color: #FFFFFF;
         }
-        .feature-tag i { color: #00d25b; font-size: 18px; }
+        .feature-tag i { color: #BDEBFF; font-size: 18px; }
 
         /* ─── Right Panel ─── */
         .auth-form-side {
             width: 550px;
-            background: #111318;
+            background: var(--card-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 60px;
-            box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+            box-shadow: -20px 0 60px rgba(15, 23, 42, 0.10);
             z-index: 20;
             border-left: 1px solid var(--border);
         }
 
         .form-card { width: 100%; max-width: 400px; }
-        .form-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; color: #fff; }
-        .form-card p.subtitle { color: var(--text-muted); margin-bottom: 40px; font-size: 15px; }
+        .form-card h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; color: var(--text-main); }
+        .form-card p.subtitle { color: var(--text-muted); margin-bottom: 40px; font-size: 15px; font-weight: 500; line-height: 1.55; }
 
         .form-group { margin-bottom: 24px; }
-        .form-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+        .form-label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
         
         .input-box { position: relative; }
         .input-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 16px; }
@@ -110,23 +121,23 @@
             width: 100%;
             padding: 14px 16px 14px 48px;
             border-radius: 12px;
-            border: 1px solid var(--border);
-            background: #191c24;
+            border: 1px solid #B6C4D5;
+            background: #FFFFFF;
             font-family: inherit;
             font-size: 15px;
-            color: #fff;
+            color: var(--text-main);
             transition: all 0.2s;
             outline: none;
         }
         .form-input:focus {
             border-color: var(--primary);
-            background: #1d212b;
-            box-shadow: 0 0 0 4px rgba(0, 210, 91, 0.1);
+            background: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(0, 144, 231, 0.12);
         }
 
         .password-toggle {
             position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; cursor: pointer; color: var(--text-muted);
+            background: none; border: none; cursor: pointer; color: #475569;
         }
 
         .btn-submit {
@@ -140,17 +151,17 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 10px 25px rgba(0, 210, 91, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 144, 231, 0.22);
             margin-top: 8px;
         }
         .btn-submit:hover { 
             background: var(--primary-dark); 
             transform: translateY(-2px); 
-            box-shadow: 0 15px 30px rgba(0, 210, 91, 0.3); 
+            box-shadow: 0 15px 30px rgba(0, 144, 231, 0.30); 
         }
 
-        .form-footer { margin-top: 32px; text-align: center; font-size: 14px; color: var(--text-muted); }
-        .form-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .form-footer { margin-top: 32px; text-align: center; font-size: 14px; color: var(--text-muted); font-weight: 500; }
+        .form-footer a { color: #075EA6; font-weight: 800; text-decoration: none; }
 
         .wa-footer {
             margin-top: 48px;
@@ -173,9 +184,9 @@
         .wa-btn:hover { background: #1ebe5a; transform: scale(1.05); }
 
         .badge-error {
-            background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px; border-radius: 8px;
+            background: #FEF2F2; color: #B91C1C; padding: 12px; border-radius: 8px;
             font-size: 13px; font-weight: 600; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid #FECACA;
         }
 
         @media (max-width: 1024px) {

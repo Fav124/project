@@ -103,6 +103,13 @@ class HospitalReferralApiController extends Controller
         return response()->json(['success' => true, 'message' => 'Rujukan berhasil dihapus.']);
     }
 
+    public function notifyGuardian($id, WhatsAppService $whatsApp)
+    {
+        $referral = HospitalReferral::with('santri')->findOrFail($id);
+        $this->sendReferralNotification($referral, $whatsApp);
+        return response()->json(['success' => true, 'message' => 'Notifikasi berhasil dikirim.']);
+    }
+
     private function sendReferralNotification(HospitalReferral $referral, WhatsAppService $whatsApp): void
     {
         if (!$referral->santri?->guardian_phone) return;
