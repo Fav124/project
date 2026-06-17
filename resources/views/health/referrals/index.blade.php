@@ -62,6 +62,31 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
+                                    @php
+                                        $statusOptions = [
+                                            'pending' => ['label' => 'Pending', 'icon' => 'mdi-clock-outline'],
+                                            'ongoing' => ['label' => 'Diproses', 'icon' => 'mdi-progress-clock'],
+                                            'completed' => ['label' => 'Selesai', 'icon' => 'mdi-check-circle-outline'],
+                                        ];
+                                    @endphp
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Ubah Status">
+                                            <i class="mdi mdi-swap-horizontal"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <h6 class="dropdown-header">Ubah Status</h6>
+                                            @foreach($statusOptions as $statusValue => $statusOption)
+                                                <form action="{{ route('referrals.update-status', $referral) }}" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="status" value="{{ $statusValue }}">
+                                                    <button type="submit" class="dropdown-item {{ $referral->status === $statusValue ? 'active' : '' }}" {{ $referral->status === $statusValue ? 'disabled' : '' }}>
+                                                        <i class="mdi {{ $statusOption['icon'] }} mr-1"></i> {{ $statusOption['label'] }}
+                                                    </button>
+                                                </form>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                     <a href="{{ route('referrals.index', array_merge(request()->query(), ['detail' => $referral->id])) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>

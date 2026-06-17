@@ -97,6 +97,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('rujukan/{id}',      [HospitalReferralApiController::class, 'show']);
     Route::post('rujukan',          [HospitalReferralApiController::class, 'store']);
     Route::put('rujukan/{id}',      [HospitalReferralApiController::class, 'update']);
+    Route::patch('rujukan/{id}/status', [HospitalReferralApiController::class, 'updateStatus']);
     Route::delete('rujukan/{id}',   [HospitalReferralApiController::class, 'destroy'])
         ->middleware('role:super_admin,admin');
     Route::post('rujukan/{id}/notify-guardian', [HospitalReferralApiController::class, 'notifyGuardian']);
