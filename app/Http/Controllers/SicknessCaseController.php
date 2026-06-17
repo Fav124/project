@@ -8,6 +8,7 @@ use App\Http\Controllers\Concerns\SendsGuardianWhatsApp;
 use App\Models\Medicine;
 use App\Models\Santri;
 use App\Models\SicknessCase;
+use App\Services\MedicineStockService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -72,8 +73,9 @@ class SicknessCaseController extends Controller
 
     public function show(SicknessCase $sicknessCase)
     {
-        $sicknessCase->load(['santri', 'handledBy', 'medicine']);
-        return view('health.sickness-cases.show', compact('sicknessCase'));
+        $sicknessCase->load(['santri', 'handledBy', 'medicines']);
+        $medicines = Medicine::orderBy('name')->get();
+        return view('health.sickness-cases.show', compact('sicknessCase', 'medicines'));
     }
 
     public function store(Request $request, WhatsAppService $whatsApp)
@@ -198,15 +200,95 @@ class SicknessCaseController extends Controller
         return back()->with('success', 'Santri telah dinyatakan sembuh.');
     }
 
-    public function updateMedicineStatus(Request $request, $pivotId)
+    public function edit(SicknessCase $sicknessCase)
+    {
+        $sicknessCase->load(['santri', 'handledBy', 'medicines']);
+        $santris = Santri::orderBy('name')->get();
+        $medicines = Medicine::orderBy('name')->get();
+        
+        return view('health.sickness-cases.edit', compact('sicknessCase', 'santris', 'medicines'));
+    }
+
+    public function updateMedicineStatus(Request $request, $pivotId, MedicineStockService $stockService)
     {
         $request->validate(['status' => 'required|in:pending,taken']);
-        
-        \DB::table('medicine_sickness_case')
-            ->where('id', $pivotId)
-            ->update(['status' => $request->status]);
+
+        $pivot = DB::table('medicine_sickness_case')->where('id', $pivotId)->first();
+        if (!$pivot) {
+            return response()->json(['success' => false, 'message' => 'Data obat tidak ditemukan.'], 404);
+        }
+
+        $oldStatus = $pivot->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus === $newStatus) {
+            return response()->json(['success' => true, 'message' => 'Status pemakaian obat diperbarui.']);
+        }
+
+        try {
+            DB::transaction(function () use ($pivot, $oldStatus, $newStatus, $stockService) {
+                if ($newStatus === 'taken' && $oldStatus === 'pending') {
+                    $stockService->dispense(
+                        $pivot->medicine_id,
+                        $pivot->quantity,
+                        'Obat diberikan - kasus #' . $pivot->sickness_case_id
+                    );
+                } elseif ($newStatus === 'pending' && $oldStatus === 'taken') {
+                    $stockService->restoreDispense(
+                        $pivot->medicine_id,
+                        $pivot->quantity,
+                        'Pembatalan obat - kasus #' . $pivot->sickness_case_id
+                    );
+                }
+
+                DB::table('medicine_sickness_case')
+                    ->where('id', $pivot->id)
+                    ->update(['status' => $newStatus, 'updated_at' => now()]);
+            });
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+        }
 
         return response()->json(['success' => true, 'message' => 'Status pemakaian obat diperbarui.']);
+    }
+
+    public function addMedicineToCase(Request $request, $sicknessCaseId, MedicineStockService $stockService)
+    {
+        $validated = $request->validate([
+            'medicine_id' => 'required|exists:medicines,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $case = SicknessCase::findOrFail($sicknessCaseId);
+        $medicine = Medicine::findOrFail($validated['medicine_id']);
+
+        // Check if medicine already exists in this case
+        $existingPivot = DB::table('medicine_sickness_case')
+            ->where('sickness_case_id', $sicknessCaseId)
+            ->where('medicine_id', $validated['medicine_id'])
+            ->first();
+
+        if ($existingPivot) {
+            return response()->json(['success' => false, 'message' => 'Obat ini sudah ada dalam kasus ini.'], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($case, $medicine, $validated, $stockService) {
+                // Attach medicine to case
+                DB::table('medicine_sickness_case')->insert([
+                    'sickness_case_id' => $case->id,
+                    'medicine_id' => $medicine->id,
+                    'quantity' => $validated['quantity'],
+                    'status' => 'pending',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal menambahkan obat: ' . $e->getMessage()], 500);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Obat berhasil ditambahkan ke kasus.']);
     }
 
 

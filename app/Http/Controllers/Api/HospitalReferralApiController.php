@@ -51,7 +51,7 @@ class HospitalReferralApiController extends Controller
             'diagnosis'      => 'nullable|string|max:255',
             'transport'      => 'nullable|string|max:100',
             'companion_name' => 'nullable|string|max:100',
-            'status'         => 'nullable|in:referred,treated,returned',
+            'status'         => 'nullable|in:pending,ongoing,completed',
             'notes'          => 'nullable|string',
             'notify_guardian' => 'nullable|boolean',
         ]);
@@ -59,7 +59,7 @@ class HospitalReferralApiController extends Controller
         $notifyGuardian = $validated['notify_guardian'] ?? false;
         unset($validated['notify_guardian']);
         $validated['referred_by'] = auth()->id();
-        $validated['status'] = $validated['status'] ?? 'referred';
+        $validated['status'] = $validated['status'] ?? 'pending';
 
         $referral = HospitalReferral::create($validated);
 
@@ -87,7 +87,7 @@ class HospitalReferralApiController extends Controller
             'diagnosis'      => 'nullable|string|max:255',
             'transport'      => 'nullable|string|max:100',
             'companion_name' => 'nullable|string|max:100',
-            'status'         => 'required|in:referred,treated,returned',
+            'status'         => 'required|in:pending,ongoing,completed',
             'notes'          => 'nullable|string',
         ]);
 

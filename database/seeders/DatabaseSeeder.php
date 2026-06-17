@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             MajorSeeder::class,
             SchoolClassSeeder::class,
             SantriSeeder::class,
+            GuardianSeeder::class,
             MedicineSeeder::class,
             SicknessCaseSeeder::class,
             HospitalReferralSeeder::class,

@@ -8,6 +8,7 @@ use App\Models\Medicine;
 use App\Models\Santri;
 use App\Models\SicknessCase;
 use App\Models\Tindakan;
+use App\Services\MedicineStockService;
 use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -311,6 +312,49 @@ class SicknessCaseApiController extends BaseApiController
         return $this->success([], 'Notifikasi berhasil dikirim.');
     }
 
+    public function updateMedicineStatus(Request $request, $pivotId, MedicineStockService $stockService)
+    {
+        $validated = $request->validate(['status' => 'required|in:pending,taken']);
+
+        $pivot = DB::table('medicine_sickness_case')->where('id', $pivotId)->first();
+        if (!$pivot) {
+            return $this->error('Data obat tidak ditemukan.', 404);
+        }
+
+        $oldStatus = $pivot->status;
+        $newStatus = $validated['status'];
+
+        if ($oldStatus === $newStatus) {
+            return $this->success([], 'Status pemakaian obat diperbarui.');
+        }
+
+        try {
+            DB::transaction(function () use ($pivot, $oldStatus, $newStatus, $stockService) {
+                if ($newStatus === 'taken' && $oldStatus === 'pending') {
+                    $stockService->dispense(
+                        $pivot->medicine_id,
+                        $pivot->quantity,
+                        'Obat diberikan - kasus #' . $pivot->sickness_case_id
+                    );
+                } elseif ($newStatus === 'pending' && $oldStatus === 'taken') {
+                    $stockService->restoreDispense(
+                        $pivot->medicine_id,
+                        $pivot->quantity,
+                        'Pembatalan obat - kasus #' . $pivot->sickness_case_id
+                    );
+                }
+
+                DB::table('medicine_sickness_case')
+                    ->where('id', $pivot->id)
+                    ->update(['status' => $newStatus, 'updated_at' => now()]);
+            });
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 422);
+        }
+
+        return $this->success([], 'Status pemakaian obat diperbarui.');
+    }
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
 
@@ -414,11 +458,12 @@ class SicknessCaseApiController extends BaseApiController
             'discharge_notes'=> $case->discharge_notes ?? null,
 
             'medicines'      => $case->medicines->map(fn($m) => [
-                'id'       => $m->id,
-                'name'     => $m->name,
-                'unit'     => $m->unit,
-                'quantity' => $m->pivot->quantity ?? 1,
-                'status'   => $m->pivot->status ?? 'pending',
+                'id'        => $m->id,
+                'pivot_id'  => $m->pivot->id,
+                'name'      => $m->name,
+                'unit'      => $m->unit,
+                'quantity'  => $m->pivot->quantity ?? 1,
+                'status'    => $m->pivot->status ?? 'pending',
             ])->values(),
             'keluhans'       => ($case->keluhans ?? collect())->map(fn($k) => ['id' => $k->id, 'name' => $k->name])->values(),
             'diagnosas'      => ($case->diagnosas ?? collect())->map(fn($d) => ['id' => $d->id, 'name' => $d->name])->values(),

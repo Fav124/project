@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('kunjungan/{id}/notify-guardian',   [SicknessCaseApiController::class, 'notifyGuardian']);
     Route::post('kunjungan/{id}/discharge',         [SicknessCaseApiController::class, 'discharge']);
     Route::post('kunjungan/{id}/refer',             [SicknessCaseApiController::class, 'refer']);
+    Route::put('kunjungan/medicine/{pivotId}/status', [SicknessCaseApiController::class, 'updateMedicineStatus']);
 
 
     // ── Santri ────────────────────────────────────────────────────────────────

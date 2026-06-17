@@ -90,6 +90,36 @@
                                     <a href="{{ route('referrals.index', array_merge(request()->query(), ['detail' => $referral->id])) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
+                                    @if($referral->status != 'pending')
+                                        <form action="{{ route('referrals.updateStatus', $referral) }}" method="POST" class="d-inline" onsubmit="return confirm('Ubah status ke Pending?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="pending">
+                                            <button type="submit" class="btn btn-outline-warning btn-sm" title="Set Pending">
+                                                <i class="mdi mdi-clock-outline"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    @if($referral->status != 'ongoing')
+                                        <form action="{{ route('referrals.updateStatus', $referral) }}" method="POST" class="d-inline" onsubmit="return confirm('Ubah status ke Diproses?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="ongoing">
+                                            <button type="submit" class="btn btn-outline-info btn-sm" title="Set Diproses">
+                                                <i class="mdi mdi-play-circle-outline"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    @if($referral->status != 'completed')
+                                        <form action="{{ route('referrals.updateStatus', $referral) }}" method="POST" class="d-inline" onsubmit="return confirm('Ubah status ke Selesai?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="completed">
+                                            <button type="submit" class="btn btn-outline-success btn-sm" title="Set Selesai">
+                                                <i class="mdi mdi-check-circle-outline"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                     <a href="{{ route('referrals.index', array_merge(request()->query(), ['edit' => $referral->id])) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
