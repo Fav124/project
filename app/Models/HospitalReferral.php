@@ -35,4 +35,9 @@ class HospitalReferral extends Model
     {
         return $this->belongsTo(User::class, 'referred_by');
     }
+
+    public function referredBy()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
 }
