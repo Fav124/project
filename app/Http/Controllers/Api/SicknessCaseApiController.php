@@ -71,7 +71,7 @@ class SicknessCaseApiController extends BaseApiController
     public function show($id)
     {
         $case = SicknessCase::with([
-            'santri.dormitory', 'santri.schoolClass', 'santri.major', 'santri.guardians',
+            'santri.schoolClass', 'santri.major', 'santri.guardians',
             'medicines', 'handledBy:id,name',
             'keluhans', 'diagnosas', 'tindakans',
         ])->findOrFail($id);
@@ -82,15 +82,15 @@ class SicknessCaseApiController extends BaseApiController
     public function store(Request $request, WhatsAppService $whatsApp)
     {
         $validated = $request->validate([
-            'santri_id'        => 'required|exists:santris,id',
-            'santri_ids'       => 'nullable|array',
+            'santri_id'        => 'nullable|exists:santris,id',
+            'santri_ids'       => 'nullable|array|min:1',
             'santri_ids.*'     => 'exists:santris,id',
             'visit_date'       => 'required|date',
             'complaint'        => 'nullable|string',
             'diagnosis'        => 'nullable|string|max:255',
             'action_taken'     => 'nullable|string',
             'notes'            => 'nullable|string',
-            'status'           => 'required|in:observed,handled,recovered,referred',
+            'status'           => 'required|in:observed,handled,recovered,referred,rawat_inap',
             'medicines'        => 'nullable|array',
             'medicines.*.id'   => 'required_with:medicines|exists:medicines,id',
             'medicines.*.quantity' => 'required_with:medicines|integer|min:1',
@@ -102,56 +102,81 @@ class SicknessCaseApiController extends BaseApiController
             'tindakan_ids.*'   => 'exists:tindakans,id',
             'photo_base64'     => 'nullable|string',
             'notify_guardian'  => 'nullable|boolean',
-            // Referral fields
             'hospital_name'    => 'nullable|string|max:255',
             'transport'        => 'nullable|string|max:100',
             'companion_name'   => 'nullable|string|max:100',
         ]);
 
-        $validated['handled_by'] = auth()->id();
-        $medicinesData   = $validated['medicines'] ?? [];
-        $keluhanIds      = $validated['keluhan_ids'] ?? [];
-        $diagnosaIds     = $validated['diagnosa_ids'] ?? [];
-        $tindakanIds     = $validated['tindakan_ids'] ?? [];
-        $notifyGuardian  = $validated['notify_guardian'] ?? false;
-        $photoBase64     = $validated['photo_base64'] ?? null;
+        $santriIds = $validated['santri_ids'] ?? [];
+        if (empty($santriIds) && !empty($validated['santri_id'])) {
+            $santriIds = [$validated['santri_id']];
+        }
+        if (empty($santriIds)) {
+            return $this->error('Pilih setidaknya satu santri.', 422);
+        }
+
+        $medicinesData  = $validated['medicines'] ?? [];
+        $keluhanIds     = $validated['keluhan_ids'] ?? [];
+        $diagnosaIds    = $validated['diagnosa_ids'] ?? [];
+        $tindakanIds    = $validated['tindakan_ids'] ?? [];
+        $notifyGuardian = $validated['notify_guardian'] ?? false;
+        $photoBase64    = $validated['photo_base64'] ?? null;
 
         // Handle photo upload
         $photoPath = null;
         if ($photoBase64) {
             $photoPath = $this->saveBase64Photo($photoBase64);
-            $validated['photo_path'] = $photoPath;
         }
 
-        unset($validated['medicines'], $validated['notify_guardian'], $validated['keluhan_ids'],
-              $validated['diagnosa_ids'], $validated['tindakan_ids'], $validated['photo_base64'],
-              $validated['santri_ids']);
+        // Build base data (without santri_id, medicines, etc.)
+        $baseData = array_filter($validated, fn($key) => !in_array($key, [
+            'santri_id', 'santri_ids', 'medicines', 'notify_guardian',
+            'keluhan_ids', 'diagnosa_ids', 'tindakan_ids', 'photo_base64',
+        ]), ARRAY_FILTER_USE_KEY);
 
-        $case = SicknessCase::create($validated);
+        $baseData['handled_by'] = auth()->id();
+        if ($photoPath) {
+            $baseData['photo_path'] = $photoPath;
+        }
 
-        // Medicines
-        if (!empty($medicinesData)) {
-            $attachData = [];
-            foreach ($medicinesData as $med) {
-                $attachData[$med['id']] = ['quantity' => $med['quantity'] ?? 1, 'status' => 'pending'];
+        $lastCase = null;
+        DB::transaction(function () use ($santriIds, $baseData, $medicinesData, $keluhanIds, $diagnosaIds, $tindakanIds, &$lastCase) {
+            foreach ($santriIds as $santriId) {
+                $caseData = array_merge($baseData, ['santri_id' => $santriId]);
+                $case = SicknessCase::create($caseData);
+
+                // Medicines
+                if (!empty($medicinesData)) {
+                    $attachData = [];
+                    foreach ($medicinesData as $med) {
+                        $attachData[$med['id']] = ['quantity' => $med['quantity'] ?? 1, 'status' => 'pending'];
+                    }
+                    $case->medicines()->attach($attachData);
+                }
+
+                // Lookups
+                if (!empty($keluhanIds))  $case->keluhans()->sync($keluhanIds);
+                if (!empty($diagnosaIds)) $case->diagnosas()->sync($diagnosaIds);
+                if (!empty($tindakanIds)) $case->tindakans()->sync($tindakanIds);
+
+                $lastCase = $case;
             }
-            $case->medicines()->attach($attachData);
-        }
+        });
 
-        // Lookups
-        if (!empty($keluhanIds))  $case->keluhans()->sync($keluhanIds);
-        if (!empty($diagnosaIds)) $case->diagnosas()->sync($diagnosaIds);
-        if (!empty($tindakanIds)) $case->tindakans()->sync($tindakanIds);
-
-
-
-        if ($notifyGuardian) {
-            $this->sendSicknessNotification($case->load('santri'), $whatsApp);
+        if ($notifyGuardian && $lastCase) {
+            foreach ($santriIds as $santriId) {
+                $c = SicknessCase::where('santri_id', $santriId)
+                    ->where('visit_date', $lastCase->visit_date)
+                    ->latest()->first();
+                if ($c) $this->sendSicknessNotification($c->load('santri'), app(\App\Services\WhatsAppService::class));
+            }
         }
 
         return $this->success(
-            $this->formatCaseDetail($case->load(['santri', 'medicines', 'handledBy', 'keluhans', 'diagnosas', 'tindakans'])),
-            'Data kasus sakit berhasil disimpan.',
+            $this->formatCaseDetail($lastCase->load(['santri', 'medicines', 'handledBy', 'keluhans', 'diagnosas', 'tindakans'])),
+            count($santriIds) > 1
+                ? count($santriIds) . ' data kasus sakit berhasil disimpan.'
+                : 'Data kasus sakit berhasil disimpan.',
             201
         );
     }
@@ -167,7 +192,7 @@ class SicknessCaseApiController extends BaseApiController
             'diagnosis'        => 'nullable|string|max:255',
             'action_taken'     => 'nullable|string',
             'notes'            => 'nullable|string',
-            'status'           => 'required|in:observed,handled,recovered,referred',
+            'status'           => 'required|in:observed,handled,recovered,referred,rawat_inap',
             'medicines'        => 'nullable|array',
             'medicines.*.id'   => 'required_with:medicines|exists:medicines,id',
             'medicines.*.quantity' => 'required_with:medicines|integer|min:1',
@@ -326,11 +351,12 @@ class SicknessCaseApiController extends BaseApiController
     private function translateStatus(string $status): string
     {
         return match ($status) {
-            'observed'  => 'Observasi',
-            'handled'   => 'Ditangani',
-            'recovered' => 'Sembuh',
-            'referred'  => 'Dirujuk',
-            default     => ucfirst($status),
+            'observed'    => 'Observasi',
+            'handled'     => 'Ditangani',
+            'recovered'   => 'Sembuh',
+            'referred'    => 'Dirujuk',
+            'rawat_inap'  => 'Rawat Inap',
+            default       => ucfirst($status),
         };
     }
 

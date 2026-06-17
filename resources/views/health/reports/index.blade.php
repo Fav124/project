@@ -22,9 +22,9 @@
                             <button type="submit" class="btn btn-primary btn-icon-text">
                                 <i class="mdi mdi-refresh btn-icon-prepend"></i> Update Data
                             </button>
-                            <a href="{{ route('reports.print', request()->query()) }}" target="_blank" class="btn btn-outline-danger btn-icon-text">
-                                <i class="mdi mdi-file-pdf btn-icon-prepend"></i> Cetak PDF
-                            </a>
+                            <button type="button" class="btn btn-outline-danger btn-icon-text" data-toggle="modal" data-target="#pdfPreviewModal">
+                                <i class="mdi mdi-file-pdf btn-icon-prepend"></i> Cetak / Preview Laporan
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -146,6 +146,23 @@
                 </tbody>
             </x-ui.table>
         </x-ui.card>
+    </div>
+</div>
+
+<!-- Modal PDF Preview -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="height: 90vh;">
+        <div class="modal-content" style="height: 100%;">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview Laporan PDF</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0" style="height: calc(100% - 60px);">
+                <iframe src="{{ route('reports.print', request()->query()) }}" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -33,23 +33,11 @@ class CreateHealthManagementTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('infirmary_beds', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique();
-            $table->string('room_name')->default('UKS');
-            $table->enum('status', ['available', 'occupied', 'maintenance'])->default('available');
-            $table->string('occupant_name')->nullable();
-            $table->text('notes')->nullable();
-            $table->timestamps();
-        });
-
-
         Schema::create('sickness_cases', function (Blueprint $table) {
             $table->id();
             $table->foreignId('santri_id')->constrained()->cascadeOnDelete();
             $table->foreignId('handled_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('medicine_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('infirmary_bed_id')->nullable()->constrained()->nullOnDelete();
             $table->date('visit_date');
             $table->text('complaint');
             $table->string('diagnosis')->nullable();
@@ -82,7 +70,6 @@ class CreateHealthManagementTables extends Migration
         Schema::dropIfExists('hospital_referrals');
         Schema::dropIfExists('sickness_cases');
 
-        Schema::dropIfExists('infirmary_beds');
         Schema::dropIfExists('medicines');
         Schema::dropIfExists('santris');
     }

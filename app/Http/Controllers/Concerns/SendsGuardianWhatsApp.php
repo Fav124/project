@@ -11,7 +11,7 @@ trait SendsGuardianWhatsApp
 {
     protected function sendSicknessCaseNotification(SicknessCase $case, WhatsAppService $whatsApp): array
     {
-        $case->loadMissing(['santri', 'medicine', 'bed']);
+        $case->loadMissing(['santri', 'medicine']);
 
         return $this->sendToGuardian(
             $case->santri,
@@ -67,10 +67,6 @@ trait SendsGuardianWhatsApp
 
         if ($case->medicine) {
             $lines[] = 'Obat: ' . $case->medicine->name;
-        }
-
-        if ($case->bed) {
-            $lines[] = 'Kasur UKS: ' . $case->bed->code . ' - ' . $case->bed->room_name;
         }
 
         if ($case->notes) {

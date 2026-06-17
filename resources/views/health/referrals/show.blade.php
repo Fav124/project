@@ -48,8 +48,8 @@
                 <td>: {{ $referral->santri->nis ?: '-' }}</td>
             </tr>
             <tr>
-                <td style="padding: 6px 0; color: var(--text-muted); font-weight: 600;">Kelas / Asrama</td>
-                <td>: {{ optional($referral->santri->schoolClass)->name ?: '-' }} / {{ $referral->santri->dorm_room ?: '-' }}</td>
+                <td style="padding: 6px 0; color: var(--text-muted); font-weight: 600;">Kelas</td>
+                <td>: {{ optional($referral->santri->schoolClass)->name ?: '-' }}</td>
             </tr>
             <tr>
                 <td style="padding: 6px 0; color: var(--text-muted); font-weight: 600;">Kontak Darurat (Wali)</td>

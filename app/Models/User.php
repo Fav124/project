@@ -137,6 +137,6 @@ class User extends Authenticatable
             return route('account.profile-photo', $this) . '?v=' . $timestamp;
         }
 
-        return asset('template-assets/images/faces/face15.jpg');
+        return asset('logo-pondok.png');
     }
 }

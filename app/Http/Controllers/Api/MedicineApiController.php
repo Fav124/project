@@ -125,11 +125,9 @@ class MedicineApiController extends BaseApiController
             'medicine_id'   => $medicine->id,
             'type'          => $validated['type'],
             'amount'        => $validated['amount'],
-            'stok_sebelum'  => $beforeStock,
-            'stok_sesudah'  => $afterStock,
-            'date'          => now()->toDateString(),
+            'before_stock'  => $beforeStock,
+            'after_stock'   => $afterStock,
             'notes'         => $validated['notes'] ?? null,
-            'created_by'    => auth()->id(),
         ]);
 
         return $this->success([], 'Mutasi stok berhasil dicatat.');
@@ -168,9 +166,9 @@ class MedicineApiController extends BaseApiController
                 'id'            => $mut->id,
                 'type'          => $mut->type,
                 'amount'        => $mut->amount,
-                'stok_sebelum'  => $mut->stok_sebelum,
-                'stok_sesudah'  => $mut->stok_sesudah,
-                'date'          => $mut->date,
+                'stok_sebelum'  => $mut->before_stock,
+                'stok_sesudah'  => $mut->after_stock,
+                'date'          => $mut->created_at?->toDateString(),
                 'notes'         => $mut->notes,
             ])->values(),
         ]);

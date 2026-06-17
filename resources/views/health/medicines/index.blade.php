@@ -91,17 +91,20 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['detail' => $medicine->id])) }}" class="btn btn-outline-info btn-sm">
+                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['detail' => $medicine->id])) }}" class="btn btn-outline-info btn-sm" title="Detail">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['edit' => $medicine->id])) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['edit' => $medicine->id])) }}" class="btn btn-outline-warning btn-sm" title="Edit">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
+                                    <button type="button" class="btn btn-outline-success btn-sm mutation-btn" data-toggle="modal" data-target="#mutationModal" data-id="{{ $medicine->id }}" data-name="{{ $medicine->name }}" data-stock="{{ $medicine->stock }}" title="Mutasi Stok">
+                                        <i class="mdi mdi-swap-vertical"></i>
+                                    </button>
                                     @can('manage-medical-data')
                                         <form action="{{ route('medicines.destroy', $medicine) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data obat ini?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Hapus">
                                                 <i class="mdi mdi-trash-can"></i>
                                             </button>
                                         </form>
@@ -244,44 +247,96 @@
 {{-- Detail Modal --}}
 @if($detailMedicine)
 <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Detail Obat: {{ $detailMedicine->name }}</h5>
                 <a href="{{ route('medicines.index') }}" class="close text-white"></a>
             </div>
             <div class="modal-body">
-                <div class="text-center mb-4">
-                    <div class="bg-dark p-4 rounded d-inline-block">
-                        <i class="mdi mdi-pill text-primary" style="font-size: 48px;"></i>
+                <div class="row">
+                    <div class="col-md-3 text-center mb-4">
+                        <div class="bg-dark p-4 rounded d-inline-block mb-2">
+                            <i class="mdi mdi-pill text-primary" style="font-size: 48px;"></i>
+                        </div>
+                        <h5 class="text-white mb-0">{{ $detailMedicine->name }}</h5>
+                        <span class="text-muted text-small">{{ $detailMedicine->kode_obat }}</span>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <small class="text-muted d-block">Nama Obat</small>
+                                <span class="text-white font-weight-bold">{{ $detailMedicine->name }}</span>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <small class="text-muted d-block">Stok Saat Ini</small>
+                                <span class="text-white">{{ $detailMedicine->stock }} {{ $detailMedicine->unit }}</span>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <small class="text-muted d-block">Batas Minimum</small>
+                                <span class="text-warning">{{ $detailMedicine->minimum_stock }} {{ $detailMedicine->unit }}</span>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <small class="text-muted d-block">Tgl Kadaluarsa</small>
+                                @if($detailMedicine->isExpired())
+                                    <span class="text-danger font-weight-bold">{{ $detailMedicine->expiry_date->translatedFormat('d F Y') }} (Expired)</span>
+                                @elseif($detailMedicine->isExpiringSoon())
+                                    <span class="text-warning font-weight-bold">{{ $detailMedicine->expiry_date->translatedFormat('d F Y') }} (Segera)</span>
+                                @else
+                                    <span class="text-white">{{ $detailMedicine->expiry_date ? $detailMedicine->expiry_date->translatedFormat('d F Y') : '-' }}</span>
+                                @endif
+                            </div>
+                            <div class="col-12 mb-3">
+                                <small class="text-muted d-block">Kegunaan/Deskripsi</small>
+                                <p class="text-white">{{ $detailMedicine->description ?: 'Tidak ada deskripsi' }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <hr class="border-secondary">
+
                 <div class="row">
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Nama Obat</small>
-                        <span class="text-white font-weight-bold">{{ $detailMedicine->name }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Stok Saat Ini</small>
-                        <span class="text-white">{{ $detailMedicine->stock }} {{ $detailMedicine->unit }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Batas Minimum</small>
-                        <span class="text-warning">{{ $detailMedicine->minimum_stock }} {{ $detailMedicine->unit }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Tgl Kadaluarsa</small>
-                        @if($detailMedicine->isExpired())
-                            <span class="text-danger font-weight-bold">{{ $detailMedicine->expiry_date->translatedFormat('d F Y') }} (Expired)</span>
-                        @elseif($detailMedicine->isExpiringSoon())
-                            <span class="text-warning font-weight-bold">{{ $detailMedicine->expiry_date->translatedFormat('d F Y') }} (Segera)</span>
-                        @else
-                            <span class="text-white">{{ $detailMedicine->expiry_date ? $detailMedicine->expiry_date->translatedFormat('d F Y') : '-' }}</span>
-                        @endif
-                    </div>
-                    <div class="col-12 mb-3">
-                        <small class="text-muted d-block">Kegunaan/Deskripsi</small>
-                        <p class="text-white">{{ $detailMedicine->description ?: 'Tidak ada deskripsi' }}</p>
+                    <div class="col-12">
+                        <h6 class="text-primary mb-3"><i class="mdi mdi-history mr-2"></i> Riwayat Mutasi Stok</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm text-white">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Tipe</th>
+                                        <th>Jumlah</th>
+                                        <th>Sebelum</th>
+                                        <th>Sesudah</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($detailMedicine->mutations as $mutation)
+                                        <tr>
+                                            <td>{{ $mutation->created_at->translatedFormat('d M Y H:i') }}</td>
+                                            <td>
+                                                @if($mutation->type === 'in')
+                                                    <span class="badge badge-outline-success">Stok Masuk</span>
+                                                @elseif($mutation->type === 'out')
+                                                    <span class="badge badge-outline-danger">Stok Keluar</span>
+                                                @else
+                                                    <span class="badge badge-outline-info">Penyesuaian</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $mutation->amount }}</td>
+                                            <td>{{ $mutation->before_stock }}</td>
+                                            <td>{{ $mutation->after_stock }}</td>
+                                            <td class="text-muted text-wrap" style="max-width: 150px;">{{ $mutation->notes ?: '-' }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">Belum ada riwayat mutasi.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,6 +347,52 @@
     </div>
 </div>
 @endif
+
+{{-- Mutation Modal --}}
+<div class="modal fade" id="mutationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Mutasi Stok Obat</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <form action="{{ route('medicines.mutation') }}" method="POST" data-ajax="true">
+                @csrf
+                <input type="hidden" name="medicine_id" id="mutation-medicine-id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Obat</label>
+                        <input type="text" id="mutation-medicine-name" class="form-control text-white bg-dark" readonly style="color: #64748b !important;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stok Saat Ini</label>
+                        <input type="text" id="mutation-medicine-stock" class="form-control text-white bg-dark" readonly style="color: #64748b !important;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tipe Mutasi</label>
+                        <select name="type" class="form-select text-white" required>
+                            <option value="in">Stok Masuk (+)</option>
+                            <option value="out">Stok Keluar (-)</option>
+                            <option value="adjustment">Penyesuaian Stok (Set)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Jumlah / Nilai Baru</label>
+                        <input type="number" name="amount" class="form-control text-white" min="1" required placeholder="Masukkan jumlah stok...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan / Catatan</label>
+                        <textarea name="notes" class="form-control text-white" rows="2" placeholder="Catatan mutasi stok..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Mutasi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -346,6 +447,17 @@
         @if($detailMedicine)
             new bootstrap.Modal(document.getElementById('detailModal')).show();
         @endif
+
+        // Handle Mutation Modal Trigger
+        $(document).on('click', '.mutation-btn', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            const stock = $(this).data('stock');
+            
+            $('#mutation-medicine-id').val(id);
+            $('#mutation-medicine-name').val(name);
+            $('#mutation-medicine-stock').val(stock);
+        });
 
         // Dynamic Rows Logic
         let rowCount = 1;

@@ -99,20 +99,6 @@
                     @endif
                 </div>
             </x-ui.card>
-
-            <x-ui.card>
-                <x-slot name="header">
-                    <h2><i class="fas fa-bed"></i> Fasilitas Kasur</h2>
-                </x-slot>
-                <div style="padding: 24px;">
-                    @if($sicknessCase->bed)
-                        <div style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">{{ $sicknessCase->bed->code }}</div>
-                        <div style="font-size: 14px; font-weight: 600; color: var(--brand-start);">{{ $sicknessCase->bed->room_name }}</div>
-                    @else
-                        <x-ui.empty-state message="Pasien dirawat jalan (tanpa kasur)." />
-                    @endif
-                </div>
-            </x-ui.card>
         </div>
     </div>
 </div>

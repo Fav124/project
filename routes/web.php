@@ -66,6 +66,7 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::delete('/obat/{medicine}', [MedicineController::class, 'destroy'])
         ->middleware('role:super_admin,admin')
         ->name('medicines.destroy');
+    Route::post('/obat/mutasi', [MedicineController::class, 'recordMutation'])->name('medicines.mutation');
 
 
     Route::get('/santri-sakit', [SicknessCaseController::class, 'index'])->name('sickness-cases.index');

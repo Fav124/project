@@ -42,15 +42,12 @@
         .logo-placeholder {
             width: 80px;
             height: 80px;
-            background: #064e3b;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 24px;
-            border-radius: 50%;
             margin-right: 20px;
+        }
+        .logo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         .kop-info {
             flex-grow: 1;
@@ -236,8 +233,10 @@
     <div class="container">
         <!-- Letterhead -->
         <div class="kop-surat">
-            <div class="logo-placeholder">DH</div>
-            <div class="kop-info">
+        <div class="logo-placeholder">
+            <img src="{{ asset('logo-pondok.png') }}" alt="Logo Pondok">
+        </div>
+        <div class="kop-info">
                 <h1>Unit Kesehatan Santri (UKS)</h1>
                 <h2>Pondok Pesantren Ma'had Dar El-Ilmi Sumatera Barat</h2>
                 <p>Payakumbuh | Telp: (031) 1234567 | Email: dei.email@gmail.com</p>

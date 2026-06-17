@@ -37,7 +37,6 @@
                         <label class="form-label text-muted text-small uppercase tracking-wider font-bold">Cari Santri</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white/5 border-white/10 text-muted"><i class="mdi mdi-magnify"></i></span>
-                            <input type="text" name="search" class="form-control" placeholder="Nama, NIS, atau Kamar..." value="{{ request('search') }}">
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -66,8 +65,6 @@
                         <th>Nama</th>
                         <th>NIS</th>
                         <th>Kelas</th>
-                        <th>Asrama</th>
-                        <th>Kamar</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -77,8 +74,6 @@
                             <td>{{ $santri->name }}</td>
                             <td>{{ $santri->nis ?: '-' }}</td>
                             <td>{{ optional($santri->schoolClass)->name ?: '-' }}</td>
-                            <td>{{ optional($santri->dormitory)->name ?: '-' }}</td>
-                            <td>{{ $santri->dorm_room ?: '-' }}</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('santri.index', array_merge(request()->query(), ['detail' => $santri->id])) }}" class="btn btn-outline-info btn-sm">
@@ -166,19 +161,6 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="form-group mb-2">
-                                        <label class="form-label text-small">Asrama</label>
-                                        <select name="santris[0][dormitory_id]" class="form-select text-white">
-                                            <option value="">Pilih Asrama</option>
-                                            @foreach($dormitories as $dorm)
-                                                <option value="{{ $dorm->id }}">{{ $dorm->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group mb-0">
-                                        <label class="form-label text-small">Kamar</label>
-                                        <input type="text" name="santris[0][dorm_room]" class="form-control" placeholder="No. 101">
-                                    </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group mb-2">
@@ -262,19 +244,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Asrama</label>
-                            <select name="dormitory_id" class="form-select text-white">
-                                <option value="">Pilih Asrama</option>
-                                @foreach($dormitories as $dorm)
-                                    <option value="{{ $dorm->id }}" {{ $editSantri->dormitory_id == $dorm->id ? 'selected' : '' }}>{{ $dorm->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Kamar Asrama (No.)</label>
-                            <input type="text" name="dorm_room" class="form-control" value="{{ $editSantri->dorm_room }}">
-                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Nama Wali</label>
@@ -321,14 +290,6 @@
                     <div class="col-6 mb-3">
                         <small class="text-muted d-block">Jurusan</small>
                         <span class="text-white">{{ optional($detailSantri->major)->name ?: '-' }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Asrama</small>
-                        <span class="text-white">{{ optional($detailSantri->dormitory)->name ?: '-' }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Kamar</small>
-                        <span class="text-white">{{ $detailSantri->dorm_room ?: '-' }}</span>
                     </div>
                     <div class="col-6 mb-3">
                         <small class="text-muted d-block">Jenis Kelamin</small>

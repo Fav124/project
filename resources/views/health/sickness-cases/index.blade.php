@@ -161,17 +161,6 @@
                                                 <input type="date" name="cases[0][visit_date]" class="form-control" value="{{ date('Y-m-d') }}" required>
                                             </div>
                                         </div>
-                                        <div class="col-6">
-                                            <div class="form-group mb-3">
-                                                <label class="form-label text-small">Kasur UKS</label>
-                                                <select name="cases[0][infirmary_bed_id]" class="form-select text-white">
-                                                    <option value="">Tanpa Kasur</option>
-                                                    @foreach($beds as $bed)
-                                                        <option value="{{ $bed->id }}" {{ $bed->status == 'occupied' ? 'disabled' : '' }}>{{ $bed->code }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="form-group mb-0">
                                         <label class="form-label text-small">Status</label>
@@ -278,15 +267,6 @@
                                 <option value="handled" {{ $editCase->status == 'handled' ? 'selected' : '' }}>Ditangani</option>
                                 <option value="recovered" {{ $editCase->status == 'recovered' ? 'selected' : '' }}>Sembuh</option>
                                 <option value="referred" {{ $editCase->status == 'referred' ? 'selected' : '' }}>Dirujuk</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Kasur UKS</label>
-                            <select name="infirmary_bed_id" class="form-select text-white">
-                                <option value="">Tanpa Kasur</option>
-                                @foreach($beds as $bed)
-                                    <option value="{{ $bed->id }}" {{ $editCase->infirmary_bed_id == $bed->id ? 'selected' : '' }}>{{ $bed->code }}</option>
-                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -590,7 +570,7 @@
             const caseIdx = $(this).data('case-index');
             const list = $(`#medicine-list-${caseIdx}`);
             const firstMedRow = list.find('.medicine-row').first();
-            const newMedRow = firstMedRow.cloneNode(true);
+            const newMedRow = firstMedRow[0].cloneNode(true);
             const medIdx = list.find('.medicine-row').length;
 
             newMedRow.querySelectorAll('input, select').forEach(input => {
@@ -615,7 +595,7 @@
         $(document).on('click', '.add-edit-medicine', function() {
             const list = $('#edit-medicine-list');
             const firstRow = list.find('.edit-medicine-row').first();
-            const newRow = firstRow.cloneNode(true);
+            const newRow = firstRow[0].cloneNode(true);
             const medIdx = list.find('.edit-medicine-row').length;
 
             newRow.querySelectorAll('input, select').forEach(input => {

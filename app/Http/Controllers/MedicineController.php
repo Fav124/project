@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\HealthManagementValidation;
 use App\Models\Medicine;
+use App\Models\MedicineMutation;
 use Illuminate\Http\Request;
 
 class MedicineController extends Controller
@@ -36,7 +37,7 @@ class MedicineController extends Controller
             ? Medicine::find($request->edit)
             : null;
         $detailMedicine = $request->filled('detail')
-            ? Medicine::find($request->detail)
+            ? Medicine::with(['mutations' => fn($q) => $q->latest()])->find($request->detail)
             : null;
         $showForm = $request->boolean('create') || $editMedicine || $request->isMethod('post');
 
@@ -111,5 +112,51 @@ class MedicineController extends Controller
 
         return redirect()->route('medicines.index')
             ->with('success', 'Data obat berhasil dihapus.');
+    }
+
+    public function recordMutation(Request $request)
+    {
+        $validated = $request->validate([
+            'medicine_id' => 'required|exists:medicines,id',
+            'type'        => 'required|in:in,out,adjustment',
+            'amount'      => 'required|integer|min:1',
+            'notes'       => 'nullable|string',
+        ]);
+
+        $medicine = Medicine::findOrFail($validated['medicine_id']);
+        $beforeStock = $medicine->stock;
+
+        if ($validated['type'] === 'in') {
+            $medicine->increment('stock', $validated['amount']);
+        } elseif ($validated['type'] === 'out') {
+            if ($medicine->stock < $validated['amount']) {
+                if ($request->ajax()) {
+                    return response()->json(['success' => false, 'message' => 'Stok tidak mencukupi.'], 422);
+                }
+                return back()->withErrors(['amount' => 'Stok tidak mencukupi.'])->withInput();
+            }
+            $medicine->decrement('stock', $validated['amount']);
+        } else {
+            // adjustment
+            $medicine->update(['stock' => $validated['amount']]);
+        }
+
+        $afterStock = $medicine->fresh()->stock;
+
+        MedicineMutation::create([
+            'medicine_id'   => $medicine->id,
+            'type'          => $validated['type'],
+            'amount'        => $validated['amount'],
+            'before_stock'  => $beforeStock,
+            'after_stock'   => $afterStock,
+            'notes'         => $validated['notes'] ?? null,
+        ]);
+
+        $message = 'Mutasi stok berhasil dicatat.';
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return redirect()->route('medicines.index')->with('success', $message);
     }
 }

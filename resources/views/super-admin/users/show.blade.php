@@ -103,8 +103,8 @@
                         <div class="form-group">
                             <label>Pilih Role</label>
                             <select name="role" class="form-select text-white">
-                                <option value="petugas_kesehatan" @selected($user->role === 'petugas_kesehatan')>Petugas Kesehatan (UKS)</option>
-                                <option value="admin" @selected($user->role === 'admin')>Administrator (Master Data)</option>
+                                <option value="petugas_kesehatan" {{ $user->role === 'petugas_kesehatan' ? 'selected' : '' }}>Petugas Kesehatan (UKS)</option>
+                                <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Administrator (Master Data)</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan Perubahan Role</button>

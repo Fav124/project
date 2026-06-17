@@ -33,10 +33,6 @@
                     <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Jenis Kelamin</div>
                     <div style="font-weight: 600; color: var(--text-main);">{{ $santri->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
                 </div>
-                <div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Kamar Asrama</div>
-                    <div style="font-weight: 600; color: var(--text-main);">{{ $santri->dorm_room ?: '-' }}</div>
-                </div>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">

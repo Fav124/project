@@ -60,25 +60,15 @@ class SicknessCaseSeeder extends Seeder
         }
 
         // 2. Active Cases (Current)
-        foreach ($santris->slice(15, 5) as $index => $santri) {
-            $bed = $beds->where('status', 'available')->first();
-            
+        foreach ($santris->slice(15, 5) as $index => $santri) {            
             $case = SicknessCase::create([
                 'santri_id' => $santri->id,
                 'visit_date' => now()->subDays(rand(0, 2)),
                 'complaint' => $complaints[array_rand($complaints)],
                 'diagnosis' => $diagnoses[array_rand($diagnoses)],
                 'status' => rand(0, 1) ? 'observed' : 'handled',
-                'infirmary_bed_id' => $bed ? $bed->id : null,
                 'handled_by' => 1,
             ]);
-
-            if ($bed) {
-                $bed->update([
-                    'status' => 'occupied',
-                    'occupant_name' => $santri->name
-                ]);
-            }
 
             // Add medicines
             $randomMeds = $medicines->random(rand(1, 3));

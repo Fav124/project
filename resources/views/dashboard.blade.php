@@ -58,7 +58,7 @@
 
 {{-- Stat Cards --}}
 <div class="row">
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="col-xl-3 col-sm-6 grid-margin">
         <div class="stat-card stat-primary">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="stat-label">Total Santri</div>
@@ -71,12 +71,12 @@
         </div>
     </div>
     
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="col-xl-3 col-sm-6 grid-margin">
         <div class="stat-card stat-success">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="stat-label">Santri Sakit</div>
                 <div class="stat-icon">
-                    <i class="mdi mdi-emoticon-sick"></i>
+                    <i class="mdi mdi-heart-pulse"></i>
                 </div>
             </div>
             <div class="stat-value">{{ $stats['santri_sakit_aktif'] }}</div>
@@ -84,12 +84,12 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="col-xl-3 col-sm-6 grid-margin">
         <div class="stat-card stat-info">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="stat-label">Rujukan RS</div>
                 <div class="stat-icon">
-                    <i class="mdi mdi-hospital-building"></i>
+                    <i class="mdi mdi-ambulance"></i>
                 </div>
             </div>
             <div class="stat-value">{{ $stats['rujukan'] }}</div>
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+    <div class="col-xl-3 col-sm-6 grid-margin">
         <div class="stat-card stat-danger">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="stat-label">Stok Kritis</div>
@@ -113,7 +113,7 @@
 
 {{-- Grafik Utama --}}
 <div class="row">
-    <div class="col-md-8 grid-margin stretch-card">
+    <div class="col-md-8 grid-margin">
         <div class="card w-100">
             <div class="card-body">
                 <h4 class="card-title">Tren Kunjungan Santri Sakit</h4>

@@ -37,7 +37,7 @@ class HospitalReferralApiController extends Controller
 
     public function show($id)
     {
-        $referral = HospitalReferral::with(['santri.dormitory', 'santri.schoolClass', 'referredBy:id,name'])->findOrFail($id);
+        $referral = HospitalReferral::with(['santri.schoolClass', 'referredBy:id,name'])->findOrFail($id);
         return response()->json(['success' => true, 'data' => $this->formatDetail($referral)]);
     }
 
@@ -150,7 +150,6 @@ class HospitalReferralApiController extends Controller
                 'name'           => $r->santri->name,
                 'nis'            => $r->santri->nis,
                 'gender'         => $r->santri->gender,
-                'dormitory'      => $r->santri->dormitory?->name,
                 'class'          => $r->santri->schoolClass?->name,
                 'guardian_name'  => $r->santri->guardian_name,
                 'guardian_phone' => $r->santri->guardian_phone,

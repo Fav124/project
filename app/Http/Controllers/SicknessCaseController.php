@@ -81,7 +81,9 @@ class SicknessCaseController extends Controller
         $validated = $request->validate([
             'cases' => ['required', 'array', 'min:1'],
             'cases.*.santri_id' => ['required', 'exists:santris,id'],
-            'cases.*.medicine_id' => ['nullable', 'exists:medicines,id'],
+            'cases.*.medicines' => ['nullable', 'array'],
+            'cases.*.medicines.*.id' => ['nullable', 'exists:medicines,id'],
+            'cases.*.medicines.*.quantity' => ['nullable', 'integer', 'min:1'],
 
             'cases.*.visit_date' => ['required', 'date'],
             'cases.*.complaint' => ['required', 'string'],
@@ -94,6 +96,7 @@ class SicknessCaseController extends Controller
         DB::transaction(function () use ($validated): void {
             foreach ($validated['cases'] as $caseData) {
                 $this->ensureCaseRelations(
+                    $caseData['santri_id'],
                     $caseData['status']
                 );
 
@@ -211,7 +214,6 @@ class SicknessCaseController extends Controller
     private function validateBatchCaseRelations(array $cases): void
     {
         $seenSantri = [];
-        $seenBeds = [];
 
         foreach ($cases as $index => $caseData) {
             $santriId = $caseData['santri_id'] ?? null;

@@ -40,23 +40,6 @@ trait HealthManagementValidation
         ];
     }
 
-    protected function bedRules($bedId = null): array
-    {
-        $codeRule = 'required|string|max:50|unique:infirmary_beds,code';
-
-        if ($bedId) {
-            $codeRule .= ',' . $bedId;
-        }
-
-        return [
-            'code' => $codeRule,
-            'room_name' => ['required', 'string', 'max:100'],
-            'status' => ['required', 'in:available,occupied,maintenance'],
-            'occupant_name' => ['nullable', 'string', 'max:255'],
-            'notes' => ['nullable', 'string'],
-        ];
-    }
-
     protected function healthRecordRules(): array
     {
         return [

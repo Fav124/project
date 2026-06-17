@@ -18,7 +18,7 @@ class MobileDashboardController extends BaseApiController
             'obat_menipis' => Medicine::whereColumn('stock', '<=', 'minimum_stock')->count(),
         ];
 
-        $recentCases = SicknessCase::with(['santri', 'bed'])
+        $recentCases = SicknessCase::with(['santri'])
             ->latest('visit_date')
             ->take(5)
             ->get()
@@ -28,7 +28,6 @@ class MobileDashboardController extends BaseApiController
                 'complaint' => $case->complaint,
                 'status' => $case->status,
                 'visit_date' => optional($case->visit_date)->toDateString(),
-                'bed_code' => $case->bed?->code,
             ]);
 
         $recentReferrals = HospitalReferral::with('santri')

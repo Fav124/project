@@ -17,7 +17,6 @@ class Santri extends Model
         'birth_date',
         'class_id',
         'major_id',
-        'dormitory_id',
         'class_room',
         'dorm_room',
         'guardian_name',
@@ -46,13 +45,6 @@ class Santri extends Model
     {
         return $this->hasMany(Guardian::class);
     }
-
-    public function dormitory()
-    {
-        return $this->belongsTo(Dormitory::class);
-    }
-
-
 
     public function schoolClass()
     {

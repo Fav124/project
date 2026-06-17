@@ -39,9 +39,10 @@
             flex: 1.2;
             background-color: #12306F;
             background-image:
-                linear-gradient(135deg, rgba(18, 48, 111, 0.98), rgba(2, 120, 212, 0.94)),
-                radial-gradient(at top left, rgba(255, 255, 255, 0.18), transparent 42%),
-                radial-gradient(at bottom right, rgba(255, 140, 0, 0.22), transparent 46%);
+                linear-gradient(135deg, rgba(18, 48, 111, 0.8), rgba(2, 120, 212, 0.85)),
+                url('{{ asset('foto-pondok.png') }}');
+            background-size: cover;
+            background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -71,18 +72,15 @@
         
         .logo-icon {
             width: 56px; height: 56px;
-            background: rgba(255, 255, 255, 0.20);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 26px;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.24);
             box-shadow: 0 0 30px rgba(0, 144, 231, 0.30);
+            padding: 5px;
         }
+        .logo-icon img { width: 100%; height: 100%; object-fit: contain; }
 
         .brand-name { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.25); }
-        .brand-name span { color: #eaf8ff; }
 
         .banner-content h1 { font-size: 48px; font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em; color: #fff; text-shadow: 0 3px 16px rgba(0,0,0,0.32); }
         .banner-content p { font-size: 18px; color: #F8FAFC; line-height: 1.6; font-weight: 500; text-shadow: 0 2px 10px rgba(0,0,0,0.25); }
@@ -201,7 +199,7 @@
     <div class="auth-banner">
         <div class="banner-content">
             <div class="logo-wrapper">
-                <div class="logo-icon"><i class="fas fa-heart-pulse"></i></div>
+                <div class="logo-icon"><img src="{{ asset('logo-pondok.png') }}" alt="Logo Pondok"></div>
                 <div class="brand-name">DEIHealth</div>
             </div>
             <h1>Kelola Kesehatan<br>Lebih Modern.</h1>

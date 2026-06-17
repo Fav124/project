@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Dormitory;
 use App\Models\Major;
 use App\Models\Santri;
 use App\Models\SchoolClass;
@@ -15,7 +14,6 @@ class SantriSeeder extends Seeder
     {
         $classes = SchoolClass::all();
         $majors = Major::all();
-        $dorms = Dormitory::all();
 
         $names = [
             'L' => ['Ahmad', 'Budi', 'Candra', 'Dedi', 'Eko', 'Fajar', 'Guntur', 'Hadi', 'Indra', 'Joko', 'Kevin', 'Lukman', 'Mulyono', 'Naufal', 'Oki', 'Prasetyo', 'Rizky', 'Sultan', 'Taufik', 'Umar', 'Vicky', 'Wahyu', 'Xavi', 'Yusuf', 'Zaki'],
@@ -33,16 +31,12 @@ class SantriSeeder extends Seeder
                 return strpos($c->name, $major->name) !== false;
             })->random();
             
-            $dorm = $dorms->where('gender', $gender)->random();
-
             Santri::create([
                 'name' => $name,
                 'nis' => '2026' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
                 'gender' => $gender,
                 'class_id' => $class->id,
                 'major_id' => $major->id,
-                'dormitory_id' => $dorm->id,
-                'dorm_room' => 'Kamar ' . rand(101, 110),
                 'guardian_name' => 'Bpk/Ibu ' . $lastName,
                 'guardian_phone' => '628' . rand(100000000, 999999999),
             ]);
