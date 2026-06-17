@@ -20,6 +20,7 @@ class Medicine extends Model
         'expiry_date',
         'lokasi_penyimpanan',
         'description',
+        'photo',
     ];
 
     protected $casts = [
@@ -80,6 +81,11 @@ class Medicine extends Model
     public function getNearestExpiryDateAttribute()
     {
         return $this->availableBatches()->notExpired()->first()?->expiry_date;
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo ? asset('storage/' . $this->photo) : null;
     }
 
     public function getStatusAttribute(): string

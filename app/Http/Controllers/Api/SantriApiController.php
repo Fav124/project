@@ -6,6 +6,7 @@ use App\Models\Guardian;
 use App\Models\Santri;
 use Illuminate\Http\Request;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Storage;
 
 class SantriApiController extends BaseApiController
 {
@@ -16,7 +17,6 @@ class SantriApiController extends BaseApiController
         return $this->success([
             'classes'     => \App\Models\SchoolClass::orderBy('name')->get(['id', 'name']),
             'majors'      => \App\Models\Major::orderBy('name')->get(['id', 'name']),
-            'dormitories' => [],
         ]);
     }
 
@@ -69,7 +69,6 @@ class SantriApiController extends BaseApiController
             'birth_date'        => 'nullable|date',
             'class_id'          => 'nullable',
             'major_id'          => 'nullable|exists:majors,id',
-            'dorm_room'         => 'nullable|string|max:50',
             'blood_type'        => 'nullable|string|max:5',
             'allergies'         => 'nullable|string',
             'medical_history'   => 'nullable|string',
@@ -83,7 +82,13 @@ class SantriApiController extends BaseApiController
             'guardian_job'          => 'nullable|string|max:100',
             'guardian_address'      => 'nullable|string',
             'notes'             => 'nullable|string',
+            'photo'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('santri-photos', 'public');
+            $validated['photo_path'] = $path;
+        }
 
         $santri = Santri::create($validated);
         return $this->success(
@@ -104,7 +109,6 @@ class SantriApiController extends BaseApiController
             'birth_date'        => 'nullable|date',
             'class_id'          => 'nullable',
             'major_id'          => 'nullable|exists:majors,id',
-            'dorm_room'         => 'nullable|string|max:50',
             'blood_type'        => 'nullable|string|max:5',
             'allergies'         => 'nullable|string',
             'medical_history'   => 'nullable|string',
@@ -118,7 +122,16 @@ class SantriApiController extends BaseApiController
             'guardian_job'          => 'nullable|string|max:100',
             'guardian_address'      => 'nullable|string',
             'notes'             => 'nullable|string',
+            'photo'              => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            if ($santri->photo_path) {
+                Storage::disk('public')->delete($santri->photo_path);
+            }
+            $path = $request->file('photo')->store('santri-photos', 'public');
+            $validated['photo_path'] = $path;
+        }
 
         $santri->update($validated);
         return $this->success(
@@ -234,6 +247,7 @@ class SantriApiController extends BaseApiController
             'guardian_relationship'  => $s->guardian_relationship ?: $guardian?->relationship,
             'guardian_address'       => $s->guardian_address ?: $guardian?->address,
             'guardian_job'           => $s->guardian_job ?: $guardian?->job,
+            'photo_url'              => $s->photo_url,
         ];
     }
 
@@ -250,6 +264,7 @@ class SantriApiController extends BaseApiController
             'weight'           => $s->weight ?? null,
             'blood_pressure'   => $s->blood_pressure ?? null,
             'notes'            => $s->notes,
+            'photo_url'        => $s->photo_url,
             'guardians'        => $s->guardians->map(fn($g) => $this->formatGuardian($g))->values(),
             'recent_sickness'  => $s->sicknessCases->map(fn($c) => [
                 'id'         => $c->id,

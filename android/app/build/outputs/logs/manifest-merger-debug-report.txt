@@ -1,0 +1,432 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:2:1-32:12
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:2:1-32:12
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:2:1-32:12
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:2:1-32:12
+MERGED from [androidx.navigation:navigation-common:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/d050c21e907e00b69988b11ef8e5f671/transformed/navigation-common-2.7.6/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/33e4608c59a7efdf210fb06fd3231b94/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/0e0322c5fd95667dfebfed09851c6fc0/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/ef05478d5d63a07f554c916134abdceb/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-compose:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/7e5708ebf9e729521cef1f66f164d867/transformed/navigation-compose-2.7.6/AndroidManifest.xml:2:1-7:12
+MERGED from [com.patrykandpatrick.vico:compose-m3:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/be397e12f7818b8ac6084b2be742f40c/transformed/compose-m3-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [com.patrykandpatrick.vico:compose:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/93680427827450ec9564373ef58c91bc/transformed/compose-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/4b8038dc4606666c5095628d87774156/transformed/material3-release/AndroidManifest.xml:17:1-22:12
+MERGED from [io.coil-kt:coil-compose:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/58d5babed176b768f673a56939aae42b/transformed/coil-compose-2.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil-compose-base:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/5e2365f6a28eb6de1363bb5017da4f02/transformed/coil-compose-base-2.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/cfc3cf16e5d2a02240157272912c8eba/transformed/coil-2.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil-base:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/a28d5298397de1e4d7a712d4da8b9525/transformed/coil-base-2.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/favian/.gradle/caches/9.5.1/transforms/71ebbcd550d0cf1f2174cb9a9748b878/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/favian/.gradle/caches/9.5.1/transforms/18481490e281f676a40e18379db18293/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.3.6] /home/favian/.gradle/caches/9.5.1/transforms/4091bade6f7c230ac1b1c60db35a49f9/transformed/fragment-1.3.6/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.accompanist:accompanist-swiperefresh:0.32.0] /home/favian/.gradle/caches/9.5.1/transforms/756982fb43fa56d39e3d92ead14354cf/transformed/accompanist-swiperefresh-0.32.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.compose.material:material-ripple-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/0e4298ecf574dac7ee52edaac56a929d/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/f9a031c0f308e259d72ee78c784733db/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a9465f7963b73a978bde440a3d1c2668/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/b233ed60191a8eb2c0ba216bd2cb636c/transformed/material-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/2af198a436e19d155c8ee8ee1d40e9ea/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d18e469b354b529f6b096dab4f21a68a/transformed/animation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/b7bba788c72a3454195855803ddaca77/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/74037b74e0d665e244e2014928c5fbb1/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/e603e1c6543b87a6bec3dbdc34ce333b/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/e74a70b8a1a43ef7c3a2faf1a33cc92c/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/0cb303255139b935f7ce0547cafa194f/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a480dee697bd8b300892e8e39290a2b2/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/5ff56deb16332a1a448e1d09be2ca418/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/4b534ad588ea6c0e7fb9e6d722085905/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/9c91f5c2437f5a3a91afb6e1d2780ccd/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/dc74939ec9a3e96b2ba0b38899bcbbb6/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.loader:loader:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/acc18468d79898b6266c7961bb595438/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/5723c6df61f825be0b8b2372ed86c094/transformed/lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/31a75190918c4f59ebddce67462d0665/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/8aeddb5039f7208b9d9266745cf0c817/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/4f2b50409db2ec8c07d4c9d5f042349f/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/e1eb4dadc902cde681b2fb0d8a2af493/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/17206de2d90cfe7100da8059468e88e7/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/0a42355aa7852d51bc78c705253eeebd/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/de90e702c37696fc37ed951b02295e58/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/bcb38de9db3afbfe12f703fd850ceae7/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/516ba5994de3a01ccb4a97add2541bde/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/11cfce60477ff464e3274b1f165efffb/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/b97f23fe5654133b7831217b2fce99c5/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] /home/favian/.gradle/caches/9.5.1/transforms/e17f5b0cb30913200fca8cdf4b4dfbee/transformed/accompanist-drawablepainter-0.32.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.compose.ui:ui-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a670dc1868ccf391e894a5670d267472/transformed/ui-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.activity:activity-compose:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/1b7bab3785f34de4924e0207d652db0c/transformed/activity-compose-1.8.2/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/4f90c9ba93da43bec29f3c9d33682158/transformed/activity-ktx-1.8.2/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/9afc55ccf320c94bb3c52e44c81f6aea/transformed/activity-1.8.2/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/6a1cb5dc4f84dca4bfe876e56923b149/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/9dccbbd6c0a4becb3fa6faa26a23641d/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/favian/.gradle/caches/9.5.1/transforms/375d14739bbc300182f9c1f2e75d7924/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/favian/.gradle/caches/9.5.1/transforms/67aadbdc167b45c767858ec841e6d833/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/cb1c4b444f13bd3ae2a4356916739ceb/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/b4b8ec75d6f10bb16c402d538bff8702/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/a3fae4d8876095d6d534894fdb8af448/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/9d52f117e281a79fc8cf9a4d7954df39/transformed/core-ktx-1.12.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/8b264a5328edfdeb2ddf87f3fcc2f355/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.datastore:datastore:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/391fedb073cfec38fc25b4b50994b42a/transformed/datastore-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/f5e4250d2b15f0b524ed1695caf746d3/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/01e029226b540b26d72d373560c02fab/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
+MERGED from [com.patrykandpatrick.vico:core:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/59f5256a7c89577b0de7e7c47523a5d9/transformed/core-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/favian/.gradle/caches/9.5.1/transforms/dda903e8ea2dc49fc97505e3e7c6e584/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/9f936f9b5a3a3217f273e854e725c1b7/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/5c5587d56dcbbd9be1e8d0e384b67b58/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/favian/.gradle/caches/9.5.1/transforms/389e9d67ad40c8e4d71d5bdcbbf0f38d/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/f5adeb2a3264e801e04712a462846308/transformed/tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] /home/favian/.gradle/caches/9.5.1/transforms/8d318b13591a5a1e36dda2df4d426f38/transformed/exifinterface-1.3.6/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/54c94c95a0ddc27839b337777f8cf500/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+	package
+		INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:5:5-67
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:5:22-64
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:6:5-79
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:6:22-76
+uses-permission#android.permission.CAMERA
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:7:5-65
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:7:22-62
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:8:5-9:38
+	android:maxSdkVersion
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:9:9-35
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:8:22-77
+application
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:11:5-30:19
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:11:5-30:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/5c5587d56dcbbd9be1e8d0e384b67b58/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/5c5587d56dcbbd9be1e8d0e384b67b58/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+	android:extractNativeLibs
+		INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:16:9-35
+	android:label
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:15:9-39
+	tools:targetApi
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:19:9-29
+	android:icon
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:14:9-43
+	android:allowBackup
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:13:9-35
+	android:theme
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:17:9-54
+	android:usesCleartextTraffic
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:18:9-44
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:12:9-44
+activity#com.healthmanagement.app.MainActivity
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:21:9-29:20
+	android:exported
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:23:13-36
+	android:theme
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:24:13-58
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:22:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:25:13-28:29
+action#android.intent.action.MAIN
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:26:17-69
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:26:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:27:17-77
+	android:name
+		ADDED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml:27:27-74
+uses-sdk
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+MERGED from [androidx.navigation:navigation-common:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/d050c21e907e00b69988b11ef8e5f671/transformed/navigation-common-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/d050c21e907e00b69988b11ef8e5f671/transformed/navigation-common-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/33e4608c59a7efdf210fb06fd3231b94/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/33e4608c59a7efdf210fb06fd3231b94/transformed/navigation-runtime-2.7.6/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/0e0322c5fd95667dfebfed09851c6fc0/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/0e0322c5fd95667dfebfed09851c6fc0/transformed/navigation-common-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/ef05478d5d63a07f554c916134abdceb/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/ef05478d5d63a07f554c916134abdceb/transformed/navigation-runtime-ktx-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/7e5708ebf9e729521cef1f66f164d867/transformed/navigation-compose-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.7.6] /home/favian/.gradle/caches/9.5.1/transforms/7e5708ebf9e729521cef1f66f164d867/transformed/navigation-compose-2.7.6/AndroidManifest.xml:5:5-44
+MERGED from [com.patrykandpatrick.vico:compose-m3:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/be397e12f7818b8ac6084b2be742f40c/transformed/compose-m3-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [com.patrykandpatrick.vico:compose-m3:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/be397e12f7818b8ac6084b2be742f40c/transformed/compose-m3-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [com.patrykandpatrick.vico:compose:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/93680427827450ec9564373ef58c91bc/transformed/compose-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [com.patrykandpatrick.vico:compose:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/93680427827450ec9564373ef58c91bc/transformed/compose-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/4b8038dc4606666c5095628d87774156/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/4b8038dc4606666c5095628d87774156/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [io.coil-kt:coil-compose:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/58d5babed176b768f673a56939aae42b/transformed/coil-compose-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/58d5babed176b768f673a56939aae42b/transformed/coil-compose-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose-base:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/5e2365f6a28eb6de1363bb5017da4f02/transformed/coil-compose-base-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose-base:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/5e2365f6a28eb6de1363bb5017da4f02/transformed/coil-compose-base-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/cfc3cf16e5d2a02240157272912c8eba/transformed/coil-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/cfc3cf16e5d2a02240157272912c8eba/transformed/coil-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-base:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/a28d5298397de1e4d7a712d4da8b9525/transformed/coil-base-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-base:2.5.0] /home/favian/.gradle/caches/9.5.1/transforms/a28d5298397de1e4d7a712d4da8b9525/transformed/coil-base-2.5.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/favian/.gradle/caches/9.5.1/transforms/71ebbcd550d0cf1f2174cb9a9748b878/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/favian/.gradle/caches/9.5.1/transforms/71ebbcd550d0cf1f2174cb9a9748b878/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/favian/.gradle/caches/9.5.1/transforms/18481490e281f676a40e18379db18293/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/favian/.gradle/caches/9.5.1/transforms/18481490e281f676a40e18379db18293/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.3.6] /home/favian/.gradle/caches/9.5.1/transforms/4091bade6f7c230ac1b1c60db35a49f9/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] /home/favian/.gradle/caches/9.5.1/transforms/4091bade6f7c230ac1b1c60db35a49f9/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.accompanist:accompanist-swiperefresh:0.32.0] /home/favian/.gradle/caches/9.5.1/transforms/756982fb43fa56d39e3d92ead14354cf/transformed/accompanist-swiperefresh-0.32.0/AndroidManifest.xml:21:5-44
+MERGED from [com.google.accompanist:accompanist-swiperefresh:0.32.0] /home/favian/.gradle/caches/9.5.1/transforms/756982fb43fa56d39e3d92ead14354cf/transformed/accompanist-swiperefresh-0.32.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/0e4298ecf574dac7ee52edaac56a929d/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/0e4298ecf574dac7ee52edaac56a929d/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/f9a031c0f308e259d72ee78c784733db/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/f9a031c0f308e259d72ee78c784733db/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a9465f7963b73a978bde440a3d1c2668/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a9465f7963b73a978bde440a3d1c2668/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/b233ed60191a8eb2c0ba216bd2cb636c/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/b233ed60191a8eb2c0ba216bd2cb636c/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/2af198a436e19d155c8ee8ee1d40e9ea/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/2af198a436e19d155c8ee8ee1d40e9ea/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d18e469b354b529f6b096dab4f21a68a/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d18e469b354b529f6b096dab4f21a68a/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/b7bba788c72a3454195855803ddaca77/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/b7bba788c72a3454195855803ddaca77/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/74037b74e0d665e244e2014928c5fbb1/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/74037b74e0d665e244e2014928c5fbb1/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/e603e1c6543b87a6bec3dbdc34ce333b/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/e603e1c6543b87a6bec3dbdc34ce333b/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/e74a70b8a1a43ef7c3a2faf1a33cc92c/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/e74a70b8a1a43ef7c3a2faf1a33cc92c/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/0cb303255139b935f7ce0547cafa194f/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/0cb303255139b935f7ce0547cafa194f/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a480dee697bd8b300892e8e39290a2b2/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a480dee697bd8b300892e8e39290a2b2/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/5ff56deb16332a1a448e1d09be2ca418/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/5ff56deb16332a1a448e1d09be2ca418/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/4b534ad588ea6c0e7fb9e6d722085905/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/4b534ad588ea6c0e7fb9e6d722085905/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/9c91f5c2437f5a3a91afb6e1d2780ccd/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/9c91f5c2437f5a3a91afb6e1d2780ccd/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/dc74939ec9a3e96b2ba0b38899bcbbb6/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/dc74939ec9a3e96b2ba0b38899bcbbb6/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/acc18468d79898b6266c7961bb595438/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/acc18468d79898b6266c7961bb595438/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/5723c6df61f825be0b8b2372ed86c094/transformed/lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/5723c6df61f825be0b8b2372ed86c094/transformed/lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/31a75190918c4f59ebddce67462d0665/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/31a75190918c4f59ebddce67462d0665/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/8aeddb5039f7208b9d9266745cf0c817/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/8aeddb5039f7208b9d9266745cf0c817/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/4f2b50409db2ec8c07d4c9d5f042349f/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/4f2b50409db2ec8c07d4c9d5f042349f/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/e1eb4dadc902cde681b2fb0d8a2af493/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/favian/.gradle/caches/9.5.1/transforms/e1eb4dadc902cde681b2fb0d8a2af493/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/17206de2d90cfe7100da8059468e88e7/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/17206de2d90cfe7100da8059468e88e7/transformed/lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/0a42355aa7852d51bc78c705253eeebd/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/0a42355aa7852d51bc78c705253eeebd/transformed/lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/de90e702c37696fc37ed951b02295e58/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/de90e702c37696fc37ed951b02295e58/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/bcb38de9db3afbfe12f703fd850ceae7/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/bcb38de9db3afbfe12f703fd850ceae7/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/516ba5994de3a01ccb4a97add2541bde/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/516ba5994de3a01ccb4a97add2541bde/transformed/lifecycle-runtime-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/11cfce60477ff464e3274b1f165efffb/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/11cfce60477ff464e3274b1f165efffb/transformed/lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/b97f23fe5654133b7831217b2fce99c5/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/b97f23fe5654133b7831217b2fce99c5/transformed/lifecycle-viewmodel-compose-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] /home/favian/.gradle/caches/9.5.1/transforms/e17f5b0cb30913200fca8cdf4b4dfbee/transformed/accompanist-drawablepainter-0.32.0/AndroidManifest.xml:21:5-44
+MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] /home/favian/.gradle/caches/9.5.1/transforms/e17f5b0cb30913200fca8cdf4b4dfbee/transformed/accompanist-drawablepainter-0.32.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.compose.ui:ui-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a670dc1868ccf391e894a5670d267472/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/a670dc1868ccf391e894a5670d267472/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/1b7bab3785f34de4924e0207d652db0c/transformed/activity-compose-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/1b7bab3785f34de4924e0207d652db0c/transformed/activity-compose-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/4f90c9ba93da43bec29f3c9d33682158/transformed/activity-ktx-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/4f90c9ba93da43bec29f3c9d33682158/transformed/activity-ktx-1.8.2/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/9afc55ccf320c94bb3c52e44c81f6aea/transformed/activity-1.8.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.2] /home/favian/.gradle/caches/9.5.1/transforms/9afc55ccf320c94bb3c52e44c81f6aea/transformed/activity-1.8.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/6a1cb5dc4f84dca4bfe876e56923b149/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/6a1cb5dc4f84dca4bfe876e56923b149/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/9dccbbd6c0a4becb3fa6faa26a23641d/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/9dccbbd6c0a4becb3fa6faa26a23641d/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/favian/.gradle/caches/9.5.1/transforms/375d14739bbc300182f9c1f2e75d7924/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/favian/.gradle/caches/9.5.1/transforms/375d14739bbc300182f9c1f2e75d7924/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/favian/.gradle/caches/9.5.1/transforms/67aadbdc167b45c767858ec841e6d833/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/favian/.gradle/caches/9.5.1/transforms/67aadbdc167b45c767858ec841e6d833/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/cb1c4b444f13bd3ae2a4356916739ceb/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/cb1c4b444f13bd3ae2a4356916739ceb/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/b4b8ec75d6f10bb16c402d538bff8702/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/b4b8ec75d6f10bb16c402d538bff8702/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/a3fae4d8876095d6d534894fdb8af448/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/a3fae4d8876095d6d534894fdb8af448/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/9d52f117e281a79fc8cf9a4d7954df39/transformed/core-ktx-1.12.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/9d52f117e281a79fc8cf9a4d7954df39/transformed/core-ktx-1.12.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/8b264a5328edfdeb2ddf87f3fcc2f355/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/8b264a5328edfdeb2ddf87f3fcc2f355/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/391fedb073cfec38fc25b4b50994b42a/transformed/datastore-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/391fedb073cfec38fc25b4b50994b42a/transformed/datastore-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/f5e4250d2b15f0b524ed1695caf746d3/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/f5e4250d2b15f0b524ed1695caf746d3/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/01e029226b540b26d72d373560c02fab/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/01e029226b540b26d72d373560c02fab/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [com.patrykandpatrick.vico:core:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/59f5256a7c89577b0de7e7c47523a5d9/transformed/core-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [com.patrykandpatrick.vico:core:1.13.1] /home/favian/.gradle/caches/9.5.1/transforms/59f5256a7c89577b0de7e7c47523a5d9/transformed/core-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/favian/.gradle/caches/9.5.1/transforms/dda903e8ea2dc49fc97505e3e7c6e584/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /home/favian/.gradle/caches/9.5.1/transforms/dda903e8ea2dc49fc97505e3e7c6e584/transformed/annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/9f936f9b5a3a3217f273e854e725c1b7/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/9f936f9b5a3a3217f273e854e725c1b7/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/5c5587d56dcbbd9be1e8d0e384b67b58/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/5c5587d56dcbbd9be1e8d0e384b67b58/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/favian/.gradle/caches/9.5.1/transforms/389e9d67ad40c8e4d71d5bdcbbf0f38d/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/favian/.gradle/caches/9.5.1/transforms/389e9d67ad40c8e4d71d5bdcbbf0f38d/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/f5adeb2a3264e801e04712a462846308/transformed/tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/f5adeb2a3264e801e04712a462846308/transformed/tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] /home/favian/.gradle/caches/9.5.1/transforms/8d318b13591a5a1e36dda2df4d426f38/transformed/exifinterface-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.6] /home/favian/.gradle/caches/9.5.1/transforms/8d318b13591a5a1e36dda2df4d426f38/transformed/exifinterface-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/54c94c95a0ddc27839b337777f8cf500/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/favian/.gradle/caches/9.5.1/transforms/54c94c95a0ddc27839b337777f8cf500/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+	android:targetSdkVersion
+		INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/favian/Documents/project/android/app/src/main/AndroidManifest.xml
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/favian/.gradle/caches/9.5.1/transforms/26a8185c387681a154cd5786379076b0/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/favian/.gradle/caches/9.5.1/transforms/c367d10f195f347f2652ef053e42f74f/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /home/favian/.gradle/caches/9.5.1/transforms/50e0765c85a508cfc66294c8640a95d5/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+activity#androidx.activity.ComponentActivity
+ADDED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/d4f66f6116c0200c4a55f9b838be1409/transformed/ui-test-manifest-1.6.8/AndroidManifest.xml:24:13-63
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.6.8] /home/favian/.gradle/caches/9.5.1/transforms/41c11fab9c818be90fa0aa0386cbe815/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+permission#com.healthmanagement.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+uses-permission#com.healthmanagement.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.12.0] /home/favian/.gradle/caches/9.5.1/transforms/8d057400fcfe770effc9688f20369606/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/favian/.gradle/caches/9.5.1/transforms/db6334866d1bee4964d779342444928b/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92

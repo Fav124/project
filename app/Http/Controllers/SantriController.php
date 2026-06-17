@@ -22,7 +22,6 @@ class SantriController extends Controller
                 $builder->where('name', 'like', '%' . $search . '%')
                     ->orWhere('nis', 'like', '%' . $search . '%')
                     ->orWhere('class_room', 'like', '%' . $search . '%')
-                    ->orWhere('dorm_room', 'like', '%' . $search . '%')
                     ->orWhereHas('schoolClass', function ($classQuery) use ($search) {
                         $classQuery->where('name', 'like', '%' . $search . '%');
                     })
@@ -33,17 +32,9 @@ class SantriController extends Controller
         }
 
         $santris = $query->latest()->paginate(10)->withQueryString();
-        $editSantri = $request->filled('edit')
-            ? Santri::find($request->edit)
-            : null;
-        $detailSantri = $request->filled('detail')
-            ? Santri::with(['schoolClass', 'major'])->find($request->detail)
-            : null;
-            
+
         $classes = SchoolClass::with('majors')->orderBy('name')->get();
         $majors = Major::orderBy('name')->get();
-
-        $showForm = $request->boolean('create') || $editSantri || $request->isMethod('post');
 
         // Chart Data
         $genderStats = Santri::select('gender', \DB::raw('count(*) as count'))->groupBy('gender')->get();
@@ -51,15 +42,28 @@ class SantriController extends Controller
         $majorStats = Major::withCount('santris')->get();
 
         return view('health.santri.index', compact(
-            'santris', 'editSantri', 'detailSantri', 'classes', 'majors', 'showForm',
+            'santris', 'classes', 'majors',
             'genderStats', 'classStats', 'majorStats'
         ));
     }
 
     public function show(Santri $santri)
     {
-        $santri->load(['schoolClass', 'major']);
+        $santri->load([
+            'schoolClass', 'major',
+            'guardians',
+            'sicknessCases' => fn($q) => $q->latest('visit_date')->take(5),
+            'hospitalReferrals' => fn($q) => $q->latest('referral_date')->take(3),
+        ]);
         return view('health.santri.show', compact('santri'));
+    }
+
+    public function edit(Santri $santri)
+    {
+        $santri->load(['schoolClass', 'major']);
+        $classes = SchoolClass::with('majors')->orderBy('name')->get();
+        $majors = Major::orderBy('name')->get();
+        return view('health.santri.edit', compact('santri', 'classes', 'majors'));
     }
 
     public function store(Request $request)

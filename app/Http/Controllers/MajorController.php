@@ -16,11 +16,19 @@ class MajorController extends Controller
         }
 
         $majors = $query->latest()->paginate(10)->withQueryString();
-        $editMajor = $request->filled('edit') ? Major::find($request->edit) : null;
-        $detailMajor = $request->filled('detail') ? Major::with('santris')->find($request->detail) : null;
-        $showForm = $request->boolean('create') || $editMajor || $request->isMethod('post');
 
-        return view('health.majors.index', compact('majors', 'editMajor', 'detailMajor', 'showForm'));
+        return view('health.majors.index', compact('majors'));
+    }
+
+    public function show(Major $major)
+    {
+        $major->load('santris');
+        return view('health.majors.show', compact('major'));
+    }
+
+    public function edit(Major $major)
+    {
+        return view('health.majors.edit', compact('major'));
     }
 
     public function store(Request $request)

@@ -62,7 +62,7 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('referrals.index', array_merge(request()->query(), ['detail' => $referral->id])) }}" class="btn btn-outline-info btn-sm">
+                                    <a href="{{ route('referrals.show', $referral) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
                                     @if($referral->status != 'pending')
@@ -95,7 +95,7 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <a href="{{ route('referrals.index', array_merge(request()->query(), ['edit' => $referral->id])) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('referrals.edit', $referral) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     <form action="{{ route('referrals.destroy', $referral) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data rujukan ini?')">
@@ -142,7 +142,7 @@
                                         <label class="form-label text-small">Santri</label>
                                         <select name="referrals[0][santri_id]" class="form-select text-white select2" required>
                                             <option value="">Pilih Santri</option>
-                                            @foreach($santris as $santri)
+                                            @foreach($allSantris as $santri)
                                                 <option value="{{ $santri->id }}">{{ $santri->name }}</option>
                                             @endforeach
                                         </select>
@@ -197,131 +197,11 @@
     </div>
 </div>
 
-{{-- Edit Modal --}}
-@if($editReferral)
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Rujukan: {{ $editReferral->santri->name }}</h5>
-                <a href="{{ route('referrals.index') }}" class="close text-white"></a>
-            </div>
-            <form action="{{ route('referrals.update', $editReferral) }}" method="POST" data-ajax="true">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Santri</label>
-                            <select name="santri_id" class="form-select text-white" required>
-                                @foreach($santris as $santri)
-                                    <option value="{{ $santri->id }}" {{ $editReferral->santri_id == $santri->id ? 'selected' : '' }}>{{ $santri->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tanggal</label>
-                            <input type="date" name="referral_date" class="form-control" value="{{ $editReferral->referral_date->format('Y-m-d') }}" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Rumah Sakit</label>
-                        <input type="text" name="hospital_name" class="form-control" value="{{ $editReferral->hospital_name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Alasan</label>
-                        <textarea name="reason" class="form-control" rows="3" required>{{ $editReferral->reason }}</textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Status</label>
-                            <select name="status" class="form-select text-white" required>
-                                <option value="pending" {{ $editReferral->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="ongoing" {{ $editReferral->status == 'ongoing' ? 'selected' : '' }}>Diproses</option>
-                                <option value="completed" {{ $editReferral->status == 'completed' ? 'selected' : '' }}>Selesai</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Catatan</label>
-                        <textarea name="notes" class="form-control" rows="2">{{ $editReferral->notes }}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ route('referrals.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
-{{-- Detail Modal --}}
-@if($detailReferral)
-<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-dark">
-                <h5 class="modal-title text-white">Detail Rujukan RS: {{ $detailReferral->santri->name }}</h5>
-                <a href="{{ route('referrals.index') }}" class="close text-white"></a>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-4 text-center">
-                    <div class="col-12">
-                        <div class="bg-danger rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px;">
-                            <i class="mdi mdi-hospital-building text-white" style="font-size: 32px;"></i>
-                        </div>
-                        <h4 class="text-white">{{ $detailReferral->hospital_name }}</h4>
-                        <p class="text-muted">Tanggal: {{ $detailReferral->referral_date->translatedFormat('d F Y') }}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <h6 class="text-primary border-bottom border-secondary pb-2">Informasi Santri</h6>
-                        <p class="mb-1 text-muted small">Nama</p>
-                        <p class="text-white font-weight-bold">{{ $detailReferral->santri->name }}</p>
-                        <p class="mb-1 text-muted small">Wali</p>
-                        <p class="text-white">{{ $detailReferral->santri->guardian_name ?: '-' }}</p>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <h6 class="text-primary border-bottom border-secondary pb-2">Status & Petugas</h6>
-                        <p class="mb-1 text-muted small">Status</p>
-                        <div class="badge {{ $statusMap['class'] }}">{{ $statusMap['label'] }}</div>
-                        <p class="mt-2 mb-1 text-muted small">Dirujuk Oleh</p>
-                        <p class="text-white">{{ $detailReferral->referrer->name }}</p>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <h6 class="text-primary border-bottom border-secondary pb-2">Diagnosa / Alasan Rujukan</h6>
-                        <p class="text-white p-3 bg-dark rounded">{{ $detailReferral->reason }}</p>
-                    </div>
-                    <div class="col-12">
-                        <h6 class="text-primary border-bottom border-secondary pb-2">Catatan Perkembangan</h6>
-                        <p class="text-white p-3 bg-dark rounded">{{ $detailReferral->notes ?: 'Belum ada catatan perkembangan.' }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="{{ route('referrals.index') }}" class="btn btn-secondary">Tutup</a>
-                <a href="{{ route('referrals.notify', $detailReferral) }}" class="btn btn-success">
-                    <i class="mdi mdi-whatsapp"></i> Kabari Wali Santri
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        @if($editReferral)
-            new bootstrap.Modal(document.getElementById('editModal')).show();
-        @endif
-        @if($detailReferral)
-            new bootstrap.Modal(document.getElementById('detailModal')).show();
-        @endif
-
         // Dynamic Rows Logic
         let rowCount = 1;
         const addRowBtn = document.getElementById('add-row');

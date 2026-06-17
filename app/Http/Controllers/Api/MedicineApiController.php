@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Medicine;
 use App\Services\MedicineStockService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MedicineApiController extends BaseApiController
 {
@@ -62,7 +63,13 @@ class MedicineApiController extends BaseApiController
             'expiry_date'         => 'nullable|date',
             'lokasi_penyimpanan'  => 'nullable|string|max:100',
             'description'         => 'nullable|string',
+            'photo'               => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('medicines', 'public');
+            $validated['photo'] = $path;
+        }
 
         $medicine = Medicine::create($validated);
 
@@ -83,7 +90,16 @@ class MedicineApiController extends BaseApiController
             'expiry_date'         => 'nullable|date',
             'lokasi_penyimpanan'  => 'nullable|string|max:100',
             'description'         => 'nullable|string',
+            'photo'               => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            if ($medicine->photo) {
+                Storage::disk('public')->delete($medicine->photo);
+            }
+            $path = $request->file('photo')->store('medicines', 'public');
+            $validated['photo'] = $path;
+        }
 
         $medicine->update($validated);
         return $this->success($this->format($medicine), 'Data obat diperbarui.');
@@ -140,6 +156,7 @@ class MedicineApiController extends BaseApiController
             'expiry_date'         => $m->expiry_date?->toDateString(),
             'lokasi_penyimpanan'  => $m->lokasi_penyimpanan ?? null,
             'description'         => $m->description,
+            'photo_url'           => $m->photo_url,
             'status'              => $status,
         ];
     }

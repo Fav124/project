@@ -24,15 +24,25 @@ class SchoolClassController extends Controller
 
         $classes = $query->latest()->paginate(10)->withQueryString();
         $majors = Major::orderBy('name')->get();
-        $editClass = $request->filled('edit') ? SchoolClass::find($request->edit) : null;
-        $detailClass = $request->filled('detail') ? SchoolClass::with(['majors', 'santris'])->find($request->detail) : null;
-        $showForm = $request->boolean('create') || $editClass || $request->isMethod('post');
 
         // Chart Data
         $classStats = SchoolClass::withCount('santris')->get();
         $majorStats = Major::withCount('santris')->get();
 
-        return view('health.classes.index', compact('classes', 'majors', 'editClass', 'detailClass', 'showForm', 'classStats', 'majorStats'));
+        return view('health.classes.index', compact('classes', 'majors', 'classStats', 'majorStats'));
+    }
+
+    public function show(SchoolClass $class)
+    {
+        $class->load(['majors', 'santris']);
+        return view('health.classes.show', compact('class'));
+    }
+
+    public function edit(SchoolClass $class)
+    {
+        $class->load('majors');
+        $majors = Major::orderBy('name')->get();
+        return view('health.classes.edit', compact('class', 'majors'));
     }
 
     public function store(Request $request)

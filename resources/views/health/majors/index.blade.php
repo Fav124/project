@@ -43,10 +43,10 @@
                             <td>{{ Str::limit($major->description, 70) ?: '-' }}</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('majors.index', array_merge(request()->query(), ['detail' => $major->id])) }}" class="btn btn-outline-info btn-sm">
+                                    <a href="{{ route('majors.show', $major) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('majors.index', array_merge(request()->query(), ['edit' => $major->id])) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('majors.edit', $major) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     @can('manage-master-data')
@@ -123,103 +123,11 @@
     </div>
 </div>
 
-{{-- Edit Modal --}}
-@if($editMajor)
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Jurusan: {{ $editMajor->name }}</h5>
-                <a href="{{ route('majors.index') }}" class="close text-white"></a>
-            </div>
-            <form action="{{ route('majors.update', $editMajor) }}" method="POST" data-ajax="true">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nama Jurusan</label>
-                        <input type="text" name="name" class="form-control" value="{{ $editMajor->name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea name="description" class="form-control" rows="4">{{ $editMajor->description }}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ route('majors.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
-{{-- Detail Modal --}}
-@if($detailMajor)
-<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detail Jurusan: {{ $detailMajor->name }}</h5>
-                <a href="{{ route('majors.index') }}" class="close text-white"></a>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <small class="text-muted d-block">Nama Jurusan</small>
-                    <span class="text-white h5">{{ $detailMajor->name }}</span>
-                </div>
-                <div class="mb-3">
-                    <small class="text-muted d-block">Deskripsi</small>
-                    <p class="text-white">{{ $detailMajor->description ?: 'Tidak ada deskripsi' }}</p>
-                </div>
-                <hr class="border-secondary">
-                <div class="mb-3">
-                    <h6 class="text-white">Daftar Santri ({{ $detailMajor->santris->count() }})</h6>
-                    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-sm text-white">
-                            <thead>
-                                <tr>
-                                    <th>Nama</th>
-                                    <th>NIS</th>
-                                    <th>Kelas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($detailMajor->santris as $santri)
-                                    <tr>
-                                        <td>{{ $santri->name }}</td>
-                                        <td>{{ $santri->nis ?: '-' }}</td>
-                                        <td>{{ optional($santri->schoolClass)->name ?: '-' }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted">Belum ada santri di jurusan ini</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="{{ route('majors.index') }}" class="btn btn-secondary">Tutup</a>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        @if($editMajor)
-            new bootstrap.Modal(document.getElementById('editModal')).show();
-        @endif
-        @if($detailMajor)
-            new bootstrap.Modal(document.getElementById('detailModal')).show();
-        @endif
-
         // Dynamic Rows Logic
         let rowCount = 1;
         const addRowBtn = document.getElementById('add-row');

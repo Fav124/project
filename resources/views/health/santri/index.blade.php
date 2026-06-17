@@ -76,10 +76,10 @@
                             <td>{{ optional($santri->schoolClass)->name ?: '-' }}</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('santri.index', array_merge(request()->query(), ['detail' => $santri->id])) }}" class="btn btn-outline-info btn-sm">
+                                    <a href="{{ route('santri.show', $santri) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('santri.index', array_merge(request()->query(), ['edit' => $santri->id])) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('santri.edit', $santri) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     @can('manage-master-data')
@@ -193,128 +193,7 @@
     </div>
 </div>
 
-{{-- Edit Modal --}}
-@if($editSantri)
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Data Santri: {{ $editSantri->name }}</h5>
-                <a href="{{ route('santri.index') }}" class="close text-white"></a>
-            </div>
-            <form action="{{ route('santri.update', $editSantri) }}" method="POST" data-ajax="true">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Nama Lengkap</label>
-                            <input type="text" name="name" class="form-control" value="{{ $editSantri->name }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">NIS</label>
-                            <input type="text" name="nis" class="form-control" value="{{ $editSantri->nis }}">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Jenis Kelamin</label>
-                            <select name="gender" class="form-select text-white" required>
-                                <option value="L" {{ $editSantri->gender == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                                <option value="P" {{ $editSantri->gender == 'P' ? 'selected' : '' }}>Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Kelas</label>
-                            <select name="school_class_id" class="form-select text-white">
-                                <option value="">Pilih Kelas</option>
-                                @foreach($classes as $class)
-                                    <option value="{{ $class->id }}" {{ $editSantri->school_class_id == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Jurusan</label>
-                            <select name="major_id" class="form-select text-white">
-                                <option value="">Pilih Jurusan</option>
-                                @foreach($majors as $major)
-                                    <option value="{{ $major->id }}" {{ $editSantri->major_id == $major->id ? 'selected' : '' }}>{{ $major->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nama Wali</label>
-                        <input type="text" name="guardian_name" class="form-control" value="{{ $editSantri->guardian_name }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Telepon Wali (WA)</label>
-                        <input type="text" name="guardian_phone" class="form-control" value="{{ $editSantri->guardian_phone }}">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ route('santri.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
-{{-- Detail Modal --}}
-@if($detailSantri)
-<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Profil Santri: {{ $detailSantri->name }}</h5>
-                <a href="{{ route('santri.index') }}" class="close text-white"></a>
-            </div>
-            <div class="modal-body text-center">
-                <div class="mb-4">
-                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 32px; font-weight: 800;">
-                        {{ substr($detailSantri->name, 0, 1) }}
-                    </div>
-                </div>
-                <h4 class="text-white">{{ $detailSantri->name }}</h4>
-                <p class="text-muted">NIS: {{ $detailSantri->nis ?: '-' }}</p>
-                <hr class="border-secondary">
-                <div class="row text-left">
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Kelas</small>
-                        <span class="text-white">{{ optional($detailSantri->schoolClass)->name ?: '-' }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Jurusan</small>
-                        <span class="text-white">{{ optional($detailSantri->major)->name ?: '-' }}</span>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <small class="text-muted d-block">Jenis Kelamin</small>
-                        <span class="text-white">{{ $detailSantri->gender == 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <small class="text-muted d-block">Nama Wali</small>
-                        <span class="text-white">{{ $detailSantri->guardian_name ?: '-' }}</span>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <small class="text-muted d-block">Telepon Wali</small>
-                        <span class="text-success font-weight-bold">{{ $detailSantri->guardian_phone ?: '-' }}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="{{ route('santri.index') }}" class="btn btn-secondary">Tutup</a>
-                @if($detailSantri->guardian_phone)
-                    <a href="https://wa.me/{{ $detailSantri->guardian_phone }}" target="_blank" class="btn btn-success">Hubungi Wali</a>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -369,13 +248,6 @@
     }).render();
 
     document.addEventListener('DOMContentLoaded', function() {
-        @if($editSantri)
-            new bootstrap.Modal(document.getElementById('editModal')).show();
-        @endif
-        @if($detailSantri)
-            new bootstrap.Modal(document.getElementById('detailModal')).show();
-        @endif
-
         // Dynamic Rows Logic
         let rowCount = 1;
         const addRowBtn = document.getElementById('add-row');

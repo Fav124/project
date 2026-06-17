@@ -38,6 +38,7 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/santri', [SantriController::class, 'index'])->name('santri.index');
     Route::post('/santri', [SantriController::class, 'store'])->name('santri.store');
     Route::get('/santri/{santri}', [SantriController::class, 'show'])->name('santri.show');
+    Route::get('/santri/{santri}/edit', [SantriController::class, 'edit'])->name('santri.edit');
     Route::put('/santri/{santri}', [SantriController::class, 'update'])->name('santri.update');
     Route::delete('/santri/{santri}', [SantriController::class, 'destroy'])
         ->middleware('role:super_admin,admin')
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/kelas', [SchoolClassController::class, 'index'])->name('classes.index');
     Route::post('/kelas', [SchoolClassController::class, 'store'])->name('classes.store');
     Route::get('/kelas/{class}', [SchoolClassController::class, 'show'])->name('classes.show');
+    Route::get('/kelas/{class}/edit', [SchoolClassController::class, 'edit'])->name('classes.edit');
     Route::put('/kelas/{class}', [SchoolClassController::class, 'update'])->name('classes.update');
     Route::delete('/kelas/{class}', [SchoolClassController::class, 'destroy'])
         ->middleware('role:super_admin,admin')
@@ -54,6 +56,7 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/jurusan', [MajorController::class, 'index'])->name('majors.index');
     Route::post('/jurusan', [MajorController::class, 'store'])->name('majors.store');
     Route::get('/jurusan/{major}', [MajorController::class, 'show'])->name('majors.show');
+    Route::get('/jurusan/{major}/edit', [MajorController::class, 'edit'])->name('majors.edit');
     Route::put('/jurusan/{major}', [MajorController::class, 'update'])->name('majors.update');
     Route::delete('/jurusan/{major}', [MajorController::class, 'destroy'])
         ->middleware('role:super_admin,admin')
@@ -85,7 +88,9 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/rujukan-rs', [HospitalReferralController::class, 'index'])->name('referrals.index');
     Route::post('/rujukan-rs', [HospitalReferralController::class, 'store'])->name('referrals.store');
     Route::get('/rujukan-rs/{referral}', [HospitalReferralController::class, 'show'])->name('referrals.show');
+    Route::get('/rujukan-rs/{referral}/edit', [HospitalReferralController::class, 'edit'])->name('referrals.edit');
     Route::put('/rujukan-rs/{referral}', [HospitalReferralController::class, 'update'])->name('referrals.update');
+    Route::patch('/rujukan-rs/{referral}/status', [HospitalReferralController::class, 'updateStatus'])->name('referrals.updateStatus');
     Route::post('/rujukan-rs/{referral}/notify-guardian', [HospitalReferralController::class, 'notifyGuardian'])->name('referrals.notify');
     Route::delete('/rujukan-rs/{referral}', [HospitalReferralController::class, 'destroy'])->name('referrals.destroy');
 

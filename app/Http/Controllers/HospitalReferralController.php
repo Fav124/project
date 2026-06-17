@@ -33,22 +33,22 @@ class HospitalReferralController extends Controller
         }
 
         $referrals = $query->latest('referral_date')->latest()->paginate(10)->withQueryString();
-        $santris = Santri::orderBy('name')->get();
-        $editReferral = $request->filled('edit')
-            ? HospitalReferral::find($request->edit)
-            : null;
-        $detailReferral = $request->filled('detail')
-            ? HospitalReferral::with(['santri', 'referrer'])->find($request->detail)
-            : null;
-        $showForm = $request->boolean('create') || $editReferral || $request->isMethod('post');
+        $allSantris = Santri::orderBy('name')->get();
 
-        return view('health.referrals.index', compact('referrals', 'santris', 'editReferral', 'detailReferral', 'showForm'));
+        return view('health.referrals.index', compact('referrals', 'allSantris'));
     }
 
     public function show(HospitalReferral $referral)
     {
         $referral->load(['santri', 'referredBy']);
         return view('health.referrals.show', compact('referral'));
+    }
+
+    public function edit(HospitalReferral $referral)
+    {
+        $referral->load(['santri', 'referrer']);
+        $santris = Santri::orderBy('name')->get();
+        return view('health.referrals.edit', compact('referral', 'santris'));
     }
 
     public function store(Request $request, WhatsAppService $whatsApp)
@@ -101,6 +101,24 @@ class HospitalReferralController extends Controller
         }
 
         return $redirect;
+    }
+
+    public function updateStatus(Request $request, HospitalReferral $referral)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,ongoing,completed'],
+        ]);
+
+        $referral->update($validated);
+
+        $statusLabels = [
+            'pending' => 'Pending',
+            'ongoing' => 'Diproses',
+            'completed' => 'Selesai',
+        ];
+
+        return redirect()->route('referrals.index')
+            ->with('success', 'Status rujukan berhasil diperbarui ke ' . ($statusLabels[$validated['status']] ?? $validated['status']) . '.');
     }
 
     public function notifyGuardian(HospitalReferral $referral, WhatsAppService $whatsApp)

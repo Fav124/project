@@ -67,10 +67,10 @@
                             <td>{{ Str::limit($class->description, 50) ?: '-' }}</td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('classes.index', array_merge(request()->query(), ['detail' => $class->id])) }}" class="btn btn-outline-info btn-sm">
+                                    <a href="{{ route('classes.show', $class) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('classes.index', array_merge(request()->query(), ['edit' => $class->id])) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('classes.edit', $class) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     @can('manage-master-data')
@@ -155,106 +155,7 @@
     </div>
 </div>
 
-{{-- Edit Modal --}}
-@if($editClass)
-<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Kelas: {{ $editClass->name }}</h5>
-                <a href="{{ route('classes.index') }}" class="close text-white"></a>
-            </div>
-            <form action="{{ route('classes.update', $editClass) }}" method="POST" data-ajax="true">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nama Kelas</label>
-                        <input type="text" name="name" class="form-control" value="{{ $editClass->name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Pilih Jurusan</label>
-                        <select name="major_ids[]" class="form-control text-white select2-multiple" multiple style="width: 100%;">
-                            @foreach($majors as $major)
-                                <option value="{{ $major->id }}" {{ $editClass->majors->contains($major->id) ? 'selected' : '' }}>{{ $major->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi</label>
-                        <textarea name="description" class="form-control" rows="3">{{ $editClass->description }}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="{{ route('classes.index') }}" class="btn btn-secondary">Batal</a>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
-{{-- Detail Modal --}}
-@if($detailClass)
-<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detail Kelas: {{ $detailClass->name }}</h5>
-                <a href="{{ route('classes.index') }}" class="close text-white"></a>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <small class="text-muted d-block">Nama Kelas</small>
-                    <span class="text-white h5">{{ $detailClass->name }}</span>
-                </div>
-                <div class="mb-3">
-                    <small class="text-muted d-block">Jurusan Terkait</small>
-                    @foreach($detailClass->majors as $major)
-                        <span class="badge badge-info">{{ $major->name }}</span>
-                    @endforeach
-                </div>
-                <div class="mb-3">
-                    <small class="text-muted d-block">Deskripsi</small>
-                    <p class="text-white">{{ $detailClass->description ?: 'Tidak ada deskripsi' }}</p>
-                </div>
-                <hr class="border-secondary">
-                <div class="mb-3">
-                    <h6 class="text-white">Daftar Santri ({{ $detailClass->santris->count() }})</h6>
-                    <div class="table-responsive mt-3" style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-sm text-white">
-                            <thead>
-                                <tr>
-                                    <th>Nama</th>
-                                    <th>NIS</th>
-                                    <th>Kamar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($detailClass->santris as $santri)
-                                    <tr>
-                                        <td>{{ $santri->name }}</td>
-                                        <td>{{ $santri->nis ?: '-' }}</td>
-                                        <td>{{ $santri->dorm_room ?: '-' }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted">Belum ada santri di kelas ini</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="{{ route('classes.index') }}" class="btn btn-secondary">Tutup</a>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 
 @push('plugin-scripts')
     <script src="{{ asset('template-assets/vendors/select2/select2.min.js') }}"></script>
@@ -309,13 +210,6 @@
         }
 
         initSelect2();
-
-        @if($editClass)
-            new bootstrap.Modal(document.getElementById('editModal')).show();
-        @endif
-        @if($detailClass)
-            new bootstrap.Modal(document.getElementById('detailModal')).show();
-        @endif
 
         // Dynamic Rows Logic
         let rowCount = 1;

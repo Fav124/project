@@ -18,7 +18,6 @@ class Santri extends Model
         'class_id',
         'major_id',
         'class_room',
-        'dorm_room',
         'guardian_name',
         'guardian_phone',
         'guardian_relationship',
@@ -64,5 +63,10 @@ class Santri extends Model
     public function hospitalReferrals()
     {
         return $this->hasMany(HospitalReferral::class);
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo_path ? asset('storage/' . $this->photo_path) : null;
     }
 }

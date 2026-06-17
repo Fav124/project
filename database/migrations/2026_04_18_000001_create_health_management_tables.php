@@ -16,7 +16,6 @@ class CreateHealthManagementTables extends Migration
             $table->string('birth_place')->nullable();
             $table->date('birth_date')->nullable();
             $table->string('class_room')->nullable();
-            $table->string('dorm_room')->nullable();
             $table->string('guardian_name')->nullable();
             $table->string('guardian_phone')->nullable();
             $table->text('notes')->nullable();
