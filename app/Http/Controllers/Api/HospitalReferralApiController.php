@@ -97,6 +97,22 @@ class HospitalReferralApiController extends Controller
         return response()->json(['success' => true, 'message' => 'Rujukan diperbarui.', 'data' => $this->formatDetail($referral->load(['santri', 'referredBy']))]);
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,ongoing,completed',
+        ]);
+
+        $referral = HospitalReferral::findOrFail($id);
+        $referral->update(['status' => $validated['status']]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status rujukan diperbarui menjadi ' . $this->translateStatus($validated['status']) . '.',
+            'data'    => $this->format($referral->load(['santri', 'referredBy'])),
+        ]);
+    }
+
     public function destroy($id)
     {
         HospitalReferral::findOrFail($id)->delete();
@@ -161,7 +177,8 @@ class HospitalReferralApiController extends Controller
     {
         return match ($status) {
             'pending' => 'Pending', 'ongoing' => 'Diproses', 'completed' => 'Selesai',
-            default   => ucfirst($status),
+            'referred' => 'Dirujuk', 'treated' => 'Dalam Perawatan', 'returned' => 'Dipulangkan',
+            default    => ucfirst($status),
         };
     }
 }

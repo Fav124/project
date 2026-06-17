@@ -103,6 +103,28 @@ class HospitalReferralController extends Controller
         return $redirect;
     }
 
+    public function updateStatus(Request $request, HospitalReferral $referral)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,ongoing,completed'],
+        ]);
+
+        $referral->update($validated);
+
+        $statusLabels = [
+            'pending' => 'Pending',
+            'ongoing' => 'Diproses',
+            'completed' => 'Selesai',
+        ];
+        $message = 'Status rujukan diubah menjadi ' . $statusLabels[$validated['status']] . '.';
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message, 'status' => $validated['status']]);
+        }
+
+        return back()->with('success', $message);
+    }
+
     public function notifyGuardian(HospitalReferral $referral, WhatsAppService $whatsApp)
     {
         $result = $this->sendReferralNotification($referral, $whatsApp);

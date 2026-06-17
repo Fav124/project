@@ -86,6 +86,7 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::post('/rujukan-rs', [HospitalReferralController::class, 'store'])->name('referrals.store');
     Route::get('/rujukan-rs/{referral}', [HospitalReferralController::class, 'show'])->name('referrals.show');
     Route::put('/rujukan-rs/{referral}', [HospitalReferralController::class, 'update'])->name('referrals.update');
+    Route::patch('/rujukan-rs/{referral}/status', [HospitalReferralController::class, 'updateStatus'])->name('referrals.update-status');
     Route::post('/rujukan-rs/{referral}/notify-guardian', [HospitalReferralController::class, 'notifyGuardian'])->name('referrals.notify');
     Route::delete('/rujukan-rs/{referral}', [HospitalReferralController::class, 'destroy'])->name('referrals.destroy');
 
