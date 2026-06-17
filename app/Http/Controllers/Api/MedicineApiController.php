@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Medicine;
-use App\Models\MedicineMutation;
+use App\Services\MedicineStockService;
 use Illuminate\Http\Request;
 
 class MedicineApiController extends BaseApiController
@@ -95,7 +95,7 @@ class MedicineApiController extends BaseApiController
         return $this->success([], 'Obat berhasil dihapus.');
     }
 
-    public function recordMutation(Request $request)
+    public function recordMutation(Request $request, MedicineStockService $stockService)
     {
         $validated = $request->validate([
             'medicine_id' => 'required|exists:medicines,id',
@@ -104,31 +104,16 @@ class MedicineApiController extends BaseApiController
             'notes'       => 'nullable|string',
         ]);
 
-        $medicine = Medicine::findOrFail($validated['medicine_id']);
-        $beforeStock = $medicine->stock;
-
-        if ($validated['type'] === 'in') {
-            $medicine->increment('stock', $validated['amount']);
-        } elseif ($validated['type'] === 'out') {
-            if ($medicine->stock < $validated['amount']) {
-                return $this->error('Stok tidak mencukupi.', 422);
-            }
-            $medicine->decrement('stock', $validated['amount']);
-        } else {
-            // adjustment
-            $medicine->update(['stock' => $validated['amount']]);
+        try {
+            $stockService->recordMutation(
+                Medicine::findOrFail($validated['medicine_id']),
+                $validated['type'],
+                $validated['amount'],
+                $validated['notes'] ?? null
+            );
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($e->getMessage(), 422);
         }
-
-        $afterStock = $medicine->fresh()->stock;
-
-        MedicineMutation::create([
-            'medicine_id'   => $medicine->id,
-            'type'          => $validated['type'],
-            'amount'        => $validated['amount'],
-            'before_stock'  => $beforeStock,
-            'after_stock'   => $afterStock,
-            'notes'         => $validated['notes'] ?? null,
-        ]);
 
         return $this->success([], 'Mutasi stok berhasil dicatat.');
     }

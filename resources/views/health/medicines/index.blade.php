@@ -91,10 +91,10 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['detail' => $medicine->id])) }}" class="btn btn-outline-info btn-sm" title="Detail">
+                                    <a href="{{ route('medicines.show', $medicine) }}" class="btn btn-outline-info btn-sm" title="Detail">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('medicines.index', array_merge(request()->query(), ['edit' => $medicine->id])) }}" class="btn btn-outline-warning btn-sm" title="Edit">
+                                    <a href="{{ route('medicines.edit', $medicine) }}" class="btn btn-outline-warning btn-sm" title="Edit">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     <button type="button" class="btn btn-outline-success btn-sm mutation-btn" data-toggle="modal" data-target="#mutationModal" data-id="{{ $medicine->id }}" data-name="{{ $medicine->name }}" data-stock="{{ $medicine->stock }}" title="Mutasi Stok">
@@ -298,6 +298,32 @@
 
                 <div class="row">
                     <div class="col-12">
+                        <h6 class="text-primary mb-3"><i class="mdi mdi-package-variant mr-2"></i> Batch/Stok per Tanggal Kadaluarsa</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm text-white">
+                                <thead>
+                                    <tr>
+                                        <th>No. Batch</th>
+                                        <th>Jumlah</th>
+                                        <th>Tgl Kadaluarsa</th>
+                                        <th>Tgl Masuk</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="batches-table-body">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Memuat data batch...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-secondary">
+
+                <div class="row">
+                    <div class="col-12">
                         <h6 class="text-primary mb-3"><i class="mdi mdi-history mr-2"></i> Riwayat Mutasi Stok</h6>
                         <div class="table-responsive">
                             <table class="table table-sm text-white">
@@ -342,6 +368,15 @@
             </div>
             <div class="modal-footer">
                 <a href="{{ route('medicines.index') }}" class="btn btn-secondary">Tutup</a>
+                <button type="button"
+                    class="btn btn-success mutation-btn"
+                    data-toggle="modal"
+                    data-target="#mutationModal"
+                    data-id="{{ $detailMedicine->id }}"
+                    data-name="{{ $detailMedicine->name }}"
+                    data-stock="{{ $detailMedicine->stock }}">
+                    <i class="mdi mdi-swap-vertical"></i> Mutasi Stok
+                </button>
             </div>
         </div>
     </div>
@@ -458,6 +493,42 @@
             $('#mutation-medicine-name').val(name);
             $('#mutation-medicine-stock').val(stock);
         });
+
+        // Load batches when detail modal opens
+        @if($detailMedicine)
+            $.get('{{ route('medicines.batches', $detailMedicine->id) }}', function(response) {
+                if (response.success) {
+                    const tbody = $('#batches-table-body');
+                    tbody.empty();
+                    
+                    if (response.data.batches.length === 0) {
+                        tbody.html('<tr><td colspan="5" class="text-center text-muted">Belum ada data batch.</td></tr>');
+                        return;
+                    }
+                    
+                    response.data.batches.forEach(batch => {
+                        let statusBadge = '';
+                        if (batch.is_expired) {
+                            statusBadge = '<span class="badge badge-outline-danger">Kadaluarsa</span>';
+                        } else if (batch.is_expiring_soon) {
+                            statusBadge = '<span class="badge badge-outline-warning">Segera Expired</span>';
+                        } else {
+                            statusBadge = '<span class="badge badge-outline-success">Aman</span>';
+                        }
+                        
+                        tbody.append(`
+                            <tr>
+                                <td><small>${batch.batch_number || '-'}</small></td>
+                                <td>${batch.quantity}</td>
+                                <td>${batch.expiry_date}</td>
+                                <td>${batch.received_date}</td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `);
+                    });
+                }
+            });
+        @endif
 
         // Dynamic Rows Logic
         let rowCount = 1;

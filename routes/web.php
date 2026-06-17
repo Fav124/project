@@ -62,20 +62,24 @@ Route::middleware(['auth', 'approved'])->group(function () {
     Route::get('/obat', [MedicineController::class, 'index'])->name('medicines.index');
     Route::post('/obat', [MedicineController::class, 'store'])->name('medicines.store');
     Route::get('/obat/{medicine}', [MedicineController::class, 'show'])->name('medicines.show');
+    Route::get('/obat/{medicine}/edit', [MedicineController::class, 'edit'])->name('medicines.edit');
     Route::put('/obat/{medicine}', [MedicineController::class, 'update'])->name('medicines.update');
     Route::delete('/obat/{medicine}', [MedicineController::class, 'destroy'])
         ->middleware('role:super_admin,admin')
         ->name('medicines.destroy');
     Route::post('/obat/mutasi', [MedicineController::class, 'recordMutation'])->name('medicines.mutation');
+    Route::get('/obat/{id}/batches', [MedicineController::class, 'getBatches'])->name('medicines.batches');
 
 
     Route::get('/santri-sakit', [SicknessCaseController::class, 'index'])->name('sickness-cases.index');
     Route::post('/santri-sakit', [SicknessCaseController::class, 'store'])->name('sickness-cases.store');
     Route::get('/santri-sakit/{sicknessCase}', [SicknessCaseController::class, 'show'])->name('sickness-cases.show');
+    Route::get('/santri-sakit/{sicknessCase}/edit', [SicknessCaseController::class, 'edit'])->name('sickness-cases.edit');
     Route::put('/santri-sakit/{sicknessCase}', [SicknessCaseController::class, 'update'])->name('sickness-cases.update');
     Route::post('/santri-sakit/{sicknessCase}/notify-guardian', [SicknessCaseController::class, 'notifyGuardian'])->name('sickness-cases.notify');
     Route::post('/santri-sakit/{sicknessCase}/mark-recovered', [SicknessCaseController::class, 'markRecovered'])->name('sickness-cases.recovered');
     Route::put('/santri-sakit/medicine/{pivotId}/update-status', [SicknessCaseController::class, 'updateMedicineStatus'])->name('sickness-cases.medicine-status');
+    Route::post('/santri-sakit/{sicknessCase}/medicine', [SicknessCaseController::class, 'addMedicineToCase'])->name('sickness-cases.add-medicine');
     Route::delete('/santri-sakit/{sicknessCase}', [SicknessCaseController::class, 'destroy'])->name('sickness-cases.destroy');
 
     Route::get('/rujukan-rs', [HospitalReferralController::class, 'index'])->name('referrals.index');

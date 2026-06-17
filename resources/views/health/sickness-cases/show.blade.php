@@ -80,20 +80,54 @@
         </x-ui.card>
 
         {{-- Facilities --}}
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 32px;">
             <x-ui.card>
                 <x-slot name="header">
-                    <h2><i class="fas fa-pills"></i> Terapi Obat</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2><i class="fas fa-pills"></i> Terapi Obat</h2>
+                        <div>
+                            <button type="button" class="btn btn-xs btn-outline-info" id="add-medicine-btn">
+                                <i class="fas fa-plus"></i> Tambah Obat
+                            </button>
+                            <button type="button" class="btn btn-xs btn-outline-success" id="mutation-btn">
+                                <i class="fas fa-exchange-alt"></i> Mutasi Stok
+                            </button>
+                        </div>
+                    </div>
                 </x-slot>
                 <div style="padding: 24px;">
-                    @if($sicknessCase->medicine)
-                        <div style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">{{ $sicknessCase->medicine->name }}</div>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Diberikan sesuai stok UKS.</p>
-                        @if($sicknessCase->medicine_notes)
-                            <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 6px; font-size: 13px;">
-                                <strong>Catatan:</strong> {{ $sicknessCase->medicine_notes }}
-                            </div>
-                        @endif
+                    @if($sicknessCase->medicines->isNotEmpty())
+                        <table class="table" style="color: var(--text-main);">
+                            <thead>
+                                <tr>
+                                    <th>Nama Obat</th>
+                                    <th>Jumlah</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($sicknessCase->medicines as $med)
+                                    <tr>
+                                        <td>{{ $med->name }}</td>
+                                        <td>{{ $med->pivot->quantity }} {{ $med->unit }}</td>
+                                        <td>
+                                            <span class="badge {{ $med->pivot->status == 'taken' ? 'badge-success' : 'badge-warning' }}">
+                                                {{ $med->pivot->status == 'taken' ? 'Sudah Diminum' : 'Belum Diminum' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button type="button" 
+                                                class="btn btn-xs btn-{{ $med->pivot->status == 'taken' ? 'outline-warning' : 'success' }} update-med-status"
+                                                data-pivot-id="{{ $med->pivot->id }}"
+                                                data-status="{{ $med->pivot->status == 'taken' ? 'pending' : 'taken' }}">
+                                                {{ $med->pivot->status == 'taken' ? 'Batalkan' : 'Tandai Diminum' }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     @else
                         <x-ui.empty-state message="Tidak ada obat yang dicatat." />
                     @endif
@@ -102,4 +136,110 @@
         </div>
     </div>
 </div>
+
+{{-- Add Medicine Modal --}}
+<div class="modal fade" id="addMedicineModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Obat ke Kasus</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label class="form-label">Pilih Obat</label>
+                    <select id="add-medicine-select" class="form-select text-white">
+                        <option value="">Pilih Obat</option>
+                        @foreach($medicines as $medicine)
+                            <option value="{{ $medicine->id }}">{{ $medicine->name }} (Stok: {{ $medicine->stock }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Jumlah</label>
+                    <input type="number" id="add-medicine-quantity" class="form-control text-white" value="1" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirm-add-medicine">Tambah</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Add medicine to case
+    $('#add-medicine-btn').click(function() {
+        $('#addMedicineModal').modal('show');
+    });
+    
+    $('#confirm-add-medicine').click(function() {
+        const caseId = {{ $sicknessCase->id }};
+        const medicineSelect = $('#add-medicine-select');
+        const quantityInput = $('#add-medicine-quantity');
+        
+        if (!medicineSelect.val()) {
+            alert('Pilih obat terlebih dahulu');
+            return;
+        }
+        
+        const quantity = parseInt(quantityInput.val()) || 1;
+        
+        $.ajax({
+            url: `/santri-sakit/${caseId}/medicine`,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                medicine_id: medicineSelect.val(),
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#addMedicineModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan saat menambahkan obat');
+            }
+        });
+    });
+
+    // Update medicine status
+    $('.update-med-status').click(function() {
+        const pivotId = $(this).data('pivot-id');
+        const status = $(this).data('status');
+        
+        $.ajax({
+            url: `/santri-sakit/medicine/${pivotId}/update-status`,
+            method: 'PUT',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                status: status
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan saat mengupdate status obat');
+            }
+        });
+    });
+});
+</script>
+@endpush
 @endsection

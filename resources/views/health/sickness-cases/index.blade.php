@@ -99,10 +99,10 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <a href="{{ route('sickness-cases.index', array_merge(request()->query(), ['detail' => $case->id])) }}" class="btn btn-outline-info btn-sm">
+                                    <a href="{{ route('sickness-cases.show', $case) }}" class="btn btn-outline-info btn-sm">
                                         <i class="mdi mdi-eye"></i>
                                     </a>
-                                    <a href="{{ route('sickness-cases.index', array_merge(request()->query(), ['edit' => $case->id])) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('sickness-cases.edit', $case) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="mdi mdi-pencil"></i>
                                     </a>
                                     <form action="{{ route('sickness-cases.destroy', $case) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data kasus ini?')">
@@ -185,27 +185,15 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <label class="form-label text-small text-info font-weight-bold">Daftar Obat</label>
                                         <button type="button" class="btn btn-xs btn-outline-info add-medicine" data-case-index="0">
-                                            <i class="mdi mdi-plus"></i> Obat
+                                            <i class="mdi mdi-plus"></i> Tambah Obat
                                         </button>
                                     </div>
                                     <div class="medicine-list" id="medicine-list-0">
-                                        <div class="medicine-row row mb-2 g-2">
-                                            <div class="col-7">
-                                                <select name="cases[0][medicines][0][id]" class="form-select form-select-sm text-white">
-                                                    <option value="">Pilih Obat</option>
-                                                    @foreach($medicines as $medicine)
-                                                        <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-3">
-                                                <input type="number" name="cases[0][medicines][0][quantity]" class="form-control form-control-sm" value="1" min="1">
-                                            </div>
-                                            <div class="col-2">
-                                                <button type="button" class="btn btn-link btn-sm text-danger remove-medicine" style="display:none;"><i class="mdi mdi-close"></i></button>
-                                            </div>
-                                        </div>
+                                        <!-- Medicine rows will be added here -->
                                     </div>
+                                    <button type="button" class="btn btn-xs btn-outline-primary mt-2 add-first-medicine" data-case-index="0">
+                                        <i class="mdi mdi-pill"></i> Pilih Obat Pertama
+                                    </button>
                                 </div>
                             </div>
                             <div class="text-right mt-3">
@@ -370,7 +358,17 @@
                 <hr class="border-secondary">
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <h6 class="text-primary mb-3"><i class="mdi mdi-pill mr-2"></i> Pengobatan & Status Obat</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="text-primary mb-0"><i class="mdi mdi-pill mr-2"></i> Pengobatan & Status Obat</h6>
+                            <div>
+                                <button type="button" class="btn btn-xs btn-outline-info add-medicine-to-case" data-case-id="{{ $detailCase->id }}">
+                                    <i class="mdi mdi-plus"></i> Tambah Obat
+                                </button>
+                                <button type="button" class="btn btn-xs btn-outline-success mutation-btn" data-toggle="modal" data-target="#mutationModal" data-id="{{ $detailCase->id }}">
+                                    <i class="mdi mdi-swap-vertical"></i> Mutasi Stok
+                                </button>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-sm text-white">
                                 <thead>
@@ -425,6 +423,84 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
+// Add medicine modal
+const addMedicineModal = `
+<div class="modal fade" id="addMedicineModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Obat ke Kasus</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label class="form-label">Pilih Obat</label>
+                    <select id="add-medicine-select" class="form-select text-white">
+                        <option value="">Pilih Obat</option>
+                        @foreach($medicines as $medicine)
+                            <option value="{{ $medicine->id }}">{{ $medicine->name }} (Stok: {{ $medicine->stock }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label">Jumlah</label>
+                    <input type="number" id="add-medicine-quantity" class="form-control text-white" value="1" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirm-add-medicine">Tambah</button>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+
+$(document).ready(function() {
+    $('body').append(addMedicineModal);
+    
+    $(document).on('click', '.add-medicine-to-case', function() {
+        $('#addMedicineModal').modal('show');
+    });
+    
+    $(document).on('click', '#confirm-add-medicine', function() {
+        const caseId = $('.add-medicine-to-case').data('case-id');
+        const medicineSelect = $('#add-medicine-select');
+        const quantityInput = $('#add-medicine-quantity');
+        
+        if (!medicineSelect.val()) {
+            alert('Pilih obat terlebih dahulu');
+            return;
+        }
+        
+        const quantity = parseInt(quantityInput.val()) || 1;
+        
+        $.ajax({
+            url: `/santri-sakit/${caseId}/medicine`,
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                medicine_id: medicineSelect.val(),
+                quantity: quantity
+            },
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    $('#addMedicineModal').modal('hide');
+                    location.reload();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan saat menambahkan obat');
+            }
+        });
+    });
+});
+
     const chartDefaults = {
         chart: { 
             theme: 'light',
@@ -506,7 +582,13 @@
                 success: function(response) {
                     if (response.success) {
                         location.reload();
+                    } else {
+                        alert(response.message || 'Gagal memperbarui status obat.');
                     }
+                },
+                error: function(xhr) {
+                    const message = xhr.responseJSON?.message || 'Gagal memperbarui status obat.';
+                    alert(message);
                 }
             });
         });
@@ -546,11 +628,12 @@
             medList.id = `medicine-list-${caseCount}`;
             const addMedBtn = newRow.querySelector('.add-medicine');
             addMedBtn.setAttribute('data-case-index', caseCount);
+            const addFirstMedBtn = newRow.querySelector('.add-first-medicine');
+            addFirstMedBtn.setAttribute('data-case-index', caseCount);
             
-            // Reset medicine rows to only one
-            const medRows = medList.querySelectorAll('.medicine-row');
-            for(let i = 1; i < medRows.length; i++) medRows[i].remove();
-            medRows[0].querySelector('.remove-medicine').style.display = 'none';
+            // Reset medicine rows to empty
+            medList.innerHTML = '';
+            addFirstMedBtn.style.display = 'inline-block';
 
             newRow.querySelector('.remove-row').style.display = 'inline-block';
             caseRows.appendChild(newRow);
@@ -565,30 +648,80 @@
             }
         });
 
+        // Add first medicine button handler
+        $(document).on('click', '.add-first-medicine', function() {
+            const caseIdx = $(this).data('case-index');
+            const list = $(`#medicine-list-${caseIdx}`);
+            const medIdx = 0;
+            
+            const medicineRow = `
+                <div class="medicine-row row mb-2 g-2">
+                    <div class="col-7">
+                        <select name="cases[${caseIdx}][medicines][${medIdx}][id]" class="form-select form-select-sm text-white">
+                            <option value="">Pilih Obat</option>
+                            @foreach($medicines as $medicine)
+                                <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <input type="number" name="cases[${caseIdx}][medicines][${medIdx}][quantity]" class="form-control form-control-sm" value="1" min="1">
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-link btn-sm text-danger remove-medicine">
+                            <i class="mdi mdi-close"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            list.append(medicineRow);
+            $(this).hide();
+            
+            if (window.initTomSelect) window.initTomSelect();
+        });
+
         // Nested Medicine Repeater Logic
         $(document).on('click', '.add-medicine', function() {
             const caseIdx = $(this).data('case-index');
             const list = $(`#medicine-list-${caseIdx}`);
-            const firstMedRow = list.find('.medicine-row').first();
-            const newMedRow = firstMedRow[0].cloneNode(true);
             const medIdx = list.find('.medicine-row').length;
-
-            newMedRow.querySelectorAll('input, select').forEach(input => {
-                const name = input.getAttribute('name');
-                if (name) {
-                    // Update medicine index [medicines][0] to [medicines][medIdx]
-                    input.setAttribute('name', name.replace(/\[medicines\]\[\d+\]/, `[medicines][${medIdx}]`));
-                }
-                if (input.tagName === 'INPUT') input.value = '1';
-                else input.selectedIndex = 0;
-            });
-
-            newMedRow.querySelector('.remove-medicine').style.display = 'inline-block';
-            list.append(newMedRow);
+            
+            const medicineRow = `
+                <div class="medicine-row row mb-2 g-2">
+                    <div class="col-7">
+                        <select name="cases[${caseIdx}][medicines][${medIdx}][id]" class="form-select form-select-sm text-white">
+                            <option value="">Pilih Obat</option>
+                            @foreach($medicines as $medicine)
+                                <option value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <input type="number" name="cases[${caseIdx}][medicines][${medIdx}][quantity]" class="form-control form-control-sm" value="1" min="1">
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-link btn-sm text-danger remove-medicine">
+                            <i class="mdi mdi-close"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            list.append(medicineRow);
+            
+            if (window.initTomSelect) window.initTomSelect();
         });
 
         $(document).on('click', '.remove-medicine', function() {
+            const caseRow = $(this).closest('.case-row');
+            const list = $(this).closest('.medicine-list');
             $(this).closest('.medicine-row').remove();
+            
+            // Show "add first medicine" button if no medicines left
+            if (list.find('.medicine-row').length === 0) {
+                caseRow.find('.add-first-medicine').show();
+            }
         });
 
         // Edit Modal Medicine Repeater

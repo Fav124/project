@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Concerns\HealthManagementValidation;
 use App\Models\Medicine;
-use App\Models\MedicineMutation;
+use App\Services\MedicineStockService;
 use Illuminate\Http\Request;
 
 class MedicineController extends Controller
@@ -33,6 +33,9 @@ class MedicineController extends Controller
         }
 
         $medicines = $query->orderBy('name')->paginate(10)->withQueryString();
+        $medicines->getCollection()->each(function ($medicine) {
+            $medicine->append(['status', 'riwayat_stok']);
+        });
         $editMedicine = $request->filled('edit')
             ? Medicine::find($request->edit)
             : null;
@@ -64,9 +67,11 @@ class MedicineController extends Controller
         ));
     }
 
-    public function show(Medicine $medicine)
+    public function show(Medicine $medicine, MedicineStockService $stockService)
     {
-        return view('health.medicines.show', compact('medicine'));
+        $medicine->load(['mutations' => fn($q) => $q->latest(), 'batches']);
+        $batchSummary = $stockService->getBatchSummary($medicine);
+        return view('health.medicines.show', compact('medicine', 'batchSummary'));
     }
 
     public function store(Request $request)
@@ -93,6 +98,11 @@ class MedicineController extends Controller
         return redirect()->route('medicines.index')->with('success', $message);
     }
 
+    public function edit(Medicine $medicine)
+    {
+        return view('health.medicines.edit', compact('medicine'));
+    }
+
     public function update(Request $request, Medicine $medicine)
     {
         $validated = $request->validate($this->medicineRules());
@@ -114,43 +124,35 @@ class MedicineController extends Controller
             ->with('success', 'Data obat berhasil dihapus.');
     }
 
-    public function recordMutation(Request $request)
+    public function recordMutation(Request $request, MedicineStockService $stockService)
     {
         $validated = $request->validate([
             'medicine_id' => 'required|exists:medicines,id',
             'type'        => 'required|in:in,out,adjustment',
             'amount'      => 'required|integer|min:1',
             'notes'       => 'nullable|string',
+            'expiry_date' => 'nullable|date',
         ]);
 
-        $medicine = Medicine::findOrFail($validated['medicine_id']);
-        $beforeStock = $medicine->stock;
-
-        if ($validated['type'] === 'in') {
-            $medicine->increment('stock', $validated['amount']);
-        } elseif ($validated['type'] === 'out') {
-            if ($medicine->stock < $validated['amount']) {
-                if ($request->ajax()) {
-                    return response()->json(['success' => false, 'message' => 'Stok tidak mencukupi.'], 422);
-                }
-                return back()->withErrors(['amount' => 'Stok tidak mencukupi.'])->withInput();
+        try {
+            $medicine = Medicine::findOrFail($validated['medicine_id']);
+            $expiryDate = isset($validated['expiry_date']) 
+                ? \Carbon\Carbon::parse($validated['expiry_date']) 
+                : null;
+            
+            $stockService->recordMutation(
+                $medicine,
+                $validated['type'],
+                $validated['amount'],
+                $validated['notes'] ?? null,
+                $expiryDate
+            );
+        } catch (\InvalidArgumentException $e) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
             }
-            $medicine->decrement('stock', $validated['amount']);
-        } else {
-            // adjustment
-            $medicine->update(['stock' => $validated['amount']]);
+            return back()->withErrors(['amount' => $e->getMessage()])->withInput();
         }
-
-        $afterStock = $medicine->fresh()->stock;
-
-        MedicineMutation::create([
-            'medicine_id'   => $medicine->id,
-            'type'          => $validated['type'],
-            'amount'        => $validated['amount'],
-            'before_stock'  => $beforeStock,
-            'after_stock'   => $afterStock,
-            'notes'         => $validated['notes'] ?? null,
-        ]);
 
         $message = 'Mutasi stok berhasil dicatat.';
         if ($request->ajax()) {
@@ -158,5 +160,13 @@ class MedicineController extends Controller
         }
 
         return redirect()->route('medicines.index')->with('success', $message);
+    }
+
+    public function getBatches($id, MedicineStockService $stockService)
+    {
+        $medicine = Medicine::findOrFail($id);
+        $summary = $stockService->getBatchSummary($medicine);
+        
+        return response()->json(['success' => true, 'data' => $summary]);
     }
 }

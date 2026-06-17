@@ -26,6 +26,8 @@ class Medicine extends Model
         'expiry_date' => 'date',
     ];
 
+    protected $appends = ['status', 'riwayat_stok'];
+
     public function mutations()
     {
         return $this->hasMany(MedicineMutation::class);
@@ -38,15 +40,73 @@ class Medicine extends Model
                     ->withTimestamps();
     }
 
+    public function batches()
+    {
+        return $this->hasMany(MedicineBatch::class)->orderBy('expiry_date');
+    }
+
+    public function availableBatches()
+    {
+        return $this->hasMany(MedicineBatch::class)
+                    ->where('quantity', '>', 0)
+                    ->orderBy('expiry_date');
+    }
+
+    public function getAvailableStockAttribute(): int
+    {
+        return $this->availableBatches()->sum('quantity');
+    }
+
+    public function getExpiredStockAttribute(): int
+    {
+        return $this->batches()->expired()->sum('quantity');
+    }
+
+    public function getExpiringSoonStockAttribute(): int
+    {
+        return $this->batches()->expiringSoon()->sum('quantity');
+    }
+
     public function isExpired(): bool
     {
-        return $this->expiry_date && $this->expiry_date->isPast();
+        return $this->availableBatches()->expired()->exists();
     }
 
     public function isExpiringSoon(): bool
     {
-        return $this->expiry_date &&
-               $this->expiry_date->isFuture() &&
-               $this->expiry_date->diffInMonths(now()) < 3;
+        return $this->availableBatches()->expiringSoon()->exists();
+    }
+
+    public function getNearestExpiryDateAttribute()
+    {
+        return $this->availableBatches()->notExpired()->first()?->expiry_date;
+    }
+
+    public function getStatusAttribute(): string
+    {
+        if ($this->isExpired()) {
+            return 'kadaluarsa';
+        } elseif ($this->isExpiringSoon()) {
+            return 'segera_expired';
+        } elseif ($this->stock <= $this->minimum_stock) {
+            return 'stok_kritis';
+        } else {
+            return 'aman';
+        }
+    }
+
+    public function getRiwayatStokAttribute(): array
+    {
+        return $this->mutations()->latest()->get()->map(function ($mutation) {
+            return [
+                'id' => $mutation->id,
+                'type' => $mutation->type,
+                'amount' => $mutation->amount,
+                'stok_sebelum' => $mutation->before_stock,
+                'stok_sesudah' => $mutation->after_stock,
+                'date' => $mutation->created_at->format('d M Y H:i'),
+                'notes' => $mutation->notes,
+            ];
+        })->toArray();
     }
 }

@@ -24,7 +24,7 @@ class SantriApiController extends BaseApiController
 
     public function index(Request $request)
     {
-        $query = Santri::with(['schoolClass:id,name', 'major:id,name']);
+        $query = Santri::with(['schoolClass:id,name', 'major:id,name', 'guardians']);
 
         if ($request->filled('search')) {
             $s = $request->search;
@@ -67,7 +67,7 @@ class SantriApiController extends BaseApiController
             'gender'            => 'required|in:L,P',
             'birth_place'       => 'nullable|string|max:100',
             'birth_date'        => 'nullable|date',
-            'class_id'          => 'nullable|exists:school_classes,id',
+            'class_id'          => 'nullable',
             'major_id'          => 'nullable|exists:majors,id',
             'dorm_room'         => 'nullable|string|max:50',
             'blood_type'        => 'nullable|string|max:5',
@@ -77,8 +77,11 @@ class SantriApiController extends BaseApiController
             'height'            => 'nullable|numeric',
             'weight'            => 'nullable|numeric',
             'blood_pressure'    => 'nullable|string|max:20',
-            'guardian_name'     => 'nullable|string|max:100',
-            'guardian_phone'    => 'nullable|string|max:20',
+            'guardian_name'         => 'nullable|string|max:100',
+            'guardian_phone'        => 'nullable|string|max:20',
+            'guardian_relationship' => 'nullable|string|max:100',
+            'guardian_job'          => 'nullable|string|max:100',
+            'guardian_address'      => 'nullable|string',
             'notes'             => 'nullable|string',
         ]);
 
@@ -99,7 +102,7 @@ class SantriApiController extends BaseApiController
             'gender'            => 'required|in:L,P',
             'birth_place'       => 'nullable|string|max:100',
             'birth_date'        => 'nullable|date',
-            'class_id'          => 'nullable|exists:school_classes,id',
+            'class_id'          => 'nullable',
             'major_id'          => 'nullable|exists:majors,id',
             'dorm_room'         => 'nullable|string|max:50',
             'blood_type'        => 'nullable|string|max:5',
@@ -109,8 +112,11 @@ class SantriApiController extends BaseApiController
             'height'            => 'nullable|numeric',
             'weight'            => 'nullable|numeric',
             'blood_pressure'    => 'nullable|string|max:20',
-            'guardian_name'     => 'nullable|string|max:100',
-            'guardian_phone'    => 'nullable|string|max:20',
+            'guardian_name'         => 'nullable|string|max:100',
+            'guardian_phone'        => 'nullable|string|max:20',
+            'guardian_relationship' => 'nullable|string|max:100',
+            'guardian_job'          => 'nullable|string|max:100',
+            'guardian_address'      => 'nullable|string',
             'notes'             => 'nullable|string',
         ]);
 
@@ -213,6 +219,8 @@ class SantriApiController extends BaseApiController
 
     private function format(Santri $s): array
     {
+        $guardian = $this->resolvePrimaryGuardian($s);
+
         return [
             'id'                     => $s->id,
             'name'                   => $s->name,
@@ -221,11 +229,11 @@ class SantriApiController extends BaseApiController
             'gender_label'           => $s->gender === 'L' ? 'Laki-laki' : 'Perempuan',
             'class'                  => $s->schoolClass?->name,
             'major'                  => $s->major?->name,
-            'guardian_name'          => $s->guardian_name,
-            'guardian_phone'         => $s->guardian_phone,
-            'guardian_relationship'  => $s->guardian_relationship ?? null,
-            'guardian_address'       => $s->guardian_address ?? null,
-            'guardian_job'           => $s->guardian_job ?? null,
+            'guardian_name'          => $s->guardian_name ?: $guardian?->name,
+            'guardian_phone'         => $s->guardian_phone ?: $guardian?->phone,
+            'guardian_relationship'  => $s->guardian_relationship ?: $guardian?->relationship,
+            'guardian_address'       => $s->guardian_address ?: $guardian?->address,
+            'guardian_job'           => $s->guardian_job ?: $guardian?->job,
         ];
     }
 
@@ -270,5 +278,14 @@ class SantriApiController extends BaseApiController
             'is_primary'   => (bool) $g->is_primary,
             'notes'        => $g->notes,
         ];
+    }
+
+    private function resolvePrimaryGuardian(Santri $s): ?Guardian
+    {
+        if (!$s->relationLoaded('guardians') || $s->guardians->isEmpty()) {
+            return null;
+        }
+
+        return $s->guardians->firstWhere('is_primary', true) ?? $s->guardians->first();
     }
 }
